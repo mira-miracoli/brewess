@@ -1,5 +1,8 @@
-module github.com/mira-miracoli/brewess
+module github.com/mira-miracoli/brewess/main
 
-go 1.16
+go 1.17
 
-require github.com/gomodule/redigo v1.8.5 // indirect
+require (
+	github.com/objectbox/objectbox-generator v0.13.0 // indirect
+	github.com/objectbox/objectbox-go v1.5.0 // indirect
+)

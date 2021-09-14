@@ -1,0 +1,181 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:3654763371068763047",
+      "lastPropertyId": "4:2397768903838672725",
+      "name": "Malt",
+      "properties": [
+        {
+          "id": "1:1878438778592493007",
+          "name": "Id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:6524314142546606709",
+          "name": "Name",
+          "type": 9
+        },
+        {
+          "id": "3:4869481280457807193",
+          "name": "Amount",
+          "type": 6
+        },
+        {
+          "id": "4:2397768903838672725",
+          "name": "EBC",
+          "type": 6
+        }
+      ]
+    },
+    {
+      "id": "2:3109559498632667078",
+      "lastPropertyId": "4:5549877410473105187",
+      "name": "Hop",
+      "properties": [
+        {
+          "id": "1:1859828174212255080",
+          "name": "Id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1524669187906431133",
+          "name": "Name",
+          "type": 9
+        },
+        {
+          "id": "3:6370563162644528664",
+          "name": "Amount",
+          "type": 6
+        },
+        {
+          "id": "4:5549877410473105187",
+          "name": "Iso",
+          "type": 7
+        }
+      ]
+    },
+    {
+      "id": "3:4183773918897404406",
+      "lastPropertyId": "6:8494613577001114068",
+      "name": "Yeast",
+      "properties": [
+        {
+          "id": "1:5422436074238775266",
+          "name": "Id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:7956210914367276321",
+          "name": "Name",
+          "type": 9
+        },
+        {
+          "id": "3:1641309061918568156",
+          "name": "Amount",
+          "type": 6
+        },
+        {
+          "id": "4:5881370876310109916",
+          "name": "MinTemp",
+          "type": 7
+        },
+        {
+          "id": "5:7947361413816752847",
+          "name": "MaxTemp",
+          "type": 7
+        },
+        {
+          "id": "6:8494613577001114068",
+          "name": "OberG",
+          "type": 1
+        }
+      ]
+    },
+    {
+      "id": "4:4227538287323955228",
+      "lastPropertyId": "9:8229586996746706543",
+      "name": "Recipe",
+      "properties": [
+        {
+          "id": "1:4280144815472854206",
+          "name": "Id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:1937909533683679463",
+          "name": "Name",
+          "type": 9
+        },
+        {
+          "id": "3:2872287476873077822",
+          "name": "Description",
+          "type": 9
+        },
+        {
+          "id": "4:7671264917189568994",
+          "name": "IsoAlpha",
+          "type": 7
+        },
+        {
+          "id": "5:7395310028887276513",
+          "name": "HopSugg",
+          "type": 30
+        },
+        {
+          "id": "6:835608935226063632",
+          "name": "DryHop",
+          "type": 30
+        },
+        {
+          "id": "7:5040363575523988274",
+          "name": "SHA",
+          "type": 7
+        },
+        {
+          "id": "8:1805142047403128018",
+          "name": "AlcTarget",
+          "type": 7
+        },
+        {
+          "id": "9:8229586996746706543",
+          "name": "OGTarget",
+          "type": 7
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:1082614423144253547",
+          "name": "Malts",
+          "targetId": "1:3654763371068763047"
+        },
+        {
+          "id": "2:7258612969345776557",
+          "name": "Hops",
+          "targetId": "2:3109559498632667078"
+        },
+        {
+          "id": "3:2771706771742051071",
+          "name": "Yeasts",
+          "targetId": "3:4183773918897404406"
+        }
+      ]
+    }
+  ],
+  "lastEntityId": "4:4227538287323955228",
+  "lastIndexId": "",
+  "lastRelationId": "3:2771706771742051071",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

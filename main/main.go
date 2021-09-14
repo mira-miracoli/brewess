@@ -3,20 +3,13 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"model"
 	"os"
 	"regexp"
 	"strconv"
 	"strings"
 
-	"github.com/objectbox/objectbox-go/examples/tasks/internal/model"
+	"github.com/mira-miracoli/brewess/internal/model"
 	"github.com/objectbox/objectbox-go/objectbox"
-)
-
-const (
-	TEXT = 1
-	GANZ = 2
-	DEC  = 3
 )
 
 var IsLetter = regexp.MustCompile(`^[a-zA-Z]+$`).MatchString
@@ -115,19 +108,25 @@ func ScanOrErrorNumber() (f32 float32) {
 
 		}
 	}
+	return f32
 }
 
+func FindMalt(box *model.RecipeBox)
+
 // create Recipe how to parse/ insert the fields and check for errors?
-func createRecipe(box *model.TaskBox) {
+func createRecipe(box *model.RecipeBox) {
 	fmt.Printf("Let's get started with your recipe.\nFirst, enter a name for it.\n")
 	name := ScanOrErrorString()
 
 	fmt.Printf("Well done! Now enter a short description\n")
 	description := ScanOrErrorString()
 
+	fmt.Printf("Now enter the malt(s) you want to use and it's proportion in the bulk.\n No Worries - if not found in the library, we'll create a new entry together\n")
+	malts = FindMalts()
 	recipe := &model.Recipe{
 		Name:        name,
 		Description: description,
+		Malts:       malts,
 		DateCreated: obNow(),
 	}
 

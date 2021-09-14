@@ -1,5 +1,7 @@
 package model
 
+//go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
+
 // recipe model
 type Malt struct {
 	Id     uint64
@@ -27,13 +29,13 @@ type Recipe struct {
 	Id          uint64
 	Name        string
 	Description string // short text to descripe and add any comments
-	Malts       map[Malt]float32
+	Malts       []*Malt
 	IsoAlpha    float32
-	Hops        map[Hop]float32 // specifies hop-resources to use and its proportion
+	Hops        []*Hop // specifies hop-resources to use and its proportion
 	HopSugg     []string
 	DryHop      []string // used for hopping examples
 	SHA         float32
-	Yeasts      []Yeast
+	Yeasts      []*Yeast
 	AlcTarget   float32 // specifies the targeted amount alc by vol
 	OGTarget    float32 // specifies the targeted original gravity in %sacc
 
