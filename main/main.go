@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mira-miracoli/brewess/internal/model"
+	"github.com/mira-miracoli/brewess/tree/main/internal/model"
 	"github.com/objectbox/objectbox-go/objectbox"
 )
 
