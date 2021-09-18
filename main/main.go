@@ -111,7 +111,51 @@ func ScanOrErrorNumber() (f32 float32) {
 	return f32
 }
 
-func FindMalt(box *model.RecipeBox)
+func belongsToList(lookup string, list []string) bool {
+	for _, val := range list {
+		if val == lookup {
+			return true
+		}
+	}
+	return false
+}
+
+func RuneReading(list []rune) (y rune) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		if y := scanner.Next(); belongsToList(y, list) {
+			return y
+		} else {
+			fmt.Printf("Not the answer I want to hear!\n")
+		}
+	}
+	return y
+}
+func FindMalts(box *model.MaltBox) []*model.Malts {
+	query := box.Query(model.Malt_.Name.Equals(""))
+	var lsmalts []*model.Malts
+	fmt.Printf("Please enter the name of the malt you want to use and we'll search for it:\n")
+	for {
+
+		mname := ScanOrErrorString()
+		if mname == "exit" {
+			break
+		}
+		query.SetStringParams(model.Malts_.Name, mname)
+		malts, err := query.Find()
+		if err != nil || query.Count() > 1 {
+			fmt.Printf("*cough cough* I searched the whole malt store but didn't find anything.\n")
+			fmt.Printf("Do you want me to search again, or no, create a new entry? (y|n)\n")
+			list := []rune{'y', 'n'}
+			if r := RuneReading(list); r == 'n' {
+				CreateMalt()
+			}
+		} else {
+			lsmalts.append([1]malts)
+		}
+
+	}
+}
 
 // create Recipe how to parse/ insert the fields and check for errors?
 func createRecipe(box *model.RecipeBox) {
@@ -121,8 +165,14 @@ func createRecipe(box *model.RecipeBox) {
 	fmt.Printf("Well done! Now enter a short description\n")
 	description := ScanOrErrorString()
 
-	fmt.Printf("Now enter the malt(s) you want to use and it's proportion in the bulk.\n No Worries - if not found in the library, we'll create a new entry together\n")
-	malts = FindMalts()
+	fmt.Printf("Now enter the malt(s) you want to use and it's proportion in the bulk.\n No Worries - if not found in the malt stock, we'll create a new entry together\n")
+
+	// initialize ObjectBox for malt objects
+	mb := initObjectBox()
+	defer mb.Close()
+
+	mbox := model.BoxForMalt()
+	malts := FindMalts(&mbox)
 	recipe := &model.Recipe{
 		Name:        name,
 		Description: description,
@@ -137,3 +187,5 @@ func createRecipe(box *model.RecipeBox) {
 		fmt.Printf("task ID %d successfully created\n", task.Id)
 	}
 }
+
+func CreateMalt() {}
