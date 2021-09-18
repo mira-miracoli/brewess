@@ -1,4 +1,4 @@
-package model
+package brewess
 
 //go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
 

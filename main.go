@@ -1,4 +1,4 @@
-package main
+package brewess
 
 import (
 	"bufio"
@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mira-miracoli/brewess/tree/main/internal/model"
 	"github.com/objectbox/objectbox-go/objectbox"
 )
 
@@ -19,12 +18,12 @@ func main() {
 	ob := initObjectBox()
 	defer ob.Close()
 
-	box := model.BoxForRecipe(ob)
+	box := BoxForRecipe(ob)
 
 	runInteractiveShell(box)
 }
 
-func runInteractiveShell(box *model.RecipeBox) {
+func runInteractiveShell(box *RecipeBox) {
 	// our simple interactive shell
 	reader := bufio.NewReader(os.Stdin)
 
@@ -78,7 +77,7 @@ func runInteractiveShell(box *model.RecipeBox) {
 }
 
 func initObjectBox() *objectbox.ObjectBox {
-	objectBox, err := objectbox.NewBuilder().Model(model.ObjectBoxModel()).Build()
+	objectBox, err := objectbox.NewBuilder().Model(ObjectBoxModel()).Build()
 	if err != nil {
 		panic(err)
 	}
@@ -131,9 +130,9 @@ func RuneReading(list []rune) (y rune) {
 	}
 	return y
 }
-func FindMalts(box *model.MaltBox) []*model.Malts {
-	query := box.Query(model.Malt_.Name.Equals(""))
-	var lsmalts []*model.Malts
+func FindMalts(box *MaltBox) []*Malts {
+	query := box.Query(Malt_.Name.Equals(""))
+	var lsmalts []*Malts
 	fmt.Printf("Please enter the name of the malt you want to use and we'll search for it:\n")
 	for {
 
@@ -141,7 +140,7 @@ func FindMalts(box *model.MaltBox) []*model.Malts {
 		if mname == "exit" {
 			break
 		}
-		query.SetStringParams(model.Malts_.Name, mname)
+		query.SetStringParams(Malts_.Name, mname)
 		malts, err := query.Find()
 		if err != nil || query.Count() > 1 {
 			fmt.Printf("*cough cough* I searched the whole malt store but didn't find anything.\n")
@@ -158,7 +157,7 @@ func FindMalts(box *model.MaltBox) []*model.Malts {
 }
 
 // create Recipe how to parse/ insert the fields and check for errors?
-func createRecipe(box *model.RecipeBox) {
+func createRecipe(box *RecipeBox) {
 	fmt.Printf("Let's get started with your recipe.\nFirst, enter a name for it.\n")
 	name := ScanOrErrorString()
 
@@ -171,9 +170,9 @@ func createRecipe(box *model.RecipeBox) {
 	mb := initObjectBox()
 	defer mb.Close()
 
-	mbox := model.BoxForMalt()
+	mbox := BoxForMalt()
 	malts := FindMalts(&mbox)
-	recipe := &model.Recipe{
+	recipe := &Recipe{
 		Name:        name,
 		Description: description,
 		Malts:       malts,
