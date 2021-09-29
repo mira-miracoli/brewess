@@ -10,101 +10,147 @@ import (
 	"github.com/objectbox/objectbox-go/objectbox/fbutils"
 )
 
-type malt_EntityInfo struct {
+type resource_EntityInfo struct {
 	objectbox.Entity
 	Uid uint64
 }
 
-var MaltBinding = malt_EntityInfo{
+var ResourceBinding = resource_EntityInfo{
 	Entity: objectbox.Entity{
 		Id: 1,
 	},
-	Uid: 8341787492841185775,
+	Uid: 8864280590638099451,
 }
 
-// Malt_ contains type-based Property helpers to facilitate some common operations such as Queries.
-var Malt_ = struct {
-	Id     *objectbox.PropertyUint64
-	Name   *objectbox.PropertyString
-	Amount *objectbox.PropertyInt
-	EBC    *objectbox.PropertyInt
+// Resource_ contains type-based Property helpers to facilitate some common operations such as Queries.
+var Resource_ = struct {
+	Id      *objectbox.PropertyUint64
+	Type    *objectbox.PropertyString
+	Name    *objectbox.PropertyString
+	Amount  *objectbox.PropertyFloat64
+	EBC     *objectbox.PropertyFloat64
+	MinTemp *objectbox.PropertyFloat64
+	MaxTemp *objectbox.PropertyFloat64
+	OberG   *objectbox.PropertyBool
+	Iso     *objectbox.PropertyFloat64
 }{
 	Id: &objectbox.PropertyUint64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     1,
-			Entity: &MaltBinding.Entity,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	Type: &objectbox.PropertyString{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     2,
+			Entity: &ResourceBinding.Entity,
 		},
 	},
 	Name: &objectbox.PropertyString{
 		BaseProperty: &objectbox.BaseProperty{
-			Id:     2,
-			Entity: &MaltBinding.Entity,
-		},
-	},
-	Amount: &objectbox.PropertyInt{
-		BaseProperty: &objectbox.BaseProperty{
 			Id:     3,
-			Entity: &MaltBinding.Entity,
+			Entity: &ResourceBinding.Entity,
 		},
 	},
-	EBC: &objectbox.PropertyInt{
+	Amount: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     4,
-			Entity: &MaltBinding.Entity,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	EBC: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     5,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	MinTemp: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     6,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	MaxTemp: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     7,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	OberG: &objectbox.PropertyBool{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     8,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	Iso: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     9,
+			Entity: &ResourceBinding.Entity,
 		},
 	},
 }
 
 // GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
-func (malt_EntityInfo) GeneratorVersion() int {
+func (resource_EntityInfo) GeneratorVersion() int {
 	return 6
 }
 
 // AddToModel is called by ObjectBox during model build
-func (malt_EntityInfo) AddToModel(model *objectbox.Model) {
-	model.Entity("Malt", 1, 8341787492841185775)
-	model.Property("Id", 6, 1, 823585883752204252)
+func (resource_EntityInfo) AddToModel(model *objectbox.Model) {
+	model.Entity("Resource", 1, 8864280590638099451)
+	model.Property("Id", 6, 1, 5493231812372595979)
 	model.PropertyFlags(1)
-	model.Property("Name", 9, 2, 9031252833114299596)
-	model.Property("Amount", 6, 3, 2659928755744757222)
-	model.Property("EBC", 6, 4, 209265892168473022)
-	model.EntityLastPropertyId(4, 209265892168473022)
+	model.Property("Type", 9, 2, 887142186992516674)
+	model.Property("Name", 9, 3, 7704535535632126273)
+	model.Property("Amount", 8, 4, 3015859585488509340)
+	model.Property("EBC", 8, 5, 8027933678563871299)
+	model.Property("MinTemp", 8, 6, 6978596190461251037)
+	model.Property("MaxTemp", 8, 7, 1466987121535296644)
+	model.Property("OberG", 1, 8, 6482886941541151457)
+	model.Property("Iso", 8, 9, 6879353326633125653)
+	model.EntityLastPropertyId(9, 6879353326633125653)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
-func (malt_EntityInfo) GetId(object interface{}) (uint64, error) {
-	return object.(*Malt).Id, nil
+func (resource_EntityInfo) GetId(object interface{}) (uint64, error) {
+	return object.(*Resource).Id, nil
 }
 
 // SetId is called by ObjectBox during Put to update an ID on an object that has just been inserted
-func (malt_EntityInfo) SetId(object interface{}, id uint64) error {
-	object.(*Malt).Id = id
+func (resource_EntityInfo) SetId(object interface{}, id uint64) error {
+	object.(*Resource).Id = id
 	return nil
 }
 
 // PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
-func (malt_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
+func (resource_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
 	return nil
 }
 
 // Flatten is called by ObjectBox to transform an object to a FlatBuffer
-func (malt_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
-	obj := object.(*Malt)
+func (resource_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
+	obj := object.(*Resource)
+	var offsetType = fbutils.CreateStringOffset(fbb, obj.Type)
 	var offsetName = fbutils.CreateStringOffset(fbb, obj.Name)
 
 	// build the FlatBuffers object
-	fbb.StartObject(4)
+	fbb.StartObject(9)
 	fbutils.SetUint64Slot(fbb, 0, id)
-	fbutils.SetUOffsetTSlot(fbb, 1, offsetName)
-	fbutils.SetInt64Slot(fbb, 2, int64(obj.Amount))
-	fbutils.SetInt64Slot(fbb, 3, int64(obj.EBC))
+	fbutils.SetUOffsetTSlot(fbb, 1, offsetType)
+	fbutils.SetUOffsetTSlot(fbb, 2, offsetName)
+	fbutils.SetFloat64Slot(fbb, 3, obj.Amount)
+	fbutils.SetFloat64Slot(fbb, 4, obj.EBC)
+	fbutils.SetFloat64Slot(fbb, 5, obj.MinTemp)
+	fbutils.SetFloat64Slot(fbb, 6, obj.MaxTemp)
+	fbutils.SetBoolSlot(fbb, 7, obj.OberG)
+	fbutils.SetFloat64Slot(fbb, 8, obj.Iso)
 	return nil
 }
 
 // Load is called by ObjectBox to load an object from a FlatBuffer
-func (malt_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}, error) {
+func (resource_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}, error) {
 	if len(bytes) == 0 { // sanity check, should "never" happen
-		return nil, errors.New("can't deserialize an object of type 'Malt' - no data received")
+		return nil, errors.New("can't deserialize an object of type 'Resource' - no data received")
 	}
 
 	var table = &flatbuffers.Table{
@@ -114,62 +160,67 @@ func (malt_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{},
 
 	var propId = table.GetUint64Slot(4, 0)
 
-	return &Malt{
-		Id:     propId,
-		Name:   fbutils.GetStringSlot(table, 6),
-		Amount: fbutils.GetIntSlot(table, 8),
-		EBC:    fbutils.GetIntSlot(table, 10),
+	return &Resource{
+		Id:      propId,
+		Type:    fbutils.GetStringSlot(table, 6),
+		Name:    fbutils.GetStringSlot(table, 8),
+		Amount:  fbutils.GetFloat64Slot(table, 10),
+		EBC:     fbutils.GetFloat64Slot(table, 12),
+		MinTemp: fbutils.GetFloat64Slot(table, 14),
+		MaxTemp: fbutils.GetFloat64Slot(table, 16),
+		OberG:   fbutils.GetBoolSlot(table, 18),
+		Iso:     fbutils.GetFloat64Slot(table, 20),
 	}, nil
 }
 
 // MakeSlice is called by ObjectBox to construct a new slice to hold the read objects
-func (malt_EntityInfo) MakeSlice(capacity int) interface{} {
-	return make([]*Malt, 0, capacity)
+func (resource_EntityInfo) MakeSlice(capacity int) interface{} {
+	return make([]*Resource, 0, capacity)
 }
 
 // AppendToSlice is called by ObjectBox to fill the slice of the read objects
-func (malt_EntityInfo) AppendToSlice(slice interface{}, object interface{}) interface{} {
+func (resource_EntityInfo) AppendToSlice(slice interface{}, object interface{}) interface{} {
 	if object == nil {
-		return append(slice.([]*Malt), nil)
+		return append(slice.([]*Resource), nil)
 	}
-	return append(slice.([]*Malt), object.(*Malt))
+	return append(slice.([]*Resource), object.(*Resource))
 }
 
-// Box provides CRUD access to Malt objects
-type MaltBox struct {
+// Box provides CRUD access to Resource objects
+type ResourceBox struct {
 	*objectbox.Box
 }
 
-// BoxForMalt opens a box of Malt objects
-func BoxForMalt(ob *objectbox.ObjectBox) *MaltBox {
-	return &MaltBox{
+// BoxForResource opens a box of Resource objects
+func BoxForResource(ob *objectbox.ObjectBox) *ResourceBox {
+	return &ResourceBox{
 		Box: ob.InternalBox(1),
 	}
 }
 
 // Put synchronously inserts/updates a single object.
 // In case the Id is not specified, it would be assigned automatically (auto-increment).
-// When inserting, the Malt.Id property on the passed object will be assigned the new ID as well.
-func (box *MaltBox) Put(object *Malt) (uint64, error) {
+// When inserting, the Resource.Id property on the passed object will be assigned the new ID as well.
+func (box *ResourceBox) Put(object *Resource) (uint64, error) {
 	return box.Box.Put(object)
 }
 
 // Insert synchronously inserts a single object. As opposed to Put, Insert will fail if given an ID that already exists.
 // In case the Id is not specified, it would be assigned automatically (auto-increment).
-// When inserting, the Malt.Id property on the passed object will be assigned the new ID as well.
-func (box *MaltBox) Insert(object *Malt) (uint64, error) {
+// When inserting, the Resource.Id property on the passed object will be assigned the new ID as well.
+func (box *ResourceBox) Insert(object *Resource) (uint64, error) {
 	return box.Box.Insert(object)
 }
 
 // Update synchronously updates a single object.
 // As opposed to Put, Update will fail if an object with the same ID is not found in the database.
-func (box *MaltBox) Update(object *Malt) error {
+func (box *ResourceBox) Update(object *Resource) error {
 	return box.Box.Update(object)
 }
 
 // PutAsync asynchronously inserts/updates a single object.
 // Deprecated: use box.Async().Put() instead
-func (box *MaltBox) PutAsync(object *Malt) (uint64, error) {
+func (box *ResourceBox) PutAsync(object *Resource) (uint64, error) {
 	return box.Box.PutAsync(object)
 }
 
@@ -177,59 +228,59 @@ func (box *MaltBox) PutAsync(object *Malt) (uint64, error) {
 // In case Ids are not set on the objects, they would be assigned automatically (auto-increment).
 //
 // Returns: IDs of the put objects (in the same order).
-// When inserting, the Malt.Id property on the objects in the slice will be assigned the new IDs as well.
+// When inserting, the Resource.Id property on the objects in the slice will be assigned the new IDs as well.
 //
-// Note: In case an error occurs during the transaction, some of the objects may already have the Malt.Id assigned
+// Note: In case an error occurs during the transaction, some of the objects may already have the Resource.Id assigned
 // even though the transaction has been rolled back and the objects are not stored under those IDs.
 //
 // Note: The slice may be empty or even nil; in both cases, an empty IDs slice and no error is returned.
-func (box *MaltBox) PutMany(objects []*Malt) ([]uint64, error) {
+func (box *ResourceBox) PutMany(objects []*Resource) ([]uint64, error) {
 	return box.Box.PutMany(objects)
 }
 
 // Get reads a single object.
 //
 // Returns nil (and no error) in case the object with the given ID doesn't exist.
-func (box *MaltBox) Get(id uint64) (*Malt, error) {
+func (box *ResourceBox) Get(id uint64) (*Resource, error) {
 	object, err := box.Box.Get(id)
 	if err != nil {
 		return nil, err
 	} else if object == nil {
 		return nil, nil
 	}
-	return object.(*Malt), nil
+	return object.(*Resource), nil
 }
 
 // GetMany reads multiple objects at once.
 // If any of the objects doesn't exist, its position in the return slice is nil
-func (box *MaltBox) GetMany(ids ...uint64) ([]*Malt, error) {
+func (box *ResourceBox) GetMany(ids ...uint64) ([]*Resource, error) {
 	objects, err := box.Box.GetMany(ids...)
 	if err != nil {
 		return nil, err
 	}
-	return objects.([]*Malt), nil
+	return objects.([]*Resource), nil
 }
 
 // GetManyExisting reads multiple objects at once, skipping those that do not exist.
-func (box *MaltBox) GetManyExisting(ids ...uint64) ([]*Malt, error) {
+func (box *ResourceBox) GetManyExisting(ids ...uint64) ([]*Resource, error) {
 	objects, err := box.Box.GetManyExisting(ids...)
 	if err != nil {
 		return nil, err
 	}
-	return objects.([]*Malt), nil
+	return objects.([]*Resource), nil
 }
 
 // GetAll reads all stored objects
-func (box *MaltBox) GetAll() ([]*Malt, error) {
+func (box *ResourceBox) GetAll() ([]*Resource, error) {
 	objects, err := box.Box.GetAll()
 	if err != nil {
 		return nil, err
 	}
-	return objects.([]*Malt), nil
+	return objects.([]*Resource), nil
 }
 
 // Remove deletes a single object
-func (box *MaltBox) Remove(object *Malt) error {
+func (box *ResourceBox) Remove(object *Resource) error {
 	return box.Box.Remove(object)
 }
 
@@ -238,7 +289,7 @@ func (box *MaltBox) Remove(object *Malt) error {
 // Note that this method will not fail if an object is not found (e.g. already removed).
 // In case you need to strictly check whether all of the objects exist before removing them,
 // you can execute multiple box.Contains() and box.Remove() inside a single write transaction.
-func (box *MaltBox) RemoveMany(objects ...*Malt) (uint64, error) {
+func (box *ResourceBox) RemoveMany(objects ...*Resource) (uint64, error) {
 	var ids = make([]uint64, len(objects))
 	for k, object := range objects {
 		ids[k] = object.Id
@@ -246,32 +297,32 @@ func (box *MaltBox) RemoveMany(objects ...*Malt) (uint64, error) {
 	return box.Box.RemoveIds(ids...)
 }
 
-// Creates a query with the given conditions. Use the fields of the Malt_ struct to create conditions.
-// Keep the *MaltQuery if you intend to execute the query multiple times.
+// Creates a query with the given conditions. Use the fields of the Resource_ struct to create conditions.
+// Keep the *ResourceQuery if you intend to execute the query multiple times.
 // Note: this function panics if you try to create illegal queries; e.g. use properties of an alien type.
 // This is typically a programming error. Use QueryOrError instead if you want the explicit error check.
-func (box *MaltBox) Query(conditions ...objectbox.Condition) *MaltQuery {
-	return &MaltQuery{
+func (box *ResourceBox) Query(conditions ...objectbox.Condition) *ResourceQuery {
+	return &ResourceQuery{
 		box.Box.Query(conditions...),
 	}
 }
 
-// Creates a query with the given conditions. Use the fields of the Malt_ struct to create conditions.
-// Keep the *MaltQuery if you intend to execute the query multiple times.
-func (box *MaltBox) QueryOrError(conditions ...objectbox.Condition) (*MaltQuery, error) {
+// Creates a query with the given conditions. Use the fields of the Resource_ struct to create conditions.
+// Keep the *ResourceQuery if you intend to execute the query multiple times.
+func (box *ResourceBox) QueryOrError(conditions ...objectbox.Condition) (*ResourceQuery, error) {
 	if query, err := box.Box.QueryOrError(conditions...); err != nil {
 		return nil, err
 	} else {
-		return &MaltQuery{query}, nil
+		return &ResourceQuery{query}, nil
 	}
 }
 
-// Async provides access to the default Async Box for asynchronous operations. See MaltAsyncBox for more information.
-func (box *MaltBox) Async() *MaltAsyncBox {
-	return &MaltAsyncBox{AsyncBox: box.Box.Async()}
+// Async provides access to the default Async Box for asynchronous operations. See ResourceAsyncBox for more information.
+func (box *ResourceBox) Async() *ResourceAsyncBox {
+	return &ResourceAsyncBox{AsyncBox: box.Box.Async()}
 }
 
-// MaltAsyncBox provides asynchronous operations on Malt objects.
+// ResourceAsyncBox provides asynchronous operations on Resource objects.
 //
 // Asynchronous operations are executed on a separate internal thread for better performance.
 //
@@ -287,25 +338,25 @@ func (box *MaltBox) Async() *MaltAsyncBox {
 //
 // Note that async methods do not give you hard durability guarantees like the synchronous Box provides.
 // There is a small time window in which the data may not have been committed durably yet.
-type MaltAsyncBox struct {
+type ResourceAsyncBox struct {
 	*objectbox.AsyncBox
 }
 
-// AsyncBoxForMalt creates a new async box with the given operation timeout in case an async queue is full.
+// AsyncBoxForResource creates a new async box with the given operation timeout in case an async queue is full.
 // The returned struct must be freed explicitly using the Close() method.
-// It's usually preferable to use MaltBox::Async() which takes care of resource management and doesn't require closing.
-func AsyncBoxForMalt(ob *objectbox.ObjectBox, timeoutMs uint64) *MaltAsyncBox {
+// It's usually preferable to use ResourceBox::Async() which takes care of resource management and doesn't require closing.
+func AsyncBoxForResource(ob *objectbox.ObjectBox, timeoutMs uint64) *ResourceAsyncBox {
 	var async, err = objectbox.NewAsyncBox(ob, 1, timeoutMs)
 	if err != nil {
 		panic("Could not create async box for entity ID 1: %s" + err.Error())
 	}
-	return &MaltAsyncBox{AsyncBox: async}
+	return &ResourceAsyncBox{AsyncBox: async}
 }
 
 // Put inserts/updates a single object asynchronously.
 // When inserting a new object, the Id property on the passed object will be assigned the new ID the entity would hold
 // if the insert is ultimately successful. The newly assigned ID may not become valid if the insert fails.
-func (asyncBox *MaltAsyncBox) Put(object *Malt) (uint64, error) {
+func (asyncBox *ResourceAsyncBox) Put(object *Resource) (uint64, error) {
 	return asyncBox.AsyncBox.Put(object)
 }
 
@@ -313,760 +364,46 @@ func (asyncBox *MaltAsyncBox) Put(object *Malt) (uint64, error) {
 // The Id property on the passed object will be assigned the new ID the entity would hold if the insert is ultimately
 // successful. The newly assigned ID may not become valid if the insert fails.
 // Fails silently if an object with the same ID already exists (this error is not returned).
-func (asyncBox *MaltAsyncBox) Insert(object *Malt) (id uint64, err error) {
+func (asyncBox *ResourceAsyncBox) Insert(object *Resource) (id uint64, err error) {
 	return asyncBox.AsyncBox.Insert(object)
 }
 
 // Update a single object asynchronously.
 // The object must already exists or the update fails silently (without an error returned).
-func (asyncBox *MaltAsyncBox) Update(object *Malt) error {
+func (asyncBox *ResourceAsyncBox) Update(object *Resource) error {
 	return asyncBox.AsyncBox.Update(object)
 }
 
 // Remove deletes a single object asynchronously.
-func (asyncBox *MaltAsyncBox) Remove(object *Malt) error {
+func (asyncBox *ResourceAsyncBox) Remove(object *Resource) error {
 	return asyncBox.AsyncBox.Remove(object)
 }
 
 // Query provides a way to search stored objects
 //
-// For example, you can find all Malt which Id is either 42 or 47:
-// 		box.Query(Malt_.Id.In(42, 47)).Find()
-type MaltQuery struct {
+// For example, you can find all Resource which Id is either 42 or 47:
+// 		box.Query(Resource_.Id.In(42, 47)).Find()
+type ResourceQuery struct {
 	*objectbox.Query
 }
 
 // Find returns all objects matching the query
-func (query *MaltQuery) Find() ([]*Malt, error) {
+func (query *ResourceQuery) Find() ([]*Resource, error) {
 	objects, err := query.Query.Find()
 	if err != nil {
 		return nil, err
 	}
-	return objects.([]*Malt), nil
+	return objects.([]*Resource), nil
 }
 
 // Offset defines the index of the first object to process (how many objects to skip)
-func (query *MaltQuery) Offset(offset uint64) *MaltQuery {
+func (query *ResourceQuery) Offset(offset uint64) *ResourceQuery {
 	query.Query.Offset(offset)
 	return query
 }
 
 // Limit sets the number of elements to process by the query
-func (query *MaltQuery) Limit(limit uint64) *MaltQuery {
-	query.Query.Limit(limit)
-	return query
-}
-
-type hop_EntityInfo struct {
-	objectbox.Entity
-	Uid uint64
-}
-
-var HopBinding = hop_EntityInfo{
-	Entity: objectbox.Entity{
-		Id: 2,
-	},
-	Uid: 1311304881407820381,
-}
-
-// Hop_ contains type-based Property helpers to facilitate some common operations such as Queries.
-var Hop_ = struct {
-	Id     *objectbox.PropertyUint64
-	Name   *objectbox.PropertyString
-	Amount *objectbox.PropertyInt
-	Iso    *objectbox.PropertyFloat32
-}{
-	Id: &objectbox.PropertyUint64{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     1,
-			Entity: &HopBinding.Entity,
-		},
-	},
-	Name: &objectbox.PropertyString{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     2,
-			Entity: &HopBinding.Entity,
-		},
-	},
-	Amount: &objectbox.PropertyInt{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     3,
-			Entity: &HopBinding.Entity,
-		},
-	},
-	Iso: &objectbox.PropertyFloat32{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     4,
-			Entity: &HopBinding.Entity,
-		},
-	},
-}
-
-// GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
-func (hop_EntityInfo) GeneratorVersion() int {
-	return 6
-}
-
-// AddToModel is called by ObjectBox during model build
-func (hop_EntityInfo) AddToModel(model *objectbox.Model) {
-	model.Entity("Hop", 2, 1311304881407820381)
-	model.Property("Id", 6, 1, 833304818951794601)
-	model.PropertyFlags(1)
-	model.Property("Name", 9, 2, 3114321259675387124)
-	model.Property("Amount", 6, 3, 209574434332726053)
-	model.Property("Iso", 7, 4, 4076750983951931962)
-	model.EntityLastPropertyId(4, 4076750983951931962)
-}
-
-// GetId is called by ObjectBox during Put operations to check for existing ID on an object
-func (hop_EntityInfo) GetId(object interface{}) (uint64, error) {
-	return object.(*Hop).Id, nil
-}
-
-// SetId is called by ObjectBox during Put to update an ID on an object that has just been inserted
-func (hop_EntityInfo) SetId(object interface{}, id uint64) error {
-	object.(*Hop).Id = id
-	return nil
-}
-
-// PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
-func (hop_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
-	return nil
-}
-
-// Flatten is called by ObjectBox to transform an object to a FlatBuffer
-func (hop_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
-	obj := object.(*Hop)
-	var offsetName = fbutils.CreateStringOffset(fbb, obj.Name)
-
-	// build the FlatBuffers object
-	fbb.StartObject(4)
-	fbutils.SetUint64Slot(fbb, 0, id)
-	fbutils.SetUOffsetTSlot(fbb, 1, offsetName)
-	fbutils.SetInt64Slot(fbb, 2, int64(obj.Amount))
-	fbutils.SetFloat32Slot(fbb, 3, obj.Iso)
-	return nil
-}
-
-// Load is called by ObjectBox to load an object from a FlatBuffer
-func (hop_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}, error) {
-	if len(bytes) == 0 { // sanity check, should "never" happen
-		return nil, errors.New("can't deserialize an object of type 'Hop' - no data received")
-	}
-
-	var table = &flatbuffers.Table{
-		Bytes: bytes,
-		Pos:   flatbuffers.GetUOffsetT(bytes),
-	}
-
-	var propId = table.GetUint64Slot(4, 0)
-
-	return &Hop{
-		Id:     propId,
-		Name:   fbutils.GetStringSlot(table, 6),
-		Amount: fbutils.GetIntSlot(table, 8),
-		Iso:    fbutils.GetFloat32Slot(table, 10),
-	}, nil
-}
-
-// MakeSlice is called by ObjectBox to construct a new slice to hold the read objects
-func (hop_EntityInfo) MakeSlice(capacity int) interface{} {
-	return make([]*Hop, 0, capacity)
-}
-
-// AppendToSlice is called by ObjectBox to fill the slice of the read objects
-func (hop_EntityInfo) AppendToSlice(slice interface{}, object interface{}) interface{} {
-	if object == nil {
-		return append(slice.([]*Hop), nil)
-	}
-	return append(slice.([]*Hop), object.(*Hop))
-}
-
-// Box provides CRUD access to Hop objects
-type HopBox struct {
-	*objectbox.Box
-}
-
-// BoxForHop opens a box of Hop objects
-func BoxForHop(ob *objectbox.ObjectBox) *HopBox {
-	return &HopBox{
-		Box: ob.InternalBox(2),
-	}
-}
-
-// Put synchronously inserts/updates a single object.
-// In case the Id is not specified, it would be assigned automatically (auto-increment).
-// When inserting, the Hop.Id property on the passed object will be assigned the new ID as well.
-func (box *HopBox) Put(object *Hop) (uint64, error) {
-	return box.Box.Put(object)
-}
-
-// Insert synchronously inserts a single object. As opposed to Put, Insert will fail if given an ID that already exists.
-// In case the Id is not specified, it would be assigned automatically (auto-increment).
-// When inserting, the Hop.Id property on the passed object will be assigned the new ID as well.
-func (box *HopBox) Insert(object *Hop) (uint64, error) {
-	return box.Box.Insert(object)
-}
-
-// Update synchronously updates a single object.
-// As opposed to Put, Update will fail if an object with the same ID is not found in the database.
-func (box *HopBox) Update(object *Hop) error {
-	return box.Box.Update(object)
-}
-
-// PutAsync asynchronously inserts/updates a single object.
-// Deprecated: use box.Async().Put() instead
-func (box *HopBox) PutAsync(object *Hop) (uint64, error) {
-	return box.Box.PutAsync(object)
-}
-
-// PutMany inserts multiple objects in single transaction.
-// In case Ids are not set on the objects, they would be assigned automatically (auto-increment).
-//
-// Returns: IDs of the put objects (in the same order).
-// When inserting, the Hop.Id property on the objects in the slice will be assigned the new IDs as well.
-//
-// Note: In case an error occurs during the transaction, some of the objects may already have the Hop.Id assigned
-// even though the transaction has been rolled back and the objects are not stored under those IDs.
-//
-// Note: The slice may be empty or even nil; in both cases, an empty IDs slice and no error is returned.
-func (box *HopBox) PutMany(objects []*Hop) ([]uint64, error) {
-	return box.Box.PutMany(objects)
-}
-
-// Get reads a single object.
-//
-// Returns nil (and no error) in case the object with the given ID doesn't exist.
-func (box *HopBox) Get(id uint64) (*Hop, error) {
-	object, err := box.Box.Get(id)
-	if err != nil {
-		return nil, err
-	} else if object == nil {
-		return nil, nil
-	}
-	return object.(*Hop), nil
-}
-
-// GetMany reads multiple objects at once.
-// If any of the objects doesn't exist, its position in the return slice is nil
-func (box *HopBox) GetMany(ids ...uint64) ([]*Hop, error) {
-	objects, err := box.Box.GetMany(ids...)
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Hop), nil
-}
-
-// GetManyExisting reads multiple objects at once, skipping those that do not exist.
-func (box *HopBox) GetManyExisting(ids ...uint64) ([]*Hop, error) {
-	objects, err := box.Box.GetManyExisting(ids...)
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Hop), nil
-}
-
-// GetAll reads all stored objects
-func (box *HopBox) GetAll() ([]*Hop, error) {
-	objects, err := box.Box.GetAll()
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Hop), nil
-}
-
-// Remove deletes a single object
-func (box *HopBox) Remove(object *Hop) error {
-	return box.Box.Remove(object)
-}
-
-// RemoveMany deletes multiple objects at once.
-// Returns the number of deleted object or error on failure.
-// Note that this method will not fail if an object is not found (e.g. already removed).
-// In case you need to strictly check whether all of the objects exist before removing them,
-// you can execute multiple box.Contains() and box.Remove() inside a single write transaction.
-func (box *HopBox) RemoveMany(objects ...*Hop) (uint64, error) {
-	var ids = make([]uint64, len(objects))
-	for k, object := range objects {
-		ids[k] = object.Id
-	}
-	return box.Box.RemoveIds(ids...)
-}
-
-// Creates a query with the given conditions. Use the fields of the Hop_ struct to create conditions.
-// Keep the *HopQuery if you intend to execute the query multiple times.
-// Note: this function panics if you try to create illegal queries; e.g. use properties of an alien type.
-// This is typically a programming error. Use QueryOrError instead if you want the explicit error check.
-func (box *HopBox) Query(conditions ...objectbox.Condition) *HopQuery {
-	return &HopQuery{
-		box.Box.Query(conditions...),
-	}
-}
-
-// Creates a query with the given conditions. Use the fields of the Hop_ struct to create conditions.
-// Keep the *HopQuery if you intend to execute the query multiple times.
-func (box *HopBox) QueryOrError(conditions ...objectbox.Condition) (*HopQuery, error) {
-	if query, err := box.Box.QueryOrError(conditions...); err != nil {
-		return nil, err
-	} else {
-		return &HopQuery{query}, nil
-	}
-}
-
-// Async provides access to the default Async Box for asynchronous operations. See HopAsyncBox for more information.
-func (box *HopBox) Async() *HopAsyncBox {
-	return &HopAsyncBox{AsyncBox: box.Box.Async()}
-}
-
-// HopAsyncBox provides asynchronous operations on Hop objects.
-//
-// Asynchronous operations are executed on a separate internal thread for better performance.
-//
-// There are two main use cases:
-//
-// 1) "execute & forget:" you gain faster put/remove operations as you don't have to wait for the transaction to finish.
-//
-// 2) Many small transactions: if your write load is typically a lot of individual puts that happen in parallel,
-// this will merge small transactions into bigger ones. This results in a significant gain in overall throughput.
-//
-// In situations with (extremely) high async load, an async method may be throttled (~1ms) or delayed up to 1 second.
-// In the unlikely event that the object could still not be enqueued (full queue), an error will be returned.
-//
-// Note that async methods do not give you hard durability guarantees like the synchronous Box provides.
-// There is a small time window in which the data may not have been committed durably yet.
-type HopAsyncBox struct {
-	*objectbox.AsyncBox
-}
-
-// AsyncBoxForHop creates a new async box with the given operation timeout in case an async queue is full.
-// The returned struct must be freed explicitly using the Close() method.
-// It's usually preferable to use HopBox::Async() which takes care of resource management and doesn't require closing.
-func AsyncBoxForHop(ob *objectbox.ObjectBox, timeoutMs uint64) *HopAsyncBox {
-	var async, err = objectbox.NewAsyncBox(ob, 2, timeoutMs)
-	if err != nil {
-		panic("Could not create async box for entity ID 2: %s" + err.Error())
-	}
-	return &HopAsyncBox{AsyncBox: async}
-}
-
-// Put inserts/updates a single object asynchronously.
-// When inserting a new object, the Id property on the passed object will be assigned the new ID the entity would hold
-// if the insert is ultimately successful. The newly assigned ID may not become valid if the insert fails.
-func (asyncBox *HopAsyncBox) Put(object *Hop) (uint64, error) {
-	return asyncBox.AsyncBox.Put(object)
-}
-
-// Insert a single object asynchronously.
-// The Id property on the passed object will be assigned the new ID the entity would hold if the insert is ultimately
-// successful. The newly assigned ID may not become valid if the insert fails.
-// Fails silently if an object with the same ID already exists (this error is not returned).
-func (asyncBox *HopAsyncBox) Insert(object *Hop) (id uint64, err error) {
-	return asyncBox.AsyncBox.Insert(object)
-}
-
-// Update a single object asynchronously.
-// The object must already exists or the update fails silently (without an error returned).
-func (asyncBox *HopAsyncBox) Update(object *Hop) error {
-	return asyncBox.AsyncBox.Update(object)
-}
-
-// Remove deletes a single object asynchronously.
-func (asyncBox *HopAsyncBox) Remove(object *Hop) error {
-	return asyncBox.AsyncBox.Remove(object)
-}
-
-// Query provides a way to search stored objects
-//
-// For example, you can find all Hop which Id is either 42 or 47:
-// 		box.Query(Hop_.Id.In(42, 47)).Find()
-type HopQuery struct {
-	*objectbox.Query
-}
-
-// Find returns all objects matching the query
-func (query *HopQuery) Find() ([]*Hop, error) {
-	objects, err := query.Query.Find()
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Hop), nil
-}
-
-// Offset defines the index of the first object to process (how many objects to skip)
-func (query *HopQuery) Offset(offset uint64) *HopQuery {
-	query.Query.Offset(offset)
-	return query
-}
-
-// Limit sets the number of elements to process by the query
-func (query *HopQuery) Limit(limit uint64) *HopQuery {
-	query.Query.Limit(limit)
-	return query
-}
-
-type yeast_EntityInfo struct {
-	objectbox.Entity
-	Uid uint64
-}
-
-var YeastBinding = yeast_EntityInfo{
-	Entity: objectbox.Entity{
-		Id: 3,
-	},
-	Uid: 7118518690462196126,
-}
-
-// Yeast_ contains type-based Property helpers to facilitate some common operations such as Queries.
-var Yeast_ = struct {
-	Id      *objectbox.PropertyUint64
-	Name    *objectbox.PropertyString
-	Amount  *objectbox.PropertyInt
-	MinTemp *objectbox.PropertyFloat32
-	MaxTemp *objectbox.PropertyFloat32
-	OberG   *objectbox.PropertyBool
-}{
-	Id: &objectbox.PropertyUint64{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     1,
-			Entity: &YeastBinding.Entity,
-		},
-	},
-	Name: &objectbox.PropertyString{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     2,
-			Entity: &YeastBinding.Entity,
-		},
-	},
-	Amount: &objectbox.PropertyInt{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     3,
-			Entity: &YeastBinding.Entity,
-		},
-	},
-	MinTemp: &objectbox.PropertyFloat32{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     4,
-			Entity: &YeastBinding.Entity,
-		},
-	},
-	MaxTemp: &objectbox.PropertyFloat32{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     5,
-			Entity: &YeastBinding.Entity,
-		},
-	},
-	OberG: &objectbox.PropertyBool{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     6,
-			Entity: &YeastBinding.Entity,
-		},
-	},
-}
-
-// GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
-func (yeast_EntityInfo) GeneratorVersion() int {
-	return 6
-}
-
-// AddToModel is called by ObjectBox during model build
-func (yeast_EntityInfo) AddToModel(model *objectbox.Model) {
-	model.Entity("Yeast", 3, 7118518690462196126)
-	model.Property("Id", 6, 1, 8297408455525569426)
-	model.PropertyFlags(1)
-	model.Property("Name", 9, 2, 5519540622964806790)
-	model.Property("Amount", 6, 3, 209844116403957029)
-	model.Property("MinTemp", 7, 4, 3101470487232906271)
-	model.Property("MaxTemp", 7, 5, 4432930763109142987)
-	model.Property("OberG", 1, 6, 6614853180324812505)
-	model.EntityLastPropertyId(6, 6614853180324812505)
-}
-
-// GetId is called by ObjectBox during Put operations to check for existing ID on an object
-func (yeast_EntityInfo) GetId(object interface{}) (uint64, error) {
-	return object.(*Yeast).Id, nil
-}
-
-// SetId is called by ObjectBox during Put to update an ID on an object that has just been inserted
-func (yeast_EntityInfo) SetId(object interface{}, id uint64) error {
-	object.(*Yeast).Id = id
-	return nil
-}
-
-// PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
-func (yeast_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
-	return nil
-}
-
-// Flatten is called by ObjectBox to transform an object to a FlatBuffer
-func (yeast_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
-	obj := object.(*Yeast)
-	var offsetName = fbutils.CreateStringOffset(fbb, obj.Name)
-
-	// build the FlatBuffers object
-	fbb.StartObject(6)
-	fbutils.SetUint64Slot(fbb, 0, id)
-	fbutils.SetUOffsetTSlot(fbb, 1, offsetName)
-	fbutils.SetInt64Slot(fbb, 2, int64(obj.Amount))
-	fbutils.SetFloat32Slot(fbb, 3, obj.MinTemp)
-	fbutils.SetFloat32Slot(fbb, 4, obj.MaxTemp)
-	fbutils.SetBoolSlot(fbb, 5, obj.OberG)
-	return nil
-}
-
-// Load is called by ObjectBox to load an object from a FlatBuffer
-func (yeast_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}, error) {
-	if len(bytes) == 0 { // sanity check, should "never" happen
-		return nil, errors.New("can't deserialize an object of type 'Yeast' - no data received")
-	}
-
-	var table = &flatbuffers.Table{
-		Bytes: bytes,
-		Pos:   flatbuffers.GetUOffsetT(bytes),
-	}
-
-	var propId = table.GetUint64Slot(4, 0)
-
-	return &Yeast{
-		Id:      propId,
-		Name:    fbutils.GetStringSlot(table, 6),
-		Amount:  fbutils.GetIntSlot(table, 8),
-		MinTemp: fbutils.GetFloat32Slot(table, 10),
-		MaxTemp: fbutils.GetFloat32Slot(table, 12),
-		OberG:   fbutils.GetBoolSlot(table, 14),
-	}, nil
-}
-
-// MakeSlice is called by ObjectBox to construct a new slice to hold the read objects
-func (yeast_EntityInfo) MakeSlice(capacity int) interface{} {
-	return make([]*Yeast, 0, capacity)
-}
-
-// AppendToSlice is called by ObjectBox to fill the slice of the read objects
-func (yeast_EntityInfo) AppendToSlice(slice interface{}, object interface{}) interface{} {
-	if object == nil {
-		return append(slice.([]*Yeast), nil)
-	}
-	return append(slice.([]*Yeast), object.(*Yeast))
-}
-
-// Box provides CRUD access to Yeast objects
-type YeastBox struct {
-	*objectbox.Box
-}
-
-// BoxForYeast opens a box of Yeast objects
-func BoxForYeast(ob *objectbox.ObjectBox) *YeastBox {
-	return &YeastBox{
-		Box: ob.InternalBox(3),
-	}
-}
-
-// Put synchronously inserts/updates a single object.
-// In case the Id is not specified, it would be assigned automatically (auto-increment).
-// When inserting, the Yeast.Id property on the passed object will be assigned the new ID as well.
-func (box *YeastBox) Put(object *Yeast) (uint64, error) {
-	return box.Box.Put(object)
-}
-
-// Insert synchronously inserts a single object. As opposed to Put, Insert will fail if given an ID that already exists.
-// In case the Id is not specified, it would be assigned automatically (auto-increment).
-// When inserting, the Yeast.Id property on the passed object will be assigned the new ID as well.
-func (box *YeastBox) Insert(object *Yeast) (uint64, error) {
-	return box.Box.Insert(object)
-}
-
-// Update synchronously updates a single object.
-// As opposed to Put, Update will fail if an object with the same ID is not found in the database.
-func (box *YeastBox) Update(object *Yeast) error {
-	return box.Box.Update(object)
-}
-
-// PutAsync asynchronously inserts/updates a single object.
-// Deprecated: use box.Async().Put() instead
-func (box *YeastBox) PutAsync(object *Yeast) (uint64, error) {
-	return box.Box.PutAsync(object)
-}
-
-// PutMany inserts multiple objects in single transaction.
-// In case Ids are not set on the objects, they would be assigned automatically (auto-increment).
-//
-// Returns: IDs of the put objects (in the same order).
-// When inserting, the Yeast.Id property on the objects in the slice will be assigned the new IDs as well.
-//
-// Note: In case an error occurs during the transaction, some of the objects may already have the Yeast.Id assigned
-// even though the transaction has been rolled back and the objects are not stored under those IDs.
-//
-// Note: The slice may be empty or even nil; in both cases, an empty IDs slice and no error is returned.
-func (box *YeastBox) PutMany(objects []*Yeast) ([]uint64, error) {
-	return box.Box.PutMany(objects)
-}
-
-// Get reads a single object.
-//
-// Returns nil (and no error) in case the object with the given ID doesn't exist.
-func (box *YeastBox) Get(id uint64) (*Yeast, error) {
-	object, err := box.Box.Get(id)
-	if err != nil {
-		return nil, err
-	} else if object == nil {
-		return nil, nil
-	}
-	return object.(*Yeast), nil
-}
-
-// GetMany reads multiple objects at once.
-// If any of the objects doesn't exist, its position in the return slice is nil
-func (box *YeastBox) GetMany(ids ...uint64) ([]*Yeast, error) {
-	objects, err := box.Box.GetMany(ids...)
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Yeast), nil
-}
-
-// GetManyExisting reads multiple objects at once, skipping those that do not exist.
-func (box *YeastBox) GetManyExisting(ids ...uint64) ([]*Yeast, error) {
-	objects, err := box.Box.GetManyExisting(ids...)
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Yeast), nil
-}
-
-// GetAll reads all stored objects
-func (box *YeastBox) GetAll() ([]*Yeast, error) {
-	objects, err := box.Box.GetAll()
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Yeast), nil
-}
-
-// Remove deletes a single object
-func (box *YeastBox) Remove(object *Yeast) error {
-	return box.Box.Remove(object)
-}
-
-// RemoveMany deletes multiple objects at once.
-// Returns the number of deleted object or error on failure.
-// Note that this method will not fail if an object is not found (e.g. already removed).
-// In case you need to strictly check whether all of the objects exist before removing them,
-// you can execute multiple box.Contains() and box.Remove() inside a single write transaction.
-func (box *YeastBox) RemoveMany(objects ...*Yeast) (uint64, error) {
-	var ids = make([]uint64, len(objects))
-	for k, object := range objects {
-		ids[k] = object.Id
-	}
-	return box.Box.RemoveIds(ids...)
-}
-
-// Creates a query with the given conditions. Use the fields of the Yeast_ struct to create conditions.
-// Keep the *YeastQuery if you intend to execute the query multiple times.
-// Note: this function panics if you try to create illegal queries; e.g. use properties of an alien type.
-// This is typically a programming error. Use QueryOrError instead if you want the explicit error check.
-func (box *YeastBox) Query(conditions ...objectbox.Condition) *YeastQuery {
-	return &YeastQuery{
-		box.Box.Query(conditions...),
-	}
-}
-
-// Creates a query with the given conditions. Use the fields of the Yeast_ struct to create conditions.
-// Keep the *YeastQuery if you intend to execute the query multiple times.
-func (box *YeastBox) QueryOrError(conditions ...objectbox.Condition) (*YeastQuery, error) {
-	if query, err := box.Box.QueryOrError(conditions...); err != nil {
-		return nil, err
-	} else {
-		return &YeastQuery{query}, nil
-	}
-}
-
-// Async provides access to the default Async Box for asynchronous operations. See YeastAsyncBox for more information.
-func (box *YeastBox) Async() *YeastAsyncBox {
-	return &YeastAsyncBox{AsyncBox: box.Box.Async()}
-}
-
-// YeastAsyncBox provides asynchronous operations on Yeast objects.
-//
-// Asynchronous operations are executed on a separate internal thread for better performance.
-//
-// There are two main use cases:
-//
-// 1) "execute & forget:" you gain faster put/remove operations as you don't have to wait for the transaction to finish.
-//
-// 2) Many small transactions: if your write load is typically a lot of individual puts that happen in parallel,
-// this will merge small transactions into bigger ones. This results in a significant gain in overall throughput.
-//
-// In situations with (extremely) high async load, an async method may be throttled (~1ms) or delayed up to 1 second.
-// In the unlikely event that the object could still not be enqueued (full queue), an error will be returned.
-//
-// Note that async methods do not give you hard durability guarantees like the synchronous Box provides.
-// There is a small time window in which the data may not have been committed durably yet.
-type YeastAsyncBox struct {
-	*objectbox.AsyncBox
-}
-
-// AsyncBoxForYeast creates a new async box with the given operation timeout in case an async queue is full.
-// The returned struct must be freed explicitly using the Close() method.
-// It's usually preferable to use YeastBox::Async() which takes care of resource management and doesn't require closing.
-func AsyncBoxForYeast(ob *objectbox.ObjectBox, timeoutMs uint64) *YeastAsyncBox {
-	var async, err = objectbox.NewAsyncBox(ob, 3, timeoutMs)
-	if err != nil {
-		panic("Could not create async box for entity ID 3: %s" + err.Error())
-	}
-	return &YeastAsyncBox{AsyncBox: async}
-}
-
-// Put inserts/updates a single object asynchronously.
-// When inserting a new object, the Id property on the passed object will be assigned the new ID the entity would hold
-// if the insert is ultimately successful. The newly assigned ID may not become valid if the insert fails.
-func (asyncBox *YeastAsyncBox) Put(object *Yeast) (uint64, error) {
-	return asyncBox.AsyncBox.Put(object)
-}
-
-// Insert a single object asynchronously.
-// The Id property on the passed object will be assigned the new ID the entity would hold if the insert is ultimately
-// successful. The newly assigned ID may not become valid if the insert fails.
-// Fails silently if an object with the same ID already exists (this error is not returned).
-func (asyncBox *YeastAsyncBox) Insert(object *Yeast) (id uint64, err error) {
-	return asyncBox.AsyncBox.Insert(object)
-}
-
-// Update a single object asynchronously.
-// The object must already exists or the update fails silently (without an error returned).
-func (asyncBox *YeastAsyncBox) Update(object *Yeast) error {
-	return asyncBox.AsyncBox.Update(object)
-}
-
-// Remove deletes a single object asynchronously.
-func (asyncBox *YeastAsyncBox) Remove(object *Yeast) error {
-	return asyncBox.AsyncBox.Remove(object)
-}
-
-// Query provides a way to search stored objects
-//
-// For example, you can find all Yeast which Id is either 42 or 47:
-// 		box.Query(Yeast_.Id.In(42, 47)).Find()
-type YeastQuery struct {
-	*objectbox.Query
-}
-
-// Find returns all objects matching the query
-func (query *YeastQuery) Find() ([]*Yeast, error) {
-	objects, err := query.Query.Find()
-	if err != nil {
-		return nil, err
-	}
-	return objects.([]*Yeast), nil
-}
-
-// Offset defines the index of the first object to process (how many objects to skip)
-func (query *YeastQuery) Offset(offset uint64) *YeastQuery {
-	query.Query.Offset(offset)
-	return query
-}
-
-// Limit sets the number of elements to process by the query
-func (query *YeastQuery) Limit(limit uint64) *YeastQuery {
+func (query *ResourceQuery) Limit(limit uint64) *ResourceQuery {
 	query.Query.Limit(limit)
 	return query
 }
@@ -1078,9 +415,9 @@ type recipe_EntityInfo struct {
 
 var RecipeBinding = recipe_EntityInfo{
 	Entity: objectbox.Entity{
-		Id: 4,
+		Id: 2,
 	},
-	Uid: 5545330947338169134,
+	Uid: 7524476822026071533,
 }
 
 // Recipe_ contains type-based Property helpers to facilitate some common operations such as Queries.
@@ -1088,12 +425,12 @@ var Recipe_ = struct {
 	Id          *objectbox.PropertyUint64
 	Name        *objectbox.PropertyString
 	Description *objectbox.PropertyString
-	IsoAlpha    *objectbox.PropertyFloat32
+	IsoAlpha    *objectbox.PropertyFloat64
 	HopSugg     *objectbox.PropertyStringVector
 	DryHop      *objectbox.PropertyStringVector
-	SHA         *objectbox.PropertyFloat32
-	AlcTarget   *objectbox.PropertyFloat32
-	OGTarget    *objectbox.PropertyFloat32
+	SHA         *objectbox.PropertyFloat64
+	AlcTarget   *objectbox.PropertyFloat64
+	OGTarget    *objectbox.PropertyFloat64
 	Malts       *objectbox.RelationToMany
 	Hops        *objectbox.RelationToMany
 	Yeasts      *objectbox.RelationToMany
@@ -1116,7 +453,7 @@ var Recipe_ = struct {
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	IsoAlpha: &objectbox.PropertyFloat32{
+	IsoAlpha: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     4,
 			Entity: &RecipeBinding.Entity,
@@ -1134,19 +471,19 @@ var Recipe_ = struct {
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	SHA: &objectbox.PropertyFloat32{
+	SHA: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     7,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	AlcTarget: &objectbox.PropertyFloat32{
+	AlcTarget: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     8,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	OGTarget: &objectbox.PropertyFloat32{
+	OGTarget: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     9,
 			Entity: &RecipeBinding.Entity,
@@ -1155,17 +492,17 @@ var Recipe_ = struct {
 	Malts: &objectbox.RelationToMany{
 		Id:     1,
 		Source: &RecipeBinding.Entity,
-		Target: &MaltBinding.Entity,
+		Target: &ResourceBinding.Entity,
 	},
 	Hops: &objectbox.RelationToMany{
 		Id:     2,
 		Source: &RecipeBinding.Entity,
-		Target: &HopBinding.Entity,
+		Target: &ResourceBinding.Entity,
 	},
 	Yeasts: &objectbox.RelationToMany{
 		Id:     3,
 		Source: &RecipeBinding.Entity,
-		Target: &YeastBinding.Entity,
+		Target: &ResourceBinding.Entity,
 	},
 }
 
@@ -1176,21 +513,21 @@ func (recipe_EntityInfo) GeneratorVersion() int {
 
 // AddToModel is called by ObjectBox during model build
 func (recipe_EntityInfo) AddToModel(model *objectbox.Model) {
-	model.Entity("Recipe", 4, 5545330947338169134)
-	model.Property("Id", 6, 1, 1303440528003830736)
+	model.Entity("Recipe", 2, 7524476822026071533)
+	model.Property("Id", 6, 1, 385067527585461866)
 	model.PropertyFlags(1)
-	model.Property("Name", 9, 2, 5549151391626444108)
-	model.Property("Description", 9, 3, 2727842877628091647)
-	model.Property("IsoAlpha", 7, 4, 1840740985858470848)
-	model.Property("HopSugg", 30, 5, 892732858007170509)
-	model.Property("DryHop", 30, 6, 6000791712642883754)
-	model.Property("SHA", 7, 7, 5751978371950476364)
-	model.Property("AlcTarget", 7, 8, 1221448946433833702)
-	model.Property("OGTarget", 7, 9, 4555692891319474207)
-	model.EntityLastPropertyId(9, 4555692891319474207)
-	model.Relation(1, 1687514429539085877, MaltBinding.Id, MaltBinding.Uid)
-	model.Relation(2, 7235725797178746859, HopBinding.Id, HopBinding.Uid)
-	model.Relation(3, 3948881283661029309, YeastBinding.Id, YeastBinding.Uid)
+	model.Property("Name", 9, 2, 6590878796668904790)
+	model.Property("Description", 9, 3, 6111302923799653287)
+	model.Property("IsoAlpha", 8, 4, 6675220912961035469)
+	model.Property("HopSugg", 30, 5, 6003672669915185166)
+	model.Property("DryHop", 30, 6, 1837696198939072290)
+	model.Property("SHA", 8, 7, 7365373180582720820)
+	model.Property("AlcTarget", 8, 8, 77502409174959323)
+	model.Property("OGTarget", 8, 9, 7723634411214686482)
+	model.EntityLastPropertyId(9, 7723634411214686482)
+	model.Relation(1, 6616890990072260278, ResourceBinding.Id, ResourceBinding.Uid)
+	model.Relation(2, 5343903578176731479, ResourceBinding.Id, ResourceBinding.Uid)
+	model.Relation(3, 441495759427462681, ResourceBinding.Id, ResourceBinding.Uid)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
@@ -1234,12 +571,12 @@ func (recipe_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, i
 	fbutils.SetUint64Slot(fbb, 0, id)
 	fbutils.SetUOffsetTSlot(fbb, 1, offsetName)
 	fbutils.SetUOffsetTSlot(fbb, 2, offsetDescription)
-	fbutils.SetFloat32Slot(fbb, 3, obj.IsoAlpha)
+	fbutils.SetFloat64Slot(fbb, 3, obj.IsoAlpha)
 	fbutils.SetUOffsetTSlot(fbb, 4, offsetHopSugg)
 	fbutils.SetUOffsetTSlot(fbb, 5, offsetDryHop)
-	fbutils.SetFloat32Slot(fbb, 6, obj.SHA)
-	fbutils.SetFloat32Slot(fbb, 7, obj.AlcTarget)
-	fbutils.SetFloat32Slot(fbb, 8, obj.OGTarget)
+	fbutils.SetFloat64Slot(fbb, 6, obj.SHA)
+	fbutils.SetFloat64Slot(fbb, 7, obj.AlcTarget)
+	fbutils.SetFloat64Slot(fbb, 8, obj.OGTarget)
 	return nil
 }
 
@@ -1256,28 +593,28 @@ func (recipe_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{
 
 	var propId = table.GetUint64Slot(4, 0)
 
-	var relMalts []*Malt
+	var relMalts []*Resource
 	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Malts, propId); err != nil {
 		return nil, err
-	} else if rSlice, err := BoxForMalt(ob).GetManyExisting(rIds...); err != nil {
+	} else if rSlice, err := BoxForResource(ob).GetManyExisting(rIds...); err != nil {
 		return nil, err
 	} else {
 		relMalts = rSlice
 	}
 
-	var relHops []*Hop
+	var relHops []*Resource
 	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Hops, propId); err != nil {
 		return nil, err
-	} else if rSlice, err := BoxForHop(ob).GetManyExisting(rIds...); err != nil {
+	} else if rSlice, err := BoxForResource(ob).GetManyExisting(rIds...); err != nil {
 		return nil, err
 	} else {
 		relHops = rSlice
 	}
 
-	var relYeasts []*Yeast
+	var relYeasts []*Resource
 	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Yeasts, propId); err != nil {
 		return nil, err
-	} else if rSlice, err := BoxForYeast(ob).GetManyExisting(rIds...); err != nil {
+	} else if rSlice, err := BoxForResource(ob).GetManyExisting(rIds...); err != nil {
 		return nil, err
 	} else {
 		relYeasts = rSlice
@@ -1288,14 +625,14 @@ func (recipe_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{
 		Name:        fbutils.GetStringSlot(table, 6),
 		Description: fbutils.GetStringSlot(table, 8),
 		Malts:       relMalts,
-		IsoAlpha:    fbutils.GetFloat32Slot(table, 10),
+		IsoAlpha:    fbutils.GetFloat64Slot(table, 10),
 		Hops:        relHops,
 		HopSugg:     fbutils.GetStringVectorSlot(table, 12),
 		DryHop:      fbutils.GetStringVectorSlot(table, 14),
-		SHA:         fbutils.GetFloat32Slot(table, 16),
+		SHA:         fbutils.GetFloat64Slot(table, 16),
 		Yeasts:      relYeasts,
-		AlcTarget:   fbutils.GetFloat32Slot(table, 18),
-		OGTarget:    fbutils.GetFloat32Slot(table, 20),
+		AlcTarget:   fbutils.GetFloat64Slot(table, 18),
+		OGTarget:    fbutils.GetFloat64Slot(table, 20),
 	}, nil
 }
 
@@ -1320,7 +657,7 @@ type RecipeBox struct {
 // BoxForRecipe opens a box of Recipe objects
 func BoxForRecipe(ob *objectbox.ObjectBox) *RecipeBox {
 	return &RecipeBox{
-		Box: ob.InternalBox(4),
+		Box: ob.InternalBox(2),
 	}
 }
 
@@ -1472,9 +809,9 @@ type RecipeAsyncBox struct {
 // The returned struct must be freed explicitly using the Close() method.
 // It's usually preferable to use RecipeBox::Async() which takes care of resource management and doesn't require closing.
 func AsyncBoxForRecipe(ob *objectbox.ObjectBox, timeoutMs uint64) *RecipeAsyncBox {
-	var async, err = objectbox.NewAsyncBox(ob, 4, timeoutMs)
+	var async, err = objectbox.NewAsyncBox(ob, 2, timeoutMs)
 	if err != nil {
-		panic("Could not create async box for entity ID 4: %s" + err.Error())
+		panic("Could not create async box for entity ID 2: %s" + err.Error())
 	}
 	return &RecipeAsyncBox{AsyncBox: async}
 }

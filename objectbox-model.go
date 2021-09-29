@@ -12,13 +12,11 @@ func ObjectBoxModel() *objectbox.Model {
 	model := objectbox.NewModel()
 	model.GeneratorVersion(6)
 
-	model.RegisterBinding(MaltBinding)
-	model.RegisterBinding(HopBinding)
-	model.RegisterBinding(YeastBinding)
+	model.RegisterBinding(ResourceBinding)
 	model.RegisterBinding(RecipeBinding)
-	model.LastEntityId(4, 5545330947338169134)
+	model.LastEntityId(2, 7524476822026071533)
 
-	model.LastRelationId(3, 3948881283661029309)
+	model.LastRelationId(3, 441495759427462681)
 
 	return model
 }
