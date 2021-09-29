@@ -32,7 +32,9 @@ var Resource_ = struct {
 	MinTemp *objectbox.PropertyFloat64
 	MaxTemp *objectbox.PropertyFloat64
 	OberG   *objectbox.PropertyBool
-	Iso     *objectbox.PropertyFloat64
+	ISO     *objectbox.PropertyFloat64
+	Opened  *objectbox.PropertyInt64
+	Exp     *objectbox.PropertyInt64
 }{
 	Id: &objectbox.PropertyUint64{
 		BaseProperty: &objectbox.BaseProperty{
@@ -82,9 +84,21 @@ var Resource_ = struct {
 			Entity: &ResourceBinding.Entity,
 		},
 	},
-	Iso: &objectbox.PropertyFloat64{
+	ISO: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     9,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	Opened: &objectbox.PropertyInt64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     10,
+			Entity: &ResourceBinding.Entity,
+		},
+	},
+	Exp: &objectbox.PropertyInt64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     11,
 			Entity: &ResourceBinding.Entity,
 		},
 	},
@@ -107,8 +121,10 @@ func (resource_EntityInfo) AddToModel(model *objectbox.Model) {
 	model.Property("MinTemp", 8, 6, 6978596190461251037)
 	model.Property("MaxTemp", 8, 7, 1466987121535296644)
 	model.Property("OberG", 1, 8, 6482886941541151457)
-	model.Property("Iso", 8, 9, 6879353326633125653)
-	model.EntityLastPropertyId(9, 6879353326633125653)
+	model.Property("ISO", 8, 9, 6879353326633125653)
+	model.Property("Opened", 10, 10, 2589939524641695745)
+	model.Property("Exp", 10, 11, 1865559351558115529)
+	model.EntityLastPropertyId(11, 1865559351558115529)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
@@ -130,11 +146,29 @@ func (resource_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{
 // Flatten is called by ObjectBox to transform an object to a FlatBuffer
 func (resource_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
 	obj := object.(*Resource)
+	var propOpened int64
+	{
+		var err error
+		propOpened, err = objectbox.TimeInt64ConvertToDatabaseValue(obj.Opened)
+		if err != nil {
+			return errors.New("converter objectbox.TimeInt64ConvertToDatabaseValue() failed on Resource.Opened: " + err.Error())
+		}
+	}
+
+	var propExp int64
+	{
+		var err error
+		propExp, err = objectbox.TimeInt64ConvertToDatabaseValue(obj.Exp)
+		if err != nil {
+			return errors.New("converter objectbox.TimeInt64ConvertToDatabaseValue() failed on Resource.Exp: " + err.Error())
+		}
+	}
+
 	var offsetType = fbutils.CreateStringOffset(fbb, obj.Type)
 	var offsetName = fbutils.CreateStringOffset(fbb, obj.Name)
 
 	// build the FlatBuffers object
-	fbb.StartObject(9)
+	fbb.StartObject(11)
 	fbutils.SetUint64Slot(fbb, 0, id)
 	fbutils.SetUOffsetTSlot(fbb, 1, offsetType)
 	fbutils.SetUOffsetTSlot(fbb, 2, offsetName)
@@ -143,7 +177,9 @@ func (resource_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder,
 	fbutils.SetFloat64Slot(fbb, 5, obj.MinTemp)
 	fbutils.SetFloat64Slot(fbb, 6, obj.MaxTemp)
 	fbutils.SetBoolSlot(fbb, 7, obj.OberG)
-	fbutils.SetFloat64Slot(fbb, 8, obj.Iso)
+	fbutils.SetFloat64Slot(fbb, 8, obj.ISO)
+	fbutils.SetInt64Slot(fbb, 9, propOpened)
+	fbutils.SetInt64Slot(fbb, 10, propExp)
 	return nil
 }
 
@@ -160,6 +196,16 @@ func (resource_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interfac
 
 	var propId = table.GetUint64Slot(4, 0)
 
+	propOpened, err := objectbox.TimeInt64ConvertToEntityProperty(fbutils.GetInt64Slot(table, 22))
+	if err != nil {
+		return nil, errors.New("converter objectbox.TimeInt64ConvertToEntityProperty() failed on Resource.Opened: " + err.Error())
+	}
+
+	propExp, err := objectbox.TimeInt64ConvertToEntityProperty(fbutils.GetInt64Slot(table, 24))
+	if err != nil {
+		return nil, errors.New("converter objectbox.TimeInt64ConvertToEntityProperty() failed on Resource.Exp: " + err.Error())
+	}
+
 	return &Resource{
 		Id:      propId,
 		Type:    fbutils.GetStringSlot(table, 6),
@@ -169,7 +215,9 @@ func (resource_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interfac
 		MinTemp: fbutils.GetFloat64Slot(table, 14),
 		MaxTemp: fbutils.GetFloat64Slot(table, 16),
 		OberG:   fbutils.GetBoolSlot(table, 18),
-		Iso:     fbutils.GetFloat64Slot(table, 20),
+		ISO:     fbutils.GetFloat64Slot(table, 20),
+		Opened:  propOpened,
+		Exp:     propExp,
 	}, nil
 }
 

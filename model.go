@@ -1,18 +1,22 @@
 package main
 
+import "time"
+
 //go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
 
 // recipe model
 type Resource struct {
 	Id      uint64
-	Type    string
-	Name    string
-	Amount  float64
-	EBC     float64
-	MinTemp float64
-	MaxTemp float64
-	OberG   bool
-	ISO     float64
+	Type    string    `validate: "required, oneof= 'malt' 'hop' 'yeast'"`
+	Name    string    `validate: "alphanum"`
+	Amount  float64   `validate: "numeric`
+	EBC     float64   `validate: "numeric, gte=0"`
+	MinTemp float64   `validate: "numeric, gte=0"`
+	MaxTemp float64   `validate: "numeric, lte=40"`
+	OberG   bool      `validate: "boolean"`
+	ISO     float64   `validate: "numeric, lte=100"`
+	Opened  time.Time `validate: "datetime=2006-01-02"`
+	Exp     time.Time `validate: "datetime=2006-01-02"`
 }
 
 type Recipe struct {

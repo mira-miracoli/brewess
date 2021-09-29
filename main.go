@@ -5,9 +5,15 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
 )
 
-var templates, terr = template.ParseFiles("./html/new.html", "./html/view.html", "./html/edit.html", "./html/searchres.html")
+var validate *validator.Validate
+
+var templates, terr = template.ParseFiles("./html/new.html",
+	"./html/view.html", "./html/edit.html", "./html/searchres.html",
+	"./html/badsearch.html")
 
 func main() {
 	if terr != nil {
@@ -15,7 +21,7 @@ func main() {
 	}
 	http.HandleFunc("/home/", homeHandler)
 	http.HandleFunc("/search-resource/", searchResHandler)
-	http.HandleFunc("/search-resource/results", resultsResHandler)
+	http.HandleFunc("/search-results/", resultsResHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -41,9 +47,19 @@ func resultsResHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Please use the search form", http.StatusBadRequest)
 		return
 	}
-
+	qres, err := formToResource(r)
+	if err != nil {
+		http.ServeFile(w, r, "./html/badsearch.html")
+		return
+	}
 	// call OB qery function
-	ls, err = resourceQuery(r)
+	_, qerr := resourceQuery(qres)
+	if qerr != nil {
+		http.ServeFile(w, r, "./html/badsearch.html")
+		return
+	} else {
+		http.Error(w, "search worked, no error", http.StatusOK)
+	}
 
 	// render Template with Result List if List is empty return search failed page
 }

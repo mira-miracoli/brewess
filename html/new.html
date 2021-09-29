@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            *{
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+                outline: none;
+            }
+            body{
+                font-family: 'Poppins', sans-serif;
+            }
+            h1{
+                justify-content: left;
+                padding: 70px;
+            }
+            .wrapper{
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                padding-top: 70px 0;
+                padding-bottom: 0px 0;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            .menu,
+            .content{
+                width: 100%;
+            }
+            select#type{
+                width: 100%;
+                padding: 15px;
+                font-size: 16px;
+                font-weight: 700;
+                font-family: 'Poppins', sans-serif;
+                text-align-last:center;
+                border: none;
+                border-radius: 8px;
+                border: 2px solid #edbe21;
+                
+            }
+            select#og{
+                width: 50%;
+                padding: 15px;
+                font-size: 16px;
+                font-family: 'Poppins', sans-serif;
+                border: none;
+                border-radius: 8px;
+                border: 2px solid #edbe21;
+                
+            }
+            .content{
+                margin: 0 auto;
+            }
+            .content .data {
+                padding-left: 15px 0;
+                margin: 0 auto;
+                max-width: 400px;
+                justify-content: center;
+
+                
+            }
+            .submit{
+                display: flex;
+                justify-content: center;
+                padding-top: 0px;
+                padding-bottom: 70px;
+            }
+            button{
+                display: grid;
+                width: 50%;
+                margin: 10px;
+                resize: none;
+                padding: 10px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 14px;
+                display: block;
+                border: none;
+                border-radius: 8px;
+                border: 2px solid #edbe21;
+    margin-left: 0;
+            }
+            input {
+                display: grid;
+                width: 50%;
+                margin: 10px;
+                resize: none;
+                padding: 10px;
+                font-family: 'Poppins', sans-serif;
+                font-size: 14px;
+
+                border: none;
+                border-radius: 8px;
+                border: 2px solid #edbe21;
+                margin-left: 0;
+            
+            }
+        </style>
+    </head>
+<body>
+    
+<h1>Search Resources</h1>
+
+<form action="/search-results/" method="POST">
+
+<div class="wrapper">
+    <div class="menu">
+<select name="type" id="type">
+        <option value="malt">Malt</option>
+        <option value="hop">Hop</option>
+        <option value="yeast">Yeast</option>
+    </select><br>
+    <br><br>
+    <p><b>Name</b></p>
+    <input
+        name="name"
+        type="text"
+        rows="1" cols="20"
+        placeholder="AwesomeResource"></input><br>
+    <p><b>Amount </b>in g</p>
+    <input
+        name="amount"
+        type="number"
+        title="Please enter a decimal number and use a point not comma."
+        rows="1" cols="8"
+        placeholder="02-02-2000"></input>
+    <br>
+
+</div>
+</div>
+<div class="content">
+    <div class="data" id="malt">
+        <p><b>EBC</b></p>
+        <input
+            name="ebc"
+            type="number"
+            title="Please enter a decimal number and use a point not comma."
+            rows="1" cols="5"
+            placeholder="8.5"></input>
+    </div>
+
+    <div class="data" id="hop">
+        <p><b>Iso-alpha-acid </b>in %</p>
+        <input
+            name="iso"
+            type="number"
+            title="Please enter a decimal number and use a point not comma."
+            rows="1" cols="5"
+            placeholder="11.5"></input>
+    </div>
+
+    <div class="data" id="yeast">
+        <p><b>min. Temperature </b> in °C</p>
+        <input
+            name="minTemp"
+            type="number"
+            title="Please enter a decimal number and use a point not comma."
+            rows="1" cols="5"
+            placeholder="12.1"></input><br>
+        <p><b>max. Temperature </b>in °C</p>
+        <input
+            name="maxTemp"
+            type="number"
+            title="Please enter a decimal number and use a point not comma."
+            rows="1" cols="5"
+            placeholder="19.1"></input><br>
+        <p><b>Yeast Breakage Behavior</b></p>
+        <div id="ogbox"></div>
+        <select name="og" id="og">
+            <option value="true" >top-fermenting</option>
+            <option value="false">bottom-fermenting</option>
+        </select>
+            
+    </div>
+    <br><br>
+    
+</div>
+<div class="submit">
+    <button>Submit</button>
+</div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#type").on('change', function(){
+                $(".data").hide();
+                $("#"+ $(this).val()).fadeIn(700);
+                switch ($(this).val()) { 
+                case "hop":
+                $("input").css("border", "2px solid #0cb318");
+                $("select").css("border", "2px solid #0cb318");
+                $("button").css("border", "2px solid #0cb318");
+                break;
+                case "malt":
+                $("input").css("border", "3px solid PaleGoldenRod");
+                $("select").css("border", "3px solid PaleGoldenRod");
+                $("button").css("border", "3px solid PaleGoldenRod");
+                break;
+                case "yeast":
+                $("input").css("border", "2px solid SandyBrown");
+                $("select").css("border", "2px solid SandyBrown");
+                $("button").css("border", "2px solid SandyBrown");
+                break;
+                default:
+                    alert('Nobody Wins!');
+            }
+                
+            }).change();
+        });
+    </script>
+</body>
+</html>
