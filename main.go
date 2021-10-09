@@ -17,7 +17,7 @@ type Resourcels struct {
 }
 
 var templates, terr = template.ParseFiles("./html/newres.html",
-	"./html/view.html", "./html/edit.html", "./html/searchres.html",
+	"./html/searchres.html",
 	"./html/badsearch.html", "./html/resultsres.html")
 
 func main() {
