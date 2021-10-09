@@ -11,9 +11,19 @@
             body{
                 font-family: 'Poppins', sans-serif;
             }
-            h1{
+           h1 {
                 justify-content: left;
-                padding: 70px;
+                padding-top: 70px;
+                padding-left: 70px;
+                padding-right: auto;
+                padding-bottom: 50px;
+            }
+            h2 {
+                justify-content: left;
+                padding-top: 0;
+                padding-left: 70px;
+                padding-right: auto;
+                padding-bottom: 50px;
             }
             .wrapper{
                 display: flex;
@@ -36,18 +46,21 @@
                 font-family: 'Poppins', sans-serif;
                 text-align-last:center;
                 border: none;
-                border-radius: 8px;
+                border-radius: 3px;
                 border: 2px solid #edbe21;
                 
             }
             select#og{
                 width: 50%;
-                padding: 15px;
+                padding: 10px;
                 font-size: 16px;
                 font-family: 'Poppins', sans-serif;
                 border: none;
-                border-radius: 8px;
+                border-radius: 3px;
                 border: 2px solid #edbe21;
+                margin: 10px;
+                margin-left: 0px;
+                margin-right: 0px;
                 
             }
             .content{
@@ -65,7 +78,7 @@
                 display: flex;
                 justify-content: center;
                 padding-top: 0px;
-                padding-bottom: 70px;
+                padding-bottom: 20px;
             }
             button{
                 display: grid;
@@ -75,11 +88,10 @@
                 padding: 10px;
                 font-family: 'Poppins', sans-serif;
                 font-size: 14px;
-                display: block;
                 border: none;
-                border-radius: 8px;
+                border-radius: 3px;
                 border: 2px solid #edbe21;
-    margin-left: 0;
+                margin-left: 0;
             }
             input {
                 display: grid;
@@ -91,18 +103,31 @@
                 font-size: 14px;
 
                 border: none;
-                border-radius: 8px;
+                border-radius: 3px;
                 border: 2px solid #edbe21;
                 margin-left: 0;
             
+            }
+            .toast {
+                display: grid;
+                text-align: center;
+                width: 50%;
+                margin-right: 10px;
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 3px;
+                border: 2px solid seagreen;
+                background-color: seagreen;
+                color: white;
             }
         </style>
     </head>
 <body>
     
-<h1>Search Resources</h1>
+<h1>Brewess</h1>
 
-<form action="/search-results/" method="POST">
+<h2>Create New Resource</h2>
+<form id="new" class="new" action="/save-resource/" method="POST">
 
 <div class="wrapper">
     <div class="menu">
@@ -122,9 +147,10 @@
     <input
         name="amount"
         type="number"
+        step="0.01"
         title="Please enter a decimal number and use a point not comma."
         rows="1" cols="8"
-        placeholder="02-02-2000"></input>
+        placeholder="2000.2"></input>
     <br>
 
 </div>
@@ -135,6 +161,7 @@
         <input
             name="ebc"
             type="number"
+            step="0.1"
             title="Please enter a decimal number and use a point not comma."
             rows="1" cols="5"
             placeholder="8.5"></input>
@@ -145,6 +172,7 @@
         <input
             name="iso"
             type="number"
+            step="0.01"
             title="Please enter a decimal number and use a point not comma."
             rows="1" cols="5"
             placeholder="11.5"></input>
@@ -155,6 +183,7 @@
         <input
             name="minTemp"
             type="number"
+            step="0.01"
             title="Please enter a decimal number and use a point not comma."
             rows="1" cols="5"
             placeholder="12.1"></input><br>
@@ -162,6 +191,7 @@
         <input
             name="maxTemp"
             type="number"
+            step="0.01"
             title="Please enter a decimal number and use a point not comma."
             rows="1" cols="5"
             placeholder="19.1"></input><br>
@@ -177,11 +207,20 @@
     
 </div>
 <div class="submit">
-    <button>Submit</button>
+    <p class="toast">Resource Saved</p>
 </div>
+<div class="submit">
+    <input type="submit" value="Submit">
+</input>
+</div>
+</form>
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        $(document).ready(function(){
+           $(".toast").hide();
+        });
         $(document).ready(function(){
             $("#type").on('change', function(){
                 $(".data").hide();
@@ -208,6 +247,31 @@
                 
             }).change();
         });
+        $(document).ready(function(){
+            $("#new").submit(function(e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+                var form = $(this);
+                var url = form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        $(".toast").fadeIn(1000).fadeOut(100);
+                    },
+                    error: function (data) {
+                    console.log('An error occurred.');
+                    console.log(data);
+                    },
+                    });
+
+
+                });
+        })
     </script>
 </body>
 </html>

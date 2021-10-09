@@ -1,9 +1,56 @@
-<h1>Welcome to Brewess</h1>
-<div>
-    Brewess is an Open-Source brewing recipe and resource management tool, <br>
-    where you can store and search for your resources and recipes.
-</div>
-<div>
-    <a href="/search-resource/">Search Resources</a> <br>
-    <a href="/new-resource/">Create Resource</a>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Brewess</title>
+    <style>
+            *{
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+                outline: none;
+            }
+            body {
+                font-family: 'Poppins', sans-serif;
+                padding-left: 70px;
+            }
+                    h1 {
+                justify-content: left;
+                padding-top: 70px;
+                padding-left: 0px;
+                padding-right: auto;
+                padding-bottom: 50px;
+            }
+            h2{
+                justify-content: left;
+                padding-left: 0px;
+                padding-top: 0;
+                padding-right: auto;
+                padding-bottom: 50px;
+            }
+            .cont{
+                  padding-top: 10px;
+                display: grid;
+                padding-bottom: 10px;
+            }
+            .ref {
+                color: sandybrown;
+                display: grid;
+                padding: 5px;
+            }
+    </style>
+</head>
+<body>
+    <h1>Brewess</h1> 
+    <div name="content">
+    <div name="description" class="cont">
+        Brewess is an Open-Source brewing recipe and resource management tool, <br>
+        where you can store and search for your resources and recipes.
+    </div>
+    <div name="links" class="cont">
+        <a class="ref" href="http://localhost:8080/search-resource/">Search Resources</a> <br>
+        <a class="ref" href="http://localhost:8080/new-resource/">Create Resource</a>
+    </div>
+    </div>
+</body>
+</html>

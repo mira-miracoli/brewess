@@ -5,41 +5,62 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 )
 
 var validate *validator.Validate
 
-var templates, terr = template.ParseFiles("./html/new.html",
+type Resourcels struct {
+	Resources []*Resource
+}
+
+var templates, terr = template.ParseFiles("./html/newres.html",
 	"./html/view.html", "./html/edit.html", "./html/searchres.html",
-	"./html/badsearch.html")
+	"./html/badsearch.html", "./html/resultsres.html")
 
 func main() {
 	if terr != nil {
 		fmt.Print(terr.Error())
 	}
-	http.HandleFunc("/home/", homeHandler)
-	http.HandleFunc("/search-resource/", searchResHandler)
+	http.HandleFunc("/", staticHandler)
 	http.HandleFunc("/search-results/", resultsResHandler)
+	http.HandleFunc("/save-resource/", saveResHandler)
+	http.HandleFunc("/delete-resource/", deleteResHandler)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl string, r *Resource) {
+func renderSingle(w http.ResponseWriter, tmpl string, r *Resource) {
 	err := templates.ExecuteTemplate(w, tmpl+".html", r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./html/home.html")
+func renderList(w http.ResponseWriter, tmpl string, r *Resourcels) {
+	err := templates.ExecuteTemplate(w, tmpl+".html", r)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
-func searchResHandler(w http.ResponseWriter, r *http.Request) {
-	res := &Resource{}
-	renderTemplate(w, "searchres", res)
+func staticHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+	switch r.URL.Path {
+	case "/search-resource/":
+		res := &Resource{}
+		renderSingle(w, "searchres", res)
+	case "/new-resource/":
+		res := &Resource{}
+		renderSingle(w, "newres", res)
+	case "/home/":
+		http.ServeFile(w, r, "./html/home.html")
+	default:
 
+		http.Redirect(w, r, "http://localhost:8080/home/", http.StatusNotFound)
+
+	}
 }
 
 func resultsResHandler(w http.ResponseWriter, r *http.Request) {
@@ -53,13 +74,49 @@ func resultsResHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// call OB qery function
-	_, qerr := resourceQuery(qres)
+	ls, qerr := resourceQuery(qres)
 	if qerr != nil {
 		http.ServeFile(w, r, "./html/badsearch.html")
 		return
 	} else {
-		http.Error(w, "search worked, no error", http.StatusOK)
+		ls := &Resourcels{Resources: ls}
+		renderList(w, "resultsres", ls)
 	}
 
 	// render Template with Result List if List is empty return search failed page
+}
+
+func saveResHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Please use the resource creation form", http.StatusBadRequest)
+		return
+	}
+	res, err := formToResource(r)
+	if err != nil {
+		http.Redirect(w, r, "/new-resource/", http.StatusInternalServerError)
+		return
+	}
+	_, err = saveResource(res)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+func deleteResHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "No valid delete request", http.StatusBadRequest)
+		return
+	}
+	id_str := r.FormValue("ajax_post_data")
+	id, err := strconv.ParseUint(id_str, 10, 64)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	ob := initObjectBox()
+	rb := BoxForResource(ob)
+	defer ob.Close()
+	err = rb.RemoveId(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }

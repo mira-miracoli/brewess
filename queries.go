@@ -46,6 +46,8 @@ func initObjectBox() *objectbox.ObjectBox {
 func resourceQuery(qres *Resource) ([]*Resource, error) {
 	ob := initObjectBox()
 	rob := BoxForResource(ob)
+	defer ob.Close()
+
 	var query = rob.Query()
 	switch qres.Type {
 	case "malt":
@@ -91,8 +93,18 @@ func formToResource(r *http.Request) (*Resource, error) {
 
 }
 
+func saveResource(res *Resource) (uint64, error) {
+	ob := initObjectBox()
+	rbox := BoxForResource(ob)
+	defer ob.Close()
+
+	id, err := rbox.Put(res)
+
+	return id, err
+}
+
 func maltQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
-	query := rob.Query(Resource_.Name.Contains(qres.Name, false),
+	query := rob.Query(Resource_.Type.Equals("malt", true), Resource_.Name.Contains(qres.Name, false),
 		Resource_.Amount.GreaterOrEqual(qres.Amount))
 	if qres.EBC != 0 {
 		query = rob.Query(Resource_.Name.Contains(qres.Name, false),
@@ -103,7 +115,7 @@ func maltQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
 }
 
 func hopQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
-	query := rob.Query(Resource_.Name.Contains(qres.Name, false),
+	query := rob.Query(Resource_.Type.Equals("hop", true), Resource_.Name.Contains(qres.Name, false),
 		Resource_.Amount.GreaterOrEqual(qres.Amount))
 	if qres.ISO != 0 {
 		query = rob.Query(Resource_.Name.Contains(qres.Name, false),
@@ -114,7 +126,7 @@ func hopQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
 }
 
 func yeastQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
-	query := rob.Query(Resource_.Name.Contains(qres.Name, false),
+	query := rob.Query(Resource_.Type.Equals("yeast", true), Resource_.Name.Contains(qres.Name, false),
 		Resource_.Amount.GreaterOrEqual(qres.Amount))
 	if qres.MinTemp != 0 && qres.MaxTemp != 0 {
 		query = rob.Query(Resource_.Name.Contains(qres.Name, false),

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Brewess</title>
+    <style>
+            *{
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+                outline: none;
+            }
+            body {
+                font-family: 'Poppins', sans-serif;
+                padding-left: 70px;
+                padding-right: 70px;
+            }
+            h1 {
+                font-size: xx-large;
+                justify-content: left;
+                padding-top: 70px;
+                padding-left: 0px;
+                padding-right: auto;
+                padding-bottom: 50px;
+            }
+            h2{
+                justify-content: left;
+                padding-left: 0px;
+                padding-top: 0;
+                padding-right: auto;
+                padding-bottom: 50px;
+            }
+            .cont{
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .ref {
+                color: sandybrown;
+                display: grid;
+                padding: 5px;
+            }
+            .wrapper{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-auto-rows: minmax(min-content, auto);
+                gap: 15px;
+                justify-items: stretch;
+                align-items: stretch;
+                padding-bottom: 70px;
+            }
+            .resbox {
+                display: grid;
+                grid-template-columns: 1fr 1.5fr;
+                gap: 15px;
+                position: relative;
+                font-size: medium;
+                padding: 20px;
+                grid-auto-rows: minmax(min-content, max-content); 
+                border-radius: 2px;
+            }
+            .boxtitle {
+                top: 5px;
+                left: 5px;
+                font-size: large;
+            }
+            .value{
+                font-weight: 600;
+                text-align: end;
+            }
+            .malt{
+                background-color: palegoldenrod;
+                color: #222;
+                border: 1px solid palegoldenrod;
+                box-shadow: 5px 7px burlywood;
+            }
+            .hop {
+                background-color: #0cb318;
+                color: #222;
+                border: 1px solid #0cb318;
+                box-shadow: 5px 7px darkgreen;
+            }
+            .yeast {
+                background-color: sandybrown;
+                color: #222;
+                border: 1px solid sandybrown;
+                box-shadow: 5px 7px peru;
+            }
+            .delete {
+                justify-self: end;
+                text-align: end;
+            }
+            .btn {
+                background-color: lightcoral; /* Blue background */
+                border: 1px lightcoral; /* Remove borders */
+                border-radius: 2px;
+                color: white; /* White text */
+                padding: 12px 16px; /* Some padding */
+                font-size: 16px; /* Set a font size */
+                cursor: pointer; /* Mouse pointer on hover */
+            }
+            .btn:hover {
+                background-color: indianred;
+            }
+    </style>
+</head>
+<body>
+    <h1>Brewess</h1> 
+    <h2>Resource Search Results</h2>
+    <div name="content">
+    
+    <div class="wrapper">
+        {{range .Resources}}
+        {{if eq .Type "malt"}}
+            
+            <div class="resbox malt" id="{{.Id}}">
+                <p class="boxtitle"><b>Malt</b></p>
+                <p class="delete">
+                <input class="delete" name="delete" type="hidden" value="{{.Id}}">
+                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                </input>
+                </p>
+                <p class="name">Name</p>
+                <p class="value name">{{.Name}}</p>
+                <p class="amount">Amount</p>
+                <p class="value amount">{{.Amount}} g</p>
+                <p class="ebc">EBC</p>
+                <p class="value ebc">{{.EBC}}</p>
+            </div>
+            {{end}}{{if eq .Type "hop"}}
+            <div class="resbox hop">
+                <p class="boxtitle"><b>Hop</b></p>
+                <p class="delete">
+                <input class="delete" name="delete" type="hidden" value="{{.Id}}">
+                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                </input>
+                </p>
+                <p class="name">Name</p>
+                <p class="value name">{{.Name}}</p>
+                <p class="amount">Amount</p>
+                <p class="value amount">{{.Amount}} g</p>
+                <p class="iso">iso-α-acids</p>
+                <p class="value iso">{{.ISO}} %</p>
+            </div>
+            {{end}}{{if eq .Type "yeast"}}
+            <div class="resbox yeast">
+                <p class="boxtitle"><b>Yeast</b></p>
+                <p class="delete">
+                <input class="delete" name="delete" type="hidden" value="{{.Id}}">
+                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                </input>
+                </p>
+                <p class="name">Name</p>
+                <p class="value name">{{.Name}}</p>
+                <p class="amount">Amount</p>
+                <p class="value amount">{{.Amount}} g</p>
+                <p class="mintemp">Min. Temp.</p>
+                <p class="value mintemp">{{.MinTemp}} °C</p>
+                <p class="maxtemp">Max. Temp.</p>
+                <p class="value maxtemp">{{.MaxTemp}} °C</p>
+                <p class="og">Yeast Breakage Behaviour</p>
+                <p class="value og">{{if .OberG}}
+                    top-fermenting
+                    {{end}}
+                    {{if not .OberG}}
+                    bottom-fermenting
+                    {{end}}
+                </p>
+            </div>
+            {{end}}
+            {{end}}
+        
+    </div>
+    </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#type").on('change', function(){
+                $(".data").hide();
+                $("#"+ $(this).val()).fadeIn(700);
+                switch ($(this).val()) { 
+                case "hop":
+                $("input").css("border", "2px solid #0cb318");
+                $("select").css("border", "2px solid #0cb318");
+                $("button").css("border", "2px solid #0cb318");
+                break;
+                case "malt":
+                $("input").css("border", "3px solid PaleGoldenRod");
+                $("select").css("border", "3px solid PaleGoldenRod");
+                $("button").css("border", "3px solid PaleGoldenRod");
+                break;
+                case "yeast":
+                $("input").css("border", "2px solid SandyBrown");
+                $("select").css("border", "2px solid SandyBrown");
+                $("button").css("border", "2px solid SandyBrown");
+                break;
+                default:
+                    alert('Nobody Wins!');
+            }
+                
+            }).change();
+        });
+        $(document).ready(function(){
+            $(".delete").click(function (event) {
+                            var parent = $(this).closest('.resbox')
+                            var id = $(this).find(".delete").val();
+                             $.ajax({
+                               url: '/delete-resource/',
+                               type: 'post',
+                               dataType: 'html',
+                               data : { ajax_post_data: id},
+                               success : function(data) {
+                                 // alert('ajax data posted');
+                                 $('#result').html(data);
+                               },
+                             });
+                             $(parent).fadeOut(200);
+                          });
+                    
+        });
+                             
+    </script>
+</body>
+</html>
+
