@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -28,6 +29,7 @@ func main() {
 	http.HandleFunc("/search-results/", resultsResHandler)
 	http.HandleFunc("/save-resource/", saveResHandler)
 	http.HandleFunc("/delete-resource/", deleteResHandler)
+	http.HandleFunc("/get-json/", resourceMarshal)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -84,6 +86,24 @@ func resultsResHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// render Template with Result List if List is empty return search failed page
+}
+
+func resourceMarshal(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid AJAX request", http.StatusBadRequest)
+		return
+	}
+	res_sting := r.FormValue("ajax_post_data")
+	qres := &Resource{Type: res_sting}
+	res_ls, err := resourceQuery(qres)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	res_json, err := json.Marshal(res_ls)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	fmt.Fprint(w, string(res_json))
 }
 
 func saveResHandler(w http.ResponseWriter, r *http.Request) {

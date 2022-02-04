@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Brewess</title>
         <style>
             *{
-                padding: 0;
-                margin: 0;
                 box-sizing: border-box;
                 outline: none;
             }
@@ -21,9 +22,10 @@
             h2 {
                 justify-content: left;
                 padding-top: 0;
-                padding-left: 70px;
-                padding-right: auto;
-                padding-bottom: 50px;
+            }
+            .new{
+                margin-left: 200px;
+                padding-top: 30px;
             }
             .wrapper{
                 display: flex;
@@ -37,6 +39,40 @@
             .menu,
             .content{
                 width: 100%;
+            }
+            .sidenav {
+            height: 62%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: seashell;
+            overflow-x: hidden;
+            padding-top: 20px;
+            box-shadow: 5px 7px bisque;
+            border-radius: 3px;
+            }
+
+            .sidenav a {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            font-size: 14px;
+            color: black;
+            display: block;
+            }
+            .sidenav h1 {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            display: block;
+            }
+
+            .sidenav a:hover {
+            color: sandybrown;
+            }
+            @media screen and (max-height: 450px) {
+                .sidenav {padding-top: 15px;}
+                .sidenav a {font-size: 18px;}
             }
             select#type{
                 width: 100%;
@@ -78,7 +114,6 @@
                 display: flex;
                 justify-content: center;
                 padding-top: 0px;
-                padding-bottom: 20px;
             }
             button{
                 display: grid;
@@ -123,14 +158,21 @@
         </style>
     </head>
 <body>
-    
-<h1>Brewess</h1>
+     <div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/home/">Home</a>
+        <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
+        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/search-resource/">Search Resource</a>
+      </div>
+    <div class="content">   
 
-<h2>Create New Resource</h2>
 <form id="new" class="new" action="/save-resource/" method="POST">
 
 <div class="wrapper">
     <div class="menu">
+
+<h2>Create New Resource</h2>
 <select name="type" id="type">
         <option value="malt">Malt</option>
         <option value="hop">Hop</option>

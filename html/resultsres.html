@@ -6,39 +6,67 @@
     <title>Brewess</title>
     <style>
             *{
-                padding: 0;
-                margin: 0;
                 box-sizing: border-box;
                 outline: none;
             }
-            body {
-                font-family: 'Poppins', sans-serif;
-                padding-left: 70px;
-                padding-right: 70px;
-            }
-            h1 {
-                font-size: xx-large;
+            
+              h1 {
                 justify-content: left;
                 padding-top: 70px;
                 padding-left: 0px;
                 padding-right: auto;
                 padding-bottom: 50px;
             }
-            h2{
+            h2 {
                 justify-content: left;
-                padding-left: 0px;
                 padding-top: 0;
                 padding-right: auto;
-                padding-bottom: 50px;
             }
-            .cont{
-                padding-top: 10px;
+            .content{
+                padding-top: 30px;
+                padding-left: 40px;
+                padding-right: 10px;
                 padding-bottom: 10px;
+                margin-left: 200px;
             }
             .ref {
                 color: sandybrown;
                 display: grid;
                 padding: 5px;
+            }
+            .sidenav {
+            height: 62%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: seashell;
+            overflow-x: hidden;
+            padding-top: 20px;
+            box-shadow: 5px 7px bisque;
+            border-radius: 3px;
+            }
+
+            .sidenav a {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            font-size: 14px;
+            color: black;
+            display: block;
+            }
+            .sidenav h1 {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            display: block;
+            }
+
+            .sidenav a:hover {
+            color: sandybrown;
+            }
+            @media screen and (max-height: 450px) {
+                .sidenav {padding-top: 15px;}
+                .sidenav a {font-size: 18px;}
             }
             .wrapper{
                 display: grid;
@@ -75,10 +103,10 @@
                 box-shadow: 5px 7px burlywood;
             }
             .hop {
-                background-color: #0cb318;
+                background-color: limegreen;
                 color: #222;
-                border: 1px solid #0cb318;
-                box-shadow: 5px 7px darkgreen;
+                border: 1px solid limegreen;
+                box-shadow: 5px 7px forestgreen;
             }
             .yeast {
                 background-color: sandybrown;
@@ -91,8 +119,8 @@
                 text-align: end;
             }
             .btn {
-                background-color: lightcoral; /* Blue background */
-                border: 1px lightcoral; /* Remove borders */
+                background-color: indianred; /* Blue background */
+                border: 1px indianred; /* Remove borders */
                 border-radius: 2px;
                 color: white; /* White text */
                 padding: 12px 16px; /* Some padding */
@@ -100,15 +128,22 @@
                 cursor: pointer; /* Mouse pointer on hover */
             }
             .btn:hover {
-                background-color: indianred;
+                background-color: lightcoral;
             }
     </style>
 </head>
 <body>
-    <h1>Brewess</h1> 
-    <h2>Resource Search Results</h2>
-    <div name="content">
+    <div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/home/">Home</a>
+        <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
+        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/search-resource/">Search Resource</a>
+        <a href="http://localhost:8080/new-resource/">Create Resource</a>
+      </div>
+    <div class="content">
     
+    <h2>Resource Search Results</h2>
     <div class="wrapper">
         {{range .Resources}}
         {{if eq .Type "malt"}}
@@ -180,9 +215,9 @@
                 $("#"+ $(this).val()).fadeIn(700);
                 switch ($(this).val()) { 
                 case "hop":
-                $("input").css("border", "2px solid #0cb318");
-                $("select").css("border", "2px solid #0cb318");
-                $("button").css("border", "2px solid #0cb318");
+                $("input").css("border", "2px solid limegreen");
+                $("select").css("border", "2px solid limegreen");
+                $("button").css("border", "2px solid limegreen");
                 break;
                 case "malt":
                 $("input").css("border", "3px solid PaleGoldenRod");
