@@ -117,23 +117,6 @@
           "name": "OGTarget",
           "type": 8
         }
-      ],
-      "relations": [
-        {
-          "id": "1:6616890990072260278",
-          "name": "Malts",
-          "targetId": "1:8864280590638099451"
-        },
-        {
-          "id": "2:5343903578176731479",
-          "name": "Hops",
-          "targetId": "1:8864280590638099451"
-        },
-        {
-          "id": "3:441495759427462681",
-          "name": "Yeasts",
-          "targetId": "1:8864280590638099451"
-        }
       ]
     }
   ],
@@ -145,6 +128,10 @@
   "retiredEntityUids": [],
   "retiredIndexUids": [],
   "retiredPropertyUids": [],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    6616890990072260278,
+    5343903578176731479,
+    441495759427462681
+  ],
   "version": 1
 }

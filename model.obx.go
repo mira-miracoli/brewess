@@ -479,9 +479,6 @@ var Recipe_ = struct {
 	SHA         *objectbox.PropertyFloat64
 	AlcTarget   *objectbox.PropertyFloat64
 	OGTarget    *objectbox.PropertyFloat64
-	Malts       *objectbox.RelationToMany
-	Hops        *objectbox.RelationToMany
-	Yeasts      *objectbox.RelationToMany
 }{
 	Id: &objectbox.PropertyUint64{
 		BaseProperty: &objectbox.BaseProperty{
@@ -537,21 +534,6 @@ var Recipe_ = struct {
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	Malts: &objectbox.RelationToMany{
-		Id:     1,
-		Source: &RecipeBinding.Entity,
-		Target: &ResourceBinding.Entity,
-	},
-	Hops: &objectbox.RelationToMany{
-		Id:     2,
-		Source: &RecipeBinding.Entity,
-		Target: &ResourceBinding.Entity,
-	},
-	Yeasts: &objectbox.RelationToMany{
-		Id:     3,
-		Source: &RecipeBinding.Entity,
-		Target: &ResourceBinding.Entity,
-	},
 }
 
 // GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
@@ -573,9 +555,6 @@ func (recipe_EntityInfo) AddToModel(model *objectbox.Model) {
 	model.Property("AlcTarget", 8, 8, 77502409174959323)
 	model.Property("OGTarget", 8, 9, 7723634411214686482)
 	model.EntityLastPropertyId(9, 7723634411214686482)
-	model.Relation(1, 6616890990072260278, ResourceBinding.Id, ResourceBinding.Uid)
-	model.Relation(2, 5343903578176731479, ResourceBinding.Id, ResourceBinding.Uid)
-	model.Relation(3, 441495759427462681, ResourceBinding.Id, ResourceBinding.Uid)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
@@ -591,18 +570,6 @@ func (recipe_EntityInfo) SetId(object interface{}, id uint64) error {
 
 // PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
 func (recipe_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
-	if err := BoxForRecipe(ob).RelationReplace(Recipe_.Malts, id, object, object.(*Recipe).Malts); err != nil {
-		return err
-	}
-
-	if err := BoxForRecipe(ob).RelationReplace(Recipe_.Hops, id, object, object.(*Recipe).Hops); err != nil {
-		return err
-	}
-
-	if err := BoxForRecipe(ob).RelationReplace(Recipe_.Yeasts, id, object, object.(*Recipe).Yeasts); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -641,44 +608,14 @@ func (recipe_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{
 
 	var propId = table.GetUint64Slot(4, 0)
 
-	var relMalts []*Resource
-	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Malts, propId); err != nil {
-		return nil, err
-	} else if rSlice, err := BoxForResource(ob).GetManyExisting(rIds...); err != nil {
-		return nil, err
-	} else {
-		relMalts = rSlice
-	}
-
-	var relHops []*Resource
-	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Hops, propId); err != nil {
-		return nil, err
-	} else if rSlice, err := BoxForResource(ob).GetManyExisting(rIds...); err != nil {
-		return nil, err
-	} else {
-		relHops = rSlice
-	}
-
-	var relYeasts []*Resource
-	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Yeasts, propId); err != nil {
-		return nil, err
-	} else if rSlice, err := BoxForResource(ob).GetManyExisting(rIds...); err != nil {
-		return nil, err
-	} else {
-		relYeasts = rSlice
-	}
-
 	return &Recipe{
 		Id:          propId,
 		Name:        fbutils.GetStringSlot(table, 6),
 		Description: fbutils.GetStringSlot(table, 8),
-		Malts:       relMalts,
 		IsoAlpha:    fbutils.GetFloat64Slot(table, 10),
-		Hops:        relHops,
 		HopSugg:     fbutils.GetStringVectorSlot(table, 12),
 		DryHop:      fbutils.GetStringVectorSlot(table, 14),
 		SHA:         fbutils.GetFloat64Slot(table, 16),
-		Yeasts:      relYeasts,
 		AlcTarget:   fbutils.GetFloat64Slot(table, 18),
 		OGTarget:    fbutils.GetFloat64Slot(table, 20),
 	}, nil

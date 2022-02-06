@@ -19,7 +19,7 @@ type Resourcels struct {
 
 var templates, terr = template.ParseFiles("./html/newres.html",
 	"./html/searchres.html",
-	"./html/badsearch.html", "./html/resultsres.html")
+	"./html/badsearch.html", "./html/resultsres.html", "./html/editrecipe.html")
 
 func main() {
 	if terr != nil {
@@ -49,13 +49,14 @@ func renderList(w http.ResponseWriter, tmpl string, r *Resourcels) {
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL.Path)
+	res := &Resource{}
 	switch r.URL.Path {
 	case "/search-resource/":
-		res := &Resource{}
 		renderSingle(w, "searchres", res)
 	case "/new-resource/":
-		res := &Resource{}
 		renderSingle(w, "newres", res)
+	case "/edit-recipe/":
+		renderSingle(w, "editrecipe", res)
 	case "/home/":
 		http.ServeFile(w, r, "./html/home.html")
 	default:
@@ -89,12 +90,13 @@ func resultsResHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func resourceMarshal(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != http.MethodGet {
 		http.Error(w, "Invalid AJAX request", http.StatusBadRequest)
 		return
 	}
 	res_sting := r.FormValue("ajax_post_data")
-	qres := &Resource{Type: res_sting}
+	qres := new(Resource)
+	qres.Type = res_sting
 	res_ls, err := resourceQuery(qres)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
