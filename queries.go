@@ -43,19 +43,16 @@ func initObjectBox() *objectbox.ObjectBox {
 	return objectBox
 }
 
-func resourceQuery(qres *Resource) ([]*Resource, error) {
-	ob := initObjectBox()
-	rob := BoxForResource(ob)
-	defer ob.Close()
+func resourceQuery(qres *Resource, box *ResourceBox) ([]*Resource, error) {
 
-	var query = rob.Query()
+	var query = box.Query()
 	switch qres.Type {
 	case "malt":
-		query = maltQuery(rob, qres)
+		query = maltQuery(box, qres)
 	case "hop":
-		query = hopQuery(rob, qres)
+		query = hopQuery(box, qres)
 	case "yeast":
-		query = yeastQuery(rob, qres)
+		query = yeastQuery(box, qres)
 	default:
 		log.Panic("Help the Resource has no type!")
 	}
@@ -91,16 +88,6 @@ func formToResource(r *http.Request) (*Resource, error) {
 	err := validate.Struct(res)
 	return res, err
 
-}
-
-func saveResource(res *Resource) (uint64, error) {
-	ob := initObjectBox()
-	rbox := BoxForResource(ob)
-	defer ob.Close()
-
-	id, err := rbox.Put(res)
-
-	return id, err
 }
 
 func maltQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
