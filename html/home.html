@@ -5,14 +5,11 @@
     <title>Brewess</title>
     <style>
             *{
-                padding: 0;
-                margin: 0;
                 box-sizing: border-box;
                 outline: none;
             }
             body {
                 font-family: 'Poppins', sans-serif;
-                padding-left: 70px;
             }
                     h1 {
                 justify-content: left;
@@ -23,34 +20,74 @@
             }
             h2{
                 justify-content: left;
-                padding-left: 0px;
-                padding-top: 0;
-                padding-right: auto;
-                padding-bottom: 50px;
+                color: black;
             }
-            .cont{
-                  padding-top: 10px;
-                display: grid;
-                padding-bottom: 10px;
+            .content{
+                display: flex;
+                flex-wrap: wrap;
+                width: 50%;
+                justify-content: left;
+                padding-top: 30px;
+                padding-left: 40px;
+                padding-bottom: 30px;
+                margin-left: 200px;
             }
             .ref {
                 color: sandybrown;
                 display: grid;
                 padding: 5px;
             }
+            .sidenav {
+            height: 62%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: seashell;
+            overflow-x: hidden;
+            padding-top: 20px;
+            box-shadow: 5px 7px bisque;
+            border-radius: 2px;
+            }
+
+            .sidenav a {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 14px;
+            color: black;
+            display: block;
+            }
+            .sidenav h1 {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            display: block;
+            }
+
+            .sidenav a:hover {
+            color: sandybrown;
+            }
+            @media screen and (max-height: 450px) {
+                .sidenav {padding-top: 15px;}
+                .sidenav a {font-size: 18px;}
+            }
     </style>
 </head>
 <body>
-    <h1>Brewess</h1> 
-    <div name="content">
+    <div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
+        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/search-resource/">Search Resource</a>
+        <a href="http://localhost:8080/new-resource/">Create Resource</a>
+      </div>
+    <div class="content">
+        <h2>About</h2>
     <div name="description" class="cont">
-        Brewess is an Open-Source brewing recipe and resource management tool, <br>
-        where you can store and search for your resources and recipes.
+        Brewess is an open-source brewing recipe and resource management tool, <br>
+        where you can store and search your resources and recipes.
     </div>
-    <div name="links" class="cont">
-        <a class="ref" href="http://localhost:8080/search-resource/">Search Resources</a> <br>
-        <a class="ref" href="http://localhost:8080/new-resource/">Create Resource</a>
-    </div>
+   
     </div>
 </body>
 </html>

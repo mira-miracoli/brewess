@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+    <title>Brewess</title>
+        <style>
+            *{
+                box-sizing: border-box;
+                outline: none;
+            }
+            body{
+                font-family: 'Poppins', sans-serif;
+            }
+           h1 {
+                justify-content: left;
+                padding-top: 70px;
+                padding-left: 70px;
+                padding-right: auto;
+                padding-bottom: 50px;
+            }
+            h2 {
+                justify-content: left;
+                font-size: xx-large;
+                margin-bottom: 0px;
+            }
+            h3 {
+                margin-top: 0px;
+                margin-bottom: 0px;
+                font-size: 30px;
+                padding-left: 20px;
+                padding-bottom: 15px;
+            }
+            .basicinfo{
+                position: relative;
+                display: grid;
+                padding-left: 20px;
+                padding-right: 10px;
+                padding-bottom: 20px;
+                background-color: seashell;
+                box-shadow: 5px 7px bisque;
+            }
+            .basicinfo .fieldwrapper{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-auto-columns: minmax(min-content, auto);
+                grid-auto-rows: minmax(min-content, auto);
+                gap: 10px;
+                justify-items: stretch;
+                align-items: stretch;
+            }
+            .field {
+                position: relative;
+                padding: 10px;
+                padding-bottom: 0px;
+                border: none;
+                display: grid;
+            }
+            p{
+                margin: 0px;
+                padding-left: 5px;
+                font-size: small;
+            }
+            legend {
+                font-size: small;
+                padding-left: 5px;
+            }
+            select {
+
+                border: 3px solid #edbe21;
+            }
+            input, select {
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 2px;
+                border: 2px solid bisque;
+                margin-left: 0;
+                }
+            
+            textarea{
+                width: 100%;
+                height: 100%;
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 2px;
+                border: 2px solid bisque;
+                margin-left: 0;
+                resize: none;
+            }
+            .basicinfo .fieldwrapper input{
+                width: 100%;
+                height: 100%;
+            }
+            /* Fix width in left column and move fermentation to right side*/
+            .fermentation,
+            .hopping,
+            .grist,
+            .mashing {
+                position: relative;
+                display: grid;
+                grid-template-rows: auto minmax(0, 1fr);
+                padding-top: 26px;
+                padding-left: 15px;
+                padding-right: 10px;
+                padding-bottom: 20px;
+                background-color: seashell;
+                box-shadow: 5px 7px bisque;
+                opacity: 0.9;
+            }
+            .hopping {
+                background-color: limegreen;
+                border: 1px solid limegreen;
+                box-shadow: 5px 7px forestgreen;
+            }
+            .mashing{
+                background-color: navajowhite;
+                border: 1px solid navajowhite;
+                box-shadow: 5px 7px #e89323;
+            }
+            .fermentation {
+                background-color: peachpuff;
+                border: 1px solid peachpuff;
+                box-shadow: 5px 7px peru;
+                grid-area: "f";
+            }
+            .grist {
+                background-color: palegoldenrod;
+                border: 1px solid palegoldenrod;
+                box-shadow: 5px 7px burlywood;
+            }
+            .grist .fieldwrapper,
+            .mashing .fieldwrapper{
+                display: grid;
+                grid-template-columns: 1fr;
+                border: none;
+
+            }
+            fieldset {
+                padding-bottom: 10px;
+                border: 0;
+            }
+            .mashing .mashingentry {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px; 
+            }
+            .grist .gristentry {
+                display: grid;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .hopping .hoppingentry {
+                display: grid;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .fermentation .fermentationentry {
+                display: grid;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .addgrid {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px; 
+            }
+            .grist .list-title,
+            .grist .addgrid {
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+            }
+            .hopping .addgrid,
+            .hopping .list-title {
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+            }
+            .fermentation .list-title,
+            .fermentation .addgrid {
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+            }
+            .list-title {
+                display: grid;
+                grid-template-columns: 1fr 1fr 0.5fr;
+                position: relative;
+                border: none;
+                gap:10px;
+                padding-top: 10px;
+                padding-bottom: 0px;
+            }
+            .list-title p {
+                position: relative;
+            } 
+            .remove button {
+                margin: 0px;
+                padding: 12px 12px;
+                font-size: 16px;
+                cursor: pointer;
+
+            }
+            .mashing input {
+                    position: relative;
+
+                }
+            
+            .remove,
+            .add{
+                width: 44px;
+                justify-self: right;
+                border-radius: 2px;
+                color: black; /* White text */
+                padding: 10px 14px; /* Some padding */
+                font-size: 16px; /* Set a font size */
+                cursor: pointer; /* Mouse pointer on hover */
+            }
+            .add{
+                background-color: seashell; /* Blue background */
+                border: 2px solid seashell; /* Remove borders */
+                margin: 0px;
+            }
+            .add:hover {
+                background-color: cornsilk;
+            }
+            .remove{
+                background-color: lightcoral;
+                border: 2px solid lightcoral;
+                margin: 0px;
+            }
+            .remove:hover{
+                background-color: indianred;
+            }
+
+
+            
+            .content{
+                width: 80%;
+                padding-left: 30px;
+                padding-top: 30px;
+                margin-left: 200px;
+                display: grid;
+                grid-template-columns: 1.5fr 2fr;
+                grid-auto-columns: minmax(min-content, auto);
+                grid-auto-rows: minmax(min-content, auto);
+                grid-template-areas: 
+                    "a b"
+                    "c d"
+                    "e f"
+                    "g h";
+                gap: 15px;
+                justify-items: stretch;
+                align-items: stretch;
+
+            }
+            .sidenav {
+            height: 62%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: seashell;
+            overflow-x: hidden;
+            padding-top: 20px;
+            box-shadow: 5px 7px bisque;
+            border-radius: 3px;
+            }
+            /* Firefox */
+            input[type=number] {
+            -moz-appearance: textfield;
+            }
+            .sidenav a {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            font-size: 14px;
+            color: black;
+            display: block;
+            }
+            .sidenav h1 {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            display: block;
+            }
+
+            .sidenav a:hover {
+            color: sandybrown;
+            }
+            @media screen and (max-height: 450px) {
+                .sidenav {padding-top: 15px;}
+                .sidenav a {font-size: 18px;}
+            }
+      
+            
+            .toast {
+                display: grid;
+                text-align: center;
+                width: 50%;
+                margin-right: 10px;
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 3px;
+                border: 2px solid seagreen;
+                background-color: seagreen;
+                color: white;
+            }
+        </style>
+    </head>
+<body>
+    <div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/home/">Home</a>
+        <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
+        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/search-resource/">Search Resource</a>
+      </div>
+    <div class="content">
+        <div class="basicinfo">
+            <h2>Recipe</h2>
+            <h3>Basic Info</h3>
+            <div class="fieldwrapper">
+            <div class="field">
+            <p>Name</p>
+            <input
+            type="text"
+            name="name"
+            id="name"
+            title="Enter a name for your recipe"
+            rows="1"
+            cols="30"></input>
+            </div>
+            
+            <div class="field">
+            <p>Target Cast Wort (hot) in liter</p>
+            <input
+            type="number"
+            name="castwort"
+            id="castwort"
+            step="1"
+            min="1"
+            title="Enter a volume in liter"
+            rows="1"
+            cols="3"></input>
+            </div>
+            <div class="field">
+            <p>OG in %</p>
+            <input
+            type="number"
+            name="OG"
+            id="OG"
+            step="0.01"
+            min="1"
+            title="Enter a valid OG value in %"
+            rows="1"
+            cols="3"></input>
+            </div>
+            <div class="field">
+                <p>IBU</p>
+            <input
+            type="number"
+            name="IBU"
+            id="IBU"
+            step="1"
+            min="1"
+            title="Enter a valid IBU value"
+            rows="1"
+            cols="3"></input></div>
+            <div class="field">
+                <p>EBC</p>
+            <input
+            type="number"
+            name="EBC"
+            id="EBC"
+            step="1"
+            min="1"
+            title="Enter the total grist"
+            rows="1"
+            cols="3"></input></div>
+            <div class="field">
+                <p>Brewhouse Yield in %</p>
+            <input
+            type="number"
+            name="SHA"
+            id="SHA"
+            step="1"
+            min="1"
+            title="Enter the brewhouse yield"
+            rows="1"
+            cols="3"></input></div>
+        </div>
+        <div class="field">
+            <p><b></b>Description</b></p>
+            <textarea
+            type="text"
+            name="destext"
+            id="destext"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="grist">
+            <h3>Malt</h3>
+            <div class="fieldwrapper">
+                <fieldset id="grist">
+                    <legend>Add the malts you want to use and their proportion.
+                    </legend>
+                    <div class="list-title">
+                    <p id="malt-type">Malt Type</p>
+                    <p id="malt-EBC">EBC (auto)</p>
+                    <p id="malt-proportion">Proportion in %</p>
+                    <p id="malt-abmount">Amount in g</p>
+                    <p></p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <button id="addmalt" class="add" type="button"><i class="fa fa-plus"></i></button>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="mashing-notes"
+            id="mashing-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="mashing">
+            <h3>Mashing and Boiling</h3>
+            <div class="fieldwrapper">
+                <fieldset id="mashing">
+                    <legend>Add mash temperature steps and duration and also the cooking
+                        time (100 °C).
+                    </legend>
+                    <div class="list-title">
+                    <p id="mash-temperature">Temperature in °C</p>
+                    <p id="mash-duration">Duration in min</p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <button id="addtemp" class="add" type="button"><i class="fa fa-plus"></i></button>
+                        <p></p>
+                        <p id="cook-time">Cooking Time in min</p>
+                        <p></p>
+                        <p></p>
+                        <input type="number" id="CookingTime" step="1" min="0"></input>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="mashing-notes"
+            id="mashing-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="hopping">
+             <h3>Hopping</h3>
+            <div class="fieldwrapper">
+                <fieldset id="hopping">
+                    <legend>Add the hops you want to use and their proportion.
+                    </legend>
+                    <div class="list-title">
+                    <p id="hop-type">Hop Type</p>
+                    <p id="hop-ISO">Alpha-Acid (auto)</p>
+                    <p id="hop-time">Cooking Time in min</p>
+                    <p id="hop-proportion">Amount per l</p>
+                    <p id="hop-amount">Amount in g</p>
+                    <p></p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <button id="addhop" class="add" type="button"><i class="fa fa-plus"></i></button>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="hop-notes"
+            id="hop-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="buttons">
+
+        </div>
+        <div class="fermentation">
+            <h3>Fermentation</h3>
+            <div class="fieldwrapper">
+                <fieldset id="fermentation">
+                    <legend>Add the yeasts you want to use and their proportion.
+                    </legend>
+                    <div class="list-title">
+                    <p id="yeast-type">Yeast Type</p>
+                    <p id="yeast-og">Breakage Behaviour</p>
+                    <p id="yeast-min">min Temp</p>
+                    <p id="yeast-max">max Temp</p>
+                    <p id="yeast-proportion">Proportion in %</p>
+                    <p id="yeast-abmount">Amount in g</p>
+                    <p></p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <button id="addyeast" class="add" type="button"><i class="fa fa-plus"></i></button>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="fermentation-notes"
+            id="fermentation-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class=""></div>
+    </div> 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script>
+
+
+        $(document).ready(function(){
+            $("#addtemp").click(function() {
+    		var lastField = $("#mashing div:last").prev();
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"mashingentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fmashtemp = $("<input type=\"number\" name=\"mashtemp"  + intId + "\" min=\"0\" max=\"100\" step=\"0.1\" value=\"\" required />");
+            var fmashtime = $("<input type=\"number\" name=\"mashtime"  + intId + "\" min=\"0\" step=\"1\" value=\"\" required />");
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fmashtemp);
+            fieldWrapper.append(fmashtime);
+            fieldWrapper.append(removeButton);
+            $("#mashing div:last").before(fieldWrapper);
+        });
+    }); 
+        
+
+        $("body").keyup( function () {
+            var sumEBC = 0;
+            var cookTime = $("#CookingTime").val();
+            var plato = $("#OG").val();
+
+            $(".gristentry").each(function(i){
+                var intid = $(this).data("idx");
+                var thisprop = $(this).children('input[name=\"maltprop' + intid + '\"]').val() * 0.01;
+                var sha = $("#SHA").val();
+                var hotwort = $('#castwort').val();
+                var total = (plato * (1+ (plato / (258.6 - ( (plato / 258.2) *227.1) ) )) * 0.96 * hotwort / sha);
+                var thismass = total * 1000 * thisprop;
+                $(this).children('input[name=\"maltamount' + intid + '\"]').val(Math.round(thismass));
+                var ebc = $(this).children('select[name=\"selMalt' + intid + '\"]').val();
+                $(this).children('input[name=\"maltEBC' + intid + '\"]').val(ebc);
+                sumEBC += ebc * thisprop;
+            });
+            var totalEBC = (sumEBC * plato / 10 + 1.5 * cookTime / 60);
+            $("#EBC").val(Math.round(totalEBC));
+        });
+
+
+
+        $(document).ready(function(){
+            var maltselector = "<select class=\"maltselector\" name=\"selMalt";
+            var maltoptions = "";
+            $.getJSON("/get-json/", {ajax_post_data: "malt"}, function (data) {
+                var malts = data;                
+            // Iterate over object and add options to select
+                $.each(malts, function(index, object){
+                    maltoptions += '<option value=' + object.EBC + '>' + object.Name + '</option>';
+                });
+            });   
+            $("#addmalt").click(function() {
+    		var lastField = $("#grist div:last").prev();
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"gristentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fmaltdd = $(maltselector  + intId + "\" >" + maltoptions);
+            var fEBC = $("<input type=\"number\" name=\"maltEBC" + intId + "\" readonly />")
+            var fmaltprop = $("<input type=\"number\" name=\"maltprop"  + intId + "\" min=\"0\" max=\"100\" step=\"1\" required />");
+            var fmaltamount = $("<input type=\"number\" name=\"maltamount"  + intId + "\" min=\"0\" step=\"1\" />")
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fmaltdd);
+            fieldWrapper.append(fEBC);
+            fieldWrapper.append(fmaltprop);
+            fieldWrapper.append(fmaltamount);
+            fieldWrapper.append(removeButton);
+            $("#grist div:last").before(fieldWrapper);
+        });
+    });
+
+
+        $(document).ready(function(){
+            var hopselector = "<select class=\"hopselector\" name=\"selHop";
+
+            var hopoptions = "";
+            $.getJSON("/get-json/", {ajax_post_data: "hop"}, function (data) {
+                var hops = data;                
+            // Iterate over object and add options to select
+                $.each(hops, function(index, object){
+                    hopoptions += '<option value=' + object.EBC + '>' + object.Name + '</option>';
+                });
+            });
+            $("#addhop").click(function() {
+    		var lastField = $("#hopping div:last").prev();
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"hoppingentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fhopdd = $(hopselector  + intId + "\" >" + hopoptions);
+            var fISO = $("<input type=\"number\" name=\"hopISO" + intId + "\" readonly />")
+            var fhoptime = $("<input type=\"number\" name=\"hoptime"  + intId + "\" min=\"0\" step=\"1\" required />");
+            var fhopperl = $("<input type=\"number\" name=\"hopperl"  + intId + "\" min=\"0\" max=\"\" step=\"0.001\" required />");
+            var fhopamount = $("<input type=\"number\" name=\"hopamount"  + intId + "\" min=\"0\" step=\"1\" />")
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fhopdd);
+            fieldWrapper.append(fISO);
+            fieldWrapper.append(fhoptime);
+            fieldWrapper.append(fhopperl);
+            fieldWrapper.append(fhopamount);
+            fieldWrapper.append(removeButton);
+            $("#hopping div:last").before(fieldWrapper);
+        });
+        });
+
+
+        $(document).ready(function(){
+            var yeastselector = "<select class=\"yeastselector\" name=\"selYeast";
+            var yeastoptions = "";
+            $.getJSON("/get-json/", {ajax_post_data: "yeast"}, function (data) {
+                var yeasts = data;                
+            // Iterate over object and add options to select
+                $.each(yeasts, function(index, object){
+                    yeastoptions += '<option value=' + object + '>' + object.Name + '</option>';
+                });
+            });
+            $("#addyeast").click(function() {
+            console.log("Button works");
+    		var lastField = $("#fermentation div:last").prev();
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"fermentationentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fyeastdd =$(yeastselector + intId + "\" >" + yeastoptions);
+            var fOG = $("<input type=\"text\" name=\"yeastOG" + intId + "\" readonly />");
+            var fyeastmin = $("<input type=\"number\" name=\"yeastmin"  + intId + "\" min=\"0\" step=\"0.1\" readonly />");
+            var fyeastmax = $("<input type=\"number\" name=\"yeastmax"  + intId + "\" min=\"0\" step=\"0.1\" readonly />");
+            var fyeastprop = $("<input type=\"number\" name=\"yeastprop"  + intId + "\" min=\"0\" max=\"\" step=\"0.01\" required />");
+            var fyeastamount = $("<input type=\"number\" name=\"yeastamount"  + intId + "\" min=\"0\" step=\"0.1\" required />")
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fyeastdd);
+            fieldWrapper.append(fOG);
+            fieldWrapper.append(fyeastmin);
+            fieldWrapper.append(fyeastmax);
+            fieldWrapper.append(fyeastprop);
+            fieldWrapper.append(fyeastamount);
+            fieldWrapper.append(removeButton);
+            $("#fermentation div:last").before(fieldWrapper);
+        });
+        });
+
+        $("body").on('change mouseup keyup', function () {
+            var sumIBU = 0;
+            var plato = $("#OG").val();
+            var volume = $("#castwort").val();
+
+            $(".hoppingentry").each(function(i){
+                var intid = $(this).data("idx");
+                var hopperl = $(this).children("input[name='hopperl" + intid + "\']");
+                var amount = $(this).children("input[name='hopamount" + intid + "\']");
+                amount.keyup(function () {
+                    hopperl.val($(this).val() / volume);
+                });
+                hopperl.keyup(function (){
+                    amount.val($(this).val() * volume);
+                });
+                relhop = hopperl.val();
+                $("#castwort").keyup(function () {
+                   amount.val( $(this).val() * hopperl.val());
+                });
+                var amountval = amount.val();
+                var ISO = $(this).children('select[name=\"selHop' + intid + '\"]').val();
+                var hoptime = $(this).children('input[name="hoptime' + intid + '\"]').val();
+                $(this).children("input[name='hopISO" + intid + "\']").val(ISO);
+                var thisIBU = ((relhop * ISO * 10) * (1.65 * (0.000125 ** (0.004 * plato))) * ((1- Math.exp(-0.04 * hoptime)) / 4.15));
+                sumIBU += thisIBU;
+            });
+
+            $(".fermentationentry").each(function(i){
+                var intid = $(this).data("idx");
+                var yeastperl = $(this).children("input[name='yeastprop" + intid + "\']");
+                var amount = $(this).children("input[name='yeastamount" + intid + "\']");
+                var selector = $(this).children("select[name='selYeast" + intid + "\']").val();
+                amount.keyup(function () {
+                    yeastperl.val($(this).val() / volume);
+                });
+                yeastperl.keyup(function (){
+                    amount.val($(this).val() * volume);
+                });
+                $("#castwort").keyup(function () {
+                   amount.val( $(this).val() * yeastperl.val());
+                });
+                amount.val(Math.round(amount));
+                var amountval = amount.val();
+                if(selector.OberG == false){
+                    $(this).children("input[name='yeastOG" + intid + "\']").val("bottom");
+                } else if (val.og == true) {
+                    $(this).children("input[name='yeastOG" + intid + "\']").val("top");
+                }
+                    $(this).children("input[name='yeastmin" + intid + "\']").val(selector.MinTemp);
+                    $(this).children("input[name='yeastmax" + intid + "\']").val(selector.MaxTemp);
+            });
+
+            $("#IBU").val(Math.round(sumIBU));
+        });  
+
+        $(document).on('click', '.remove', function(){
+            $(this).parent().fadeOut(100);
+        });
+    </script>
+</body>

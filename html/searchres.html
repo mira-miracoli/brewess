@@ -1,29 +1,30 @@
 <!DOCTYPE html>
 <html>
-    <head>
+    <head> <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Brewess</title>
         <style>
             *{
-                padding: 0;
-                margin: 0;
                 box-sizing: border-box;
                 outline: none;
             }
             body{
                 font-family: 'Poppins', sans-serif;
             }
-            h1 {
+            .main {
+                margin-left: 200px;
+                padding-top: 30px;
+            }
+                h1 {
                 justify-content: left;
                 padding-top: 70px;
-                padding-left: 70px;
+                padding-left: 0px;
                 padding-right: auto;
                 padding-bottom: 50px;
             }
             h2 {
                 justify-content: left;
                 padding-top: 0;
-                padding-left: 70px;
-                padding-right: auto;
-                padding-bottom: 50px;
             }
             .wrapper{
                 display: flex;
@@ -37,6 +38,40 @@
             .menu,
             .content{
                 width: 100%;
+                }
+            .sidenav {
+            height: 62%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: seashell;
+            overflow-x: hidden;
+            padding-top: 20px;
+            box-shadow: 5px 7px bisque;
+            border-radius: 3px;
+            }
+
+            .sidenav a {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            font-size: 14px;
+            color: black;
+            display: block;
+            }
+            .sidenav h1 {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            display: block;
+            }
+
+            .sidenav a:hover {
+            color: sandybrown;
+            }
+            @media screen and (max-height: 450px) {
+                .sidenav {padding-top: 15px;}
+                .sidenav a {font-size: 18px;}
             }
             select#type{
                 width: 100%;
@@ -46,7 +81,7 @@
                 font-family: 'Poppins', sans-serif;
                 text-align-last:center;
                 border-radius: 3px;
-                border: 2px solid #edbe21;
+                border: 3px solid #edbe21;
                 
             }
             select#og{
@@ -55,7 +90,7 @@
                 font-size: 16px;
                 font-family: 'Poppins', sans-serif;
                 border-radius: 3px;
-                border: 2px solid #edbe21;
+                border: 3px solid #edbe21;
                 
             }
             
@@ -84,7 +119,7 @@
                 display: block;
                 border: none;
                 border-radius: 3px;
-                border: 2px solid #edbe21;
+                border: 3px solid #edbe21;
     margin-left: 0;
             }
             input {
@@ -98,21 +133,27 @@
 
                 border: none;
                 border-radius: 3px;
-                border: 2px solid #edbe21;
+                border: 3px solid #edbe21;
                 margin-left: 0;
             
             }
         </style>
     </head>
 <body>
-
-   <h1>Brewess</h1> 
-    <h2>Search Resources</h2>
-
+<div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/home/">Home</a>
+        <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
+        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/new-resource/">Create Resource</a>
+      </div>
+<div class="main">
 <form action="/search-results/" method="POST">
 
 <div class="wrapper">
     <div class="menu">
+
+    <h2>Search Resource</h2>
 <select name="type" id="type">
         <option value="malt">Malt</option>
         <option value="hop">Hop</option>
@@ -191,7 +232,7 @@
 <div class="submit">
     <button>Submit</button>
 </div>
-
+</div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
@@ -200,19 +241,19 @@
                 $("#"+ $(this).val()).fadeIn(700);
                 switch ($(this).val()) { 
                 case "hop":
-                $("input").css("border", "2px solid #0cb318");
-                $("select").css("border", "2px solid #0cb318");
-                $("button").css("border", "2px solid #0cb318");
+                $("input").css("border", "3px solid #0cb318");
+                $("select").css("border", "3px solid #0cb318");
+                $("button").css("border", "3px solid #0cb318");
                 break;
                 case "malt":
-                $("input").css("border", "3px solid PaleGoldenRod");
-                $("select").css("border", "3px solid PaleGoldenRod");
-                $("button").css("border", "3px solid PaleGoldenRod");
+                $("input").css("border", "3px solid bisque");
+                $("select").css("border", "3px solid bisque");
+                $("button").css("border", "3px solid bisque");
                 break;
                 case "yeast":
-                $("input").css("border", "2px solid SandyBrown");
-                $("select").css("border", "2px solid SandyBrown");
-                $("button").css("border", "2px solid SandyBrown");
+                $("input").css("border", "3px solid SandyBrown");
+                $("select").css("border", "3px solid SandyBrown");
+                $("button").css("border", "3px solid SandyBrown");
                 break;
                 default:
                     alert('Nobody Wins!');

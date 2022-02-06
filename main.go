@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -18,7 +19,7 @@ type Resourcels struct {
 
 var templates, terr = template.ParseFiles("./html/newres.html",
 	"./html/searchres.html",
-	"./html/badsearch.html", "./html/resultsres.html")
+	"./html/badsearch.html", "./html/resultsres.html", "./html/editrecipe.html")
 
 func main() {
 	if terr != nil {
@@ -28,6 +29,7 @@ func main() {
 	http.HandleFunc("/search-results/", resultsResHandler)
 	http.HandleFunc("/save-resource/", saveResHandler)
 	http.HandleFunc("/delete-resource/", deleteResHandler)
+	http.HandleFunc("/get-json/", resourceMarshal)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -47,13 +49,14 @@ func renderList(w http.ResponseWriter, tmpl string, r *Resourcels) {
 
 func staticHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL.Path)
+	res := &Resource{}
 	switch r.URL.Path {
 	case "/search-resource/":
-		res := &Resource{}
 		renderSingle(w, "searchres", res)
 	case "/new-resource/":
-		res := &Resource{}
 		renderSingle(w, "newres", res)
+	case "/edit-recipe/":
+		renderSingle(w, "editrecipe", res)
 	case "/home/":
 		http.ServeFile(w, r, "./html/home.html")
 	default:
@@ -84,6 +87,25 @@ func resultsResHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// render Template with Result List if List is empty return search failed page
+}
+
+func resourceMarshal(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Invalid AJAX request", http.StatusBadRequest)
+		return
+	}
+	res_sting := r.FormValue("ajax_post_data")
+	qres := new(Resource)
+	qres.Type = res_sting
+	res_ls, err := resourceQuery(qres)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	res_json, err := json.Marshal(res_ls)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	fmt.Fprint(w, string(res_json))
 }
 
 func saveResHandler(w http.ResponseWriter, r *http.Request) {

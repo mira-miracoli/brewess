@@ -23,14 +23,14 @@ type Recipe struct {
 	Id          uint64
 	Name        string
 	Description string // short text to descripe and add any comments
-	Malts       []*Resource
-	IsoAlpha    float64
-	Hops        []*Resource // specifies hop-resources to use and its proportion
-	HopSugg     []string
-	DryHop      []string // used for hopping examples
-	SHA         float64
-	Yeasts      []*Resource
-	AlcTarget   float64 // specifies the targeted amount alc by vol
-	OGTarget    float64 // specifies the targeted original gravity in %sacc
+	//Malts       map[float64]*Resource
+	IsoAlpha float64
+	//Hops        map[float64]*Resource // specifies hop-resources to use and its proportion
+	HopSugg []string
+	DryHop  []string // used for hopping examples
+	SHA     float64
+	//Yeasts      map[float64]*Resource
+	AlcTarget float64 // specifies the targeted amount alc by vol
+	OGTarget  float64 // specifies the targeted original gravity in %sacc
 
 }
