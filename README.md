@@ -1,14 +1,15 @@
 # Brewess
 A tool for brewing recipe management and calculation
-...which is currently under construction
+...which is currently under construction  
+  
 TODO:
-[x] add the "Create Recipe" Page
-[x] build a working brewing calculator
-[x] get resources from database and fill selectors
-[ ] adding "save recipe" feature and corresponding model
-[ ] adding "Brew it" button that substracts the needed amounts from resource entries in database
-[ ] fix the spaghetti-code
-[ ] fix CSS and nav-bar
+- [X] add the "Create Recipe" Page
+- [X] build a working brewing calculator
+- [X] get resources from database and fill selectors
+- [ ] adding "save recipe" feature and corresponding model
+- [ ] adding "Brew it" button that substracts the needed amounts from resource entries in database
+- [ ] fix the spaghetti-code
+- [ ] fix CSS and nav-bar
 
 ## Installation
 * Tested on GNU/Linux only
