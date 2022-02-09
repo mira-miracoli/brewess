@@ -648,7 +648,7 @@
                 var hops = data;                
             // Iterate over object and add options to select
                 $.each(hops, function(index, object){
-                    hopoptions += '<option value=' + object.EBC + '>' + object.Name + '</option>';
+                    hopoptions += '<option value=' + object.ISO + '>' + object.Name + '</option>';
                 });
             });
             $("#addhop").click(function() {
@@ -674,13 +674,17 @@
 
 
         $(document).ready(function(){
-            var yeastselector = "<select class=\"yeastselector\" name=\"selYeast";
-            var yeastoptions = "";
+            var yeastselector = $("<select/>");
             $.getJSON("/get-json/", {ajax_post_data: "yeast"}, function (data) {
                 var yeasts = data;                
             // Iterate over object and add options to select
                 $.each(yeasts, function(index, object){
-                    yeastoptions += '<option value=' + object + '>' + object.Name + '</option>';
+                    var option = $('<option/>');
+                    option.attr('data-MaxTemp', object.MaxTemp);
+                    option.attr('data-MinTemp', object.MinTemp);
+                    option.attr('data-OberG', object.OberG);
+                    option.text(object.Name)
+                    yeastselector.append(option);
                 });
             });
             $("#addyeast").click(function() {
@@ -689,8 +693,8 @@
             var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
             var fieldWrapper = $("<div class=\"fermentationentry\" id=\"field" + intId + "\"/>");
             fieldWrapper.data("idx", intId);
-            var fyeastdd =$(yeastselector + intId + "\" >" + yeastoptions);
-            var fOG = $("<input type=\"text\" name=\"yeastOG" + intId + "\" readonly />");
+            var fyeastdd =yeastselector.attr('name', 'selYeast' + intId);
+            var fOG = $("<input type=\"text\" name=\"yeastOG" + intId + "\" value=\"\" readonly />");
             var fyeastmin = $("<input type=\"number\" name=\"yeastmin"  + intId + "\" min=\"0\" step=\"0.1\" readonly />");
             var fyeastmax = $("<input type=\"number\" name=\"yeastmax"  + intId + "\" min=\"0\" step=\"0.1\" readonly />");
             var fyeastprop = $("<input type=\"number\" name=\"yeastprop"  + intId + "\" min=\"0\" max=\"\" step=\"0.01\" required />");
@@ -726,8 +730,7 @@
                 $("#castwort").keyup(function () {
                    amount.val( $(this).val() * hopperl.val());
                 });
-                var amountval = amount.val();
-                var ISO = $(this).children('select[name=\"selHop' + intid + '\"]').val();
+                var ISO = $(this).children('select[name=\"selHop' + intid + '\"]').find(":selected").val();
                 var hoptime = $(this).children('input[name="hoptime' + intid + '\"]').val();
                 $(this).children("input[name='hopISO" + intid + "\']").val(ISO);
                 var thisIBU = ((relhop * ISO * 10) * (1.65 * (0.000125 ** (0.004 * plato))) * ((1- Math.exp(-0.04 * hoptime)) / 4.15));
@@ -738,7 +741,7 @@
                 var intid = $(this).data("idx");
                 var yeastperl = $(this).children("input[name='yeastprop" + intid + "\']");
                 var amount = $(this).children("input[name='yeastamount" + intid + "\']");
-                var selector = $(this).children("select[name='selYeast" + intid + "\']").val();
+                var option = $(this).children("select[name='selYeast" + intid + "\']").find(":selected");
                 amount.keyup(function () {
                     yeastperl.val($(this).val() / volume);
                 });
@@ -748,15 +751,15 @@
                 $("#castwort").keyup(function () {
                    amount.val( $(this).val() * yeastperl.val());
                 });
-                amount.val(Math.round(amount));
-                var amountval = amount.val();
-                if(selector.OberG == false){
+                //amount.val(Math.round(amount));
+                //var amountval = amount.val();
+                if(option.data("oberg") == false){
                     $(this).children("input[name='yeastOG" + intid + "\']").val("bottom");
-                } else if (val.og == true) {
+                } else if (option.data("oberg") == true) {
                     $(this).children("input[name='yeastOG" + intid + "\']").val("top");
                 }
-                    $(this).children("input[name='yeastmin" + intid + "\']").val(selector.MinTemp);
-                    $(this).children("input[name='yeastmax" + intid + "\']").val(selector.MaxTemp);
+                    $(this).children("input[name='yeastmin" + intid + "\']").val(option.data('mintemp'));
+                    $(this).children("input[name='yeastmax" + intid + "\']").val(option.data("maxtemp"));
             });
 
             $("#IBU").val(Math.round(sumIBU));
