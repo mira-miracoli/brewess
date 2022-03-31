@@ -13,10 +13,12 @@ func ObjectBoxModel() *objectbox.Model {
 	model.GeneratorVersion(6)
 
 	model.RegisterBinding(ResourceBinding)
+	model.RegisterBinding(MashStepBinding)
 	model.RegisterBinding(RecipeBinding)
-	model.LastEntityId(2, 7524476822026071533)
+	model.RegisterBinding(UsedResourceBinding)
+	model.LastEntityId(4, 4113036754004893734)
 
-	model.LastRelationId(3, 441495759427462681)
+	model.LastRelationId(4, 2025680423898785750)
 
 	return model
 }

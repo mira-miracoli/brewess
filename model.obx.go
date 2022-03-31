@@ -19,7 +19,7 @@ var ResourceBinding = resource_EntityInfo{
 	Entity: objectbox.Entity{
 		Id: 1,
 	},
-	Uid: 8864280590638099451,
+	Uid: 6398592718725614788,
 }
 
 // Resource_ contains type-based Property helpers to facilitate some common operations such as Queries.
@@ -33,8 +33,6 @@ var Resource_ = struct {
 	MaxTemp *objectbox.PropertyFloat64
 	OberG   *objectbox.PropertyBool
 	ISO     *objectbox.PropertyFloat64
-	Opened  *objectbox.PropertyInt64
-	Exp     *objectbox.PropertyInt64
 }{
 	Id: &objectbox.PropertyUint64{
 		BaseProperty: &objectbox.BaseProperty{
@@ -90,18 +88,6 @@ var Resource_ = struct {
 			Entity: &ResourceBinding.Entity,
 		},
 	},
-	Opened: &objectbox.PropertyInt64{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     10,
-			Entity: &ResourceBinding.Entity,
-		},
-	},
-	Exp: &objectbox.PropertyInt64{
-		BaseProperty: &objectbox.BaseProperty{
-			Id:     11,
-			Entity: &ResourceBinding.Entity,
-		},
-	},
 }
 
 // GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
@@ -111,20 +97,18 @@ func (resource_EntityInfo) GeneratorVersion() int {
 
 // AddToModel is called by ObjectBox during model build
 func (resource_EntityInfo) AddToModel(model *objectbox.Model) {
-	model.Entity("Resource", 1, 8864280590638099451)
-	model.Property("Id", 6, 1, 5493231812372595979)
+	model.Entity("Resource", 1, 6398592718725614788)
+	model.Property("Id", 6, 1, 8603741443802135816)
 	model.PropertyFlags(1)
-	model.Property("Type", 9, 2, 887142186992516674)
-	model.Property("Name", 9, 3, 7704535535632126273)
-	model.Property("Amount", 8, 4, 3015859585488509340)
-	model.Property("EBC", 8, 5, 8027933678563871299)
-	model.Property("MinTemp", 8, 6, 6978596190461251037)
-	model.Property("MaxTemp", 8, 7, 1466987121535296644)
-	model.Property("OberG", 1, 8, 6482886941541151457)
-	model.Property("ISO", 8, 9, 6879353326633125653)
-	model.Property("Opened", 10, 10, 2589939524641695745)
-	model.Property("Exp", 10, 11, 1865559351558115529)
-	model.EntityLastPropertyId(11, 1865559351558115529)
+	model.Property("Type", 9, 2, 1661570048713633759)
+	model.Property("Name", 9, 3, 2627618091687763897)
+	model.Property("Amount", 8, 4, 1942756313823500526)
+	model.Property("EBC", 8, 5, 6283055969347809147)
+	model.Property("MinTemp", 8, 6, 282614593584897710)
+	model.Property("MaxTemp", 8, 7, 7470289214539401976)
+	model.Property("OberG", 1, 8, 5235311424859192832)
+	model.Property("ISO", 8, 9, 3857065664337608284)
+	model.EntityLastPropertyId(9, 3857065664337608284)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
@@ -146,29 +130,11 @@ func (resource_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{
 // Flatten is called by ObjectBox to transform an object to a FlatBuffer
 func (resource_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
 	obj := object.(*Resource)
-	var propOpened int64
-	{
-		var err error
-		propOpened, err = objectbox.TimeInt64ConvertToDatabaseValue(obj.Opened)
-		if err != nil {
-			return errors.New("converter objectbox.TimeInt64ConvertToDatabaseValue() failed on Resource.Opened: " + err.Error())
-		}
-	}
-
-	var propExp int64
-	{
-		var err error
-		propExp, err = objectbox.TimeInt64ConvertToDatabaseValue(obj.Exp)
-		if err != nil {
-			return errors.New("converter objectbox.TimeInt64ConvertToDatabaseValue() failed on Resource.Exp: " + err.Error())
-		}
-	}
-
 	var offsetType = fbutils.CreateStringOffset(fbb, obj.Type)
 	var offsetName = fbutils.CreateStringOffset(fbb, obj.Name)
 
 	// build the FlatBuffers object
-	fbb.StartObject(11)
+	fbb.StartObject(9)
 	fbutils.SetUint64Slot(fbb, 0, id)
 	fbutils.SetUOffsetTSlot(fbb, 1, offsetType)
 	fbutils.SetUOffsetTSlot(fbb, 2, offsetName)
@@ -178,8 +144,6 @@ func (resource_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder,
 	fbutils.SetFloat64Slot(fbb, 6, obj.MaxTemp)
 	fbutils.SetBoolSlot(fbb, 7, obj.OberG)
 	fbutils.SetFloat64Slot(fbb, 8, obj.ISO)
-	fbutils.SetInt64Slot(fbb, 9, propOpened)
-	fbutils.SetInt64Slot(fbb, 10, propExp)
 	return nil
 }
 
@@ -196,16 +160,6 @@ func (resource_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interfac
 
 	var propId = table.GetUint64Slot(4, 0)
 
-	propOpened, err := objectbox.TimeInt64ConvertToEntityProperty(fbutils.GetInt64Slot(table, 22))
-	if err != nil {
-		return nil, errors.New("converter objectbox.TimeInt64ConvertToEntityProperty() failed on Resource.Opened: " + err.Error())
-	}
-
-	propExp, err := objectbox.TimeInt64ConvertToEntityProperty(fbutils.GetInt64Slot(table, 24))
-	if err != nil {
-		return nil, errors.New("converter objectbox.TimeInt64ConvertToEntityProperty() failed on Resource.Exp: " + err.Error())
-	}
-
 	return &Resource{
 		Id:      propId,
 		Type:    fbutils.GetStringSlot(table, 6),
@@ -216,8 +170,6 @@ func (resource_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interfac
 		MaxTemp: fbutils.GetFloat64Slot(table, 16),
 		OberG:   fbutils.GetBoolSlot(table, 18),
 		ISO:     fbutils.GetFloat64Slot(table, 20),
-		Opened:  propOpened,
-		Exp:     propExp,
 	}, nil
 }
 
@@ -456,6 +408,342 @@ func (query *ResourceQuery) Limit(limit uint64) *ResourceQuery {
 	return query
 }
 
+type mashStep_EntityInfo struct {
+	objectbox.Entity
+	Uid uint64
+}
+
+var MashStepBinding = mashStep_EntityInfo{
+	Entity: objectbox.Entity{
+		Id: 2,
+	},
+	Uid: 8664544259747831279,
+}
+
+// MashStep_ contains type-based Property helpers to facilitate some common operations such as Queries.
+var MashStep_ = struct {
+	Id   *objectbox.PropertyUint64
+	Temp *objectbox.PropertyFloat64
+	Time *objectbox.PropertyFloat64
+}{
+	Id: &objectbox.PropertyUint64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     1,
+			Entity: &MashStepBinding.Entity,
+		},
+	},
+	Temp: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     2,
+			Entity: &MashStepBinding.Entity,
+		},
+	},
+	Time: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     3,
+			Entity: &MashStepBinding.Entity,
+		},
+	},
+}
+
+// GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
+func (mashStep_EntityInfo) GeneratorVersion() int {
+	return 6
+}
+
+// AddToModel is called by ObjectBox during model build
+func (mashStep_EntityInfo) AddToModel(model *objectbox.Model) {
+	model.Entity("MashStep", 2, 8664544259747831279)
+	model.Property("Id", 6, 1, 2120982015926787913)
+	model.PropertyFlags(1)
+	model.Property("Temp", 8, 2, 5509974950600740261)
+	model.Property("Time", 8, 3, 3460636355919564859)
+	model.EntityLastPropertyId(3, 3460636355919564859)
+}
+
+// GetId is called by ObjectBox during Put operations to check for existing ID on an object
+func (mashStep_EntityInfo) GetId(object interface{}) (uint64, error) {
+	return object.(*MashStep).Id, nil
+}
+
+// SetId is called by ObjectBox during Put to update an ID on an object that has just been inserted
+func (mashStep_EntityInfo) SetId(object interface{}, id uint64) error {
+	object.(*MashStep).Id = id
+	return nil
+}
+
+// PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
+func (mashStep_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
+	return nil
+}
+
+// Flatten is called by ObjectBox to transform an object to a FlatBuffer
+func (mashStep_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
+	obj := object.(*MashStep)
+
+	// build the FlatBuffers object
+	fbb.StartObject(3)
+	fbutils.SetUint64Slot(fbb, 0, id)
+	fbutils.SetFloat64Slot(fbb, 1, obj.Temp)
+	fbutils.SetFloat64Slot(fbb, 2, obj.Time)
+	return nil
+}
+
+// Load is called by ObjectBox to load an object from a FlatBuffer
+func (mashStep_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}, error) {
+	if len(bytes) == 0 { // sanity check, should "never" happen
+		return nil, errors.New("can't deserialize an object of type 'MashStep' - no data received")
+	}
+
+	var table = &flatbuffers.Table{
+		Bytes: bytes,
+		Pos:   flatbuffers.GetUOffsetT(bytes),
+	}
+
+	var propId = table.GetUint64Slot(4, 0)
+
+	return &MashStep{
+		Id:   propId,
+		Temp: fbutils.GetFloat64Slot(table, 6),
+		Time: fbutils.GetFloat64Slot(table, 8),
+	}, nil
+}
+
+// MakeSlice is called by ObjectBox to construct a new slice to hold the read objects
+func (mashStep_EntityInfo) MakeSlice(capacity int) interface{} {
+	return make([]*MashStep, 0, capacity)
+}
+
+// AppendToSlice is called by ObjectBox to fill the slice of the read objects
+func (mashStep_EntityInfo) AppendToSlice(slice interface{}, object interface{}) interface{} {
+	if object == nil {
+		return append(slice.([]*MashStep), nil)
+	}
+	return append(slice.([]*MashStep), object.(*MashStep))
+}
+
+// Box provides CRUD access to MashStep objects
+type MashStepBox struct {
+	*objectbox.Box
+}
+
+// BoxForMashStep opens a box of MashStep objects
+func BoxForMashStep(ob *objectbox.ObjectBox) *MashStepBox {
+	return &MashStepBox{
+		Box: ob.InternalBox(2),
+	}
+}
+
+// Put synchronously inserts/updates a single object.
+// In case the Id is not specified, it would be assigned automatically (auto-increment).
+// When inserting, the MashStep.Id property on the passed object will be assigned the new ID as well.
+func (box *MashStepBox) Put(object *MashStep) (uint64, error) {
+	return box.Box.Put(object)
+}
+
+// Insert synchronously inserts a single object. As opposed to Put, Insert will fail if given an ID that already exists.
+// In case the Id is not specified, it would be assigned automatically (auto-increment).
+// When inserting, the MashStep.Id property on the passed object will be assigned the new ID as well.
+func (box *MashStepBox) Insert(object *MashStep) (uint64, error) {
+	return box.Box.Insert(object)
+}
+
+// Update synchronously updates a single object.
+// As opposed to Put, Update will fail if an object with the same ID is not found in the database.
+func (box *MashStepBox) Update(object *MashStep) error {
+	return box.Box.Update(object)
+}
+
+// PutAsync asynchronously inserts/updates a single object.
+// Deprecated: use box.Async().Put() instead
+func (box *MashStepBox) PutAsync(object *MashStep) (uint64, error) {
+	return box.Box.PutAsync(object)
+}
+
+// PutMany inserts multiple objects in single transaction.
+// In case Ids are not set on the objects, they would be assigned automatically (auto-increment).
+//
+// Returns: IDs of the put objects (in the same order).
+// When inserting, the MashStep.Id property on the objects in the slice will be assigned the new IDs as well.
+//
+// Note: In case an error occurs during the transaction, some of the objects may already have the MashStep.Id assigned
+// even though the transaction has been rolled back and the objects are not stored under those IDs.
+//
+// Note: The slice may be empty or even nil; in both cases, an empty IDs slice and no error is returned.
+func (box *MashStepBox) PutMany(objects []*MashStep) ([]uint64, error) {
+	return box.Box.PutMany(objects)
+}
+
+// Get reads a single object.
+//
+// Returns nil (and no error) in case the object with the given ID doesn't exist.
+func (box *MashStepBox) Get(id uint64) (*MashStep, error) {
+	object, err := box.Box.Get(id)
+	if err != nil {
+		return nil, err
+	} else if object == nil {
+		return nil, nil
+	}
+	return object.(*MashStep), nil
+}
+
+// GetMany reads multiple objects at once.
+// If any of the objects doesn't exist, its position in the return slice is nil
+func (box *MashStepBox) GetMany(ids ...uint64) ([]*MashStep, error) {
+	objects, err := box.Box.GetMany(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*MashStep), nil
+}
+
+// GetManyExisting reads multiple objects at once, skipping those that do not exist.
+func (box *MashStepBox) GetManyExisting(ids ...uint64) ([]*MashStep, error) {
+	objects, err := box.Box.GetManyExisting(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*MashStep), nil
+}
+
+// GetAll reads all stored objects
+func (box *MashStepBox) GetAll() ([]*MashStep, error) {
+	objects, err := box.Box.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*MashStep), nil
+}
+
+// Remove deletes a single object
+func (box *MashStepBox) Remove(object *MashStep) error {
+	return box.Box.Remove(object)
+}
+
+// RemoveMany deletes multiple objects at once.
+// Returns the number of deleted object or error on failure.
+// Note that this method will not fail if an object is not found (e.g. already removed).
+// In case you need to strictly check whether all of the objects exist before removing them,
+// you can execute multiple box.Contains() and box.Remove() inside a single write transaction.
+func (box *MashStepBox) RemoveMany(objects ...*MashStep) (uint64, error) {
+	var ids = make([]uint64, len(objects))
+	for k, object := range objects {
+		ids[k] = object.Id
+	}
+	return box.Box.RemoveIds(ids...)
+}
+
+// Creates a query with the given conditions. Use the fields of the MashStep_ struct to create conditions.
+// Keep the *MashStepQuery if you intend to execute the query multiple times.
+// Note: this function panics if you try to create illegal queries; e.g. use properties of an alien type.
+// This is typically a programming error. Use QueryOrError instead if you want the explicit error check.
+func (box *MashStepBox) Query(conditions ...objectbox.Condition) *MashStepQuery {
+	return &MashStepQuery{
+		box.Box.Query(conditions...),
+	}
+}
+
+// Creates a query with the given conditions. Use the fields of the MashStep_ struct to create conditions.
+// Keep the *MashStepQuery if you intend to execute the query multiple times.
+func (box *MashStepBox) QueryOrError(conditions ...objectbox.Condition) (*MashStepQuery, error) {
+	if query, err := box.Box.QueryOrError(conditions...); err != nil {
+		return nil, err
+	} else {
+		return &MashStepQuery{query}, nil
+	}
+}
+
+// Async provides access to the default Async Box for asynchronous operations. See MashStepAsyncBox for more information.
+func (box *MashStepBox) Async() *MashStepAsyncBox {
+	return &MashStepAsyncBox{AsyncBox: box.Box.Async()}
+}
+
+// MashStepAsyncBox provides asynchronous operations on MashStep objects.
+//
+// Asynchronous operations are executed on a separate internal thread for better performance.
+//
+// There are two main use cases:
+//
+// 1) "execute & forget:" you gain faster put/remove operations as you don't have to wait for the transaction to finish.
+//
+// 2) Many small transactions: if your write load is typically a lot of individual puts that happen in parallel,
+// this will merge small transactions into bigger ones. This results in a significant gain in overall throughput.
+//
+// In situations with (extremely) high async load, an async method may be throttled (~1ms) or delayed up to 1 second.
+// In the unlikely event that the object could still not be enqueued (full queue), an error will be returned.
+//
+// Note that async methods do not give you hard durability guarantees like the synchronous Box provides.
+// There is a small time window in which the data may not have been committed durably yet.
+type MashStepAsyncBox struct {
+	*objectbox.AsyncBox
+}
+
+// AsyncBoxForMashStep creates a new async box with the given operation timeout in case an async queue is full.
+// The returned struct must be freed explicitly using the Close() method.
+// It's usually preferable to use MashStepBox::Async() which takes care of resource management and doesn't require closing.
+func AsyncBoxForMashStep(ob *objectbox.ObjectBox, timeoutMs uint64) *MashStepAsyncBox {
+	var async, err = objectbox.NewAsyncBox(ob, 2, timeoutMs)
+	if err != nil {
+		panic("Could not create async box for entity ID 2: %s" + err.Error())
+	}
+	return &MashStepAsyncBox{AsyncBox: async}
+}
+
+// Put inserts/updates a single object asynchronously.
+// When inserting a new object, the Id property on the passed object will be assigned the new ID the entity would hold
+// if the insert is ultimately successful. The newly assigned ID may not become valid if the insert fails.
+func (asyncBox *MashStepAsyncBox) Put(object *MashStep) (uint64, error) {
+	return asyncBox.AsyncBox.Put(object)
+}
+
+// Insert a single object asynchronously.
+// The Id property on the passed object will be assigned the new ID the entity would hold if the insert is ultimately
+// successful. The newly assigned ID may not become valid if the insert fails.
+// Fails silently if an object with the same ID already exists (this error is not returned).
+func (asyncBox *MashStepAsyncBox) Insert(object *MashStep) (id uint64, err error) {
+	return asyncBox.AsyncBox.Insert(object)
+}
+
+// Update a single object asynchronously.
+// The object must already exists or the update fails silently (without an error returned).
+func (asyncBox *MashStepAsyncBox) Update(object *MashStep) error {
+	return asyncBox.AsyncBox.Update(object)
+}
+
+// Remove deletes a single object asynchronously.
+func (asyncBox *MashStepAsyncBox) Remove(object *MashStep) error {
+	return asyncBox.AsyncBox.Remove(object)
+}
+
+// Query provides a way to search stored objects
+//
+// For example, you can find all MashStep which Id is either 42 or 47:
+// 		box.Query(MashStep_.Id.In(42, 47)).Find()
+type MashStepQuery struct {
+	*objectbox.Query
+}
+
+// Find returns all objects matching the query
+func (query *MashStepQuery) Find() ([]*MashStep, error) {
+	objects, err := query.Query.Find()
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*MashStep), nil
+}
+
+// Offset defines the index of the first object to process (how many objects to skip)
+func (query *MashStepQuery) Offset(offset uint64) *MashStepQuery {
+	query.Query.Offset(offset)
+	return query
+}
+
+// Limit sets the number of elements to process by the query
+func (query *MashStepQuery) Limit(limit uint64) *MashStepQuery {
+	query.Query.Limit(limit)
+	return query
+}
+
 type recipe_EntityInfo struct {
 	objectbox.Entity
 	Uid uint64
@@ -463,22 +751,30 @@ type recipe_EntityInfo struct {
 
 var RecipeBinding = recipe_EntityInfo{
 	Entity: objectbox.Entity{
-		Id: 2,
+		Id: 3,
 	},
-	Uid: 7524476822026071533,
+	Uid: 3394924362114017658,
 }
 
 // Recipe_ contains type-based Property helpers to facilitate some common operations such as Queries.
 var Recipe_ = struct {
-	Id          *objectbox.PropertyUint64
-	Name        *objectbox.PropertyString
-	Description *objectbox.PropertyString
-	IsoAlpha    *objectbox.PropertyFloat64
-	HopSugg     *objectbox.PropertyStringVector
-	DryHop      *objectbox.PropertyStringVector
-	SHA         *objectbox.PropertyFloat64
-	AlcTarget   *objectbox.PropertyFloat64
-	OGTarget    *objectbox.PropertyFloat64
+	Id               *objectbox.PropertyUint64
+	Name             *objectbox.PropertyString
+	BasicInfo        *objectbox.PropertyString
+	HopInfo          *objectbox.PropertyString
+	MaltInfo         *objectbox.PropertyString
+	MashInfo         *objectbox.PropertyString
+	FermentationInfo *objectbox.PropertyString
+	IBU              *objectbox.PropertyFloat64
+	EBC              *objectbox.PropertyFloat64
+	OGTarget         *objectbox.PropertyFloat64
+	CastWorth        *objectbox.PropertyFloat64
+	CookingTime      *objectbox.PropertyFloat64
+	SHA              *objectbox.PropertyFloat64
+	MashSteps        *objectbox.RelationToMany
+	Malts            *objectbox.RelationToMany
+	Hops             *objectbox.RelationToMany
+	Yeasts           *objectbox.RelationToMany
 }{
 	Id: &objectbox.PropertyUint64{
 		BaseProperty: &objectbox.BaseProperty{
@@ -492,47 +788,91 @@ var Recipe_ = struct {
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	Description: &objectbox.PropertyString{
+	BasicInfo: &objectbox.PropertyString{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     3,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	IsoAlpha: &objectbox.PropertyFloat64{
+	HopInfo: &objectbox.PropertyString{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     4,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	HopSugg: &objectbox.PropertyStringVector{
+	MaltInfo: &objectbox.PropertyString{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     5,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	DryHop: &objectbox.PropertyStringVector{
+	MashInfo: &objectbox.PropertyString{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     6,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	SHA: &objectbox.PropertyFloat64{
+	FermentationInfo: &objectbox.PropertyString{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     7,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	AlcTarget: &objectbox.PropertyFloat64{
+	IBU: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     8,
 			Entity: &RecipeBinding.Entity,
 		},
 	},
-	OGTarget: &objectbox.PropertyFloat64{
+	EBC: &objectbox.PropertyFloat64{
 		BaseProperty: &objectbox.BaseProperty{
 			Id:     9,
 			Entity: &RecipeBinding.Entity,
 		},
+	},
+	OGTarget: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     10,
+			Entity: &RecipeBinding.Entity,
+		},
+	},
+	CastWorth: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     11,
+			Entity: &RecipeBinding.Entity,
+		},
+	},
+	CookingTime: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     12,
+			Entity: &RecipeBinding.Entity,
+		},
+	},
+	SHA: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     13,
+			Entity: &RecipeBinding.Entity,
+		},
+	},
+	MashSteps: &objectbox.RelationToMany{
+		Id:     1,
+		Source: &RecipeBinding.Entity,
+		Target: &MashStepBinding.Entity,
+	},
+	Malts: &objectbox.RelationToMany{
+		Id:     2,
+		Source: &RecipeBinding.Entity,
+		Target: &UsedResourceBinding.Entity,
+	},
+	Hops: &objectbox.RelationToMany{
+		Id:     3,
+		Source: &RecipeBinding.Entity,
+		Target: &UsedResourceBinding.Entity,
+	},
+	Yeasts: &objectbox.RelationToMany{
+		Id:     4,
+		Source: &RecipeBinding.Entity,
+		Target: &UsedResourceBinding.Entity,
 	},
 }
 
@@ -543,18 +883,26 @@ func (recipe_EntityInfo) GeneratorVersion() int {
 
 // AddToModel is called by ObjectBox during model build
 func (recipe_EntityInfo) AddToModel(model *objectbox.Model) {
-	model.Entity("Recipe", 2, 7524476822026071533)
-	model.Property("Id", 6, 1, 385067527585461866)
+	model.Entity("Recipe", 3, 3394924362114017658)
+	model.Property("Id", 6, 1, 4358918202742006842)
 	model.PropertyFlags(1)
-	model.Property("Name", 9, 2, 6590878796668904790)
-	model.Property("Description", 9, 3, 6111302923799653287)
-	model.Property("IsoAlpha", 8, 4, 6675220912961035469)
-	model.Property("HopSugg", 30, 5, 6003672669915185166)
-	model.Property("DryHop", 30, 6, 1837696198939072290)
-	model.Property("SHA", 8, 7, 7365373180582720820)
-	model.Property("AlcTarget", 8, 8, 77502409174959323)
-	model.Property("OGTarget", 8, 9, 7723634411214686482)
-	model.EntityLastPropertyId(9, 7723634411214686482)
+	model.Property("Name", 9, 2, 2636641112102272712)
+	model.Property("BasicInfo", 9, 3, 1957304650698572106)
+	model.Property("HopInfo", 9, 4, 8089734730547422631)
+	model.Property("MaltInfo", 9, 5, 875488254576208814)
+	model.Property("MashInfo", 9, 6, 215162601295025715)
+	model.Property("FermentationInfo", 9, 7, 8071210690245696111)
+	model.Property("IBU", 8, 8, 5125500558245868741)
+	model.Property("EBC", 8, 9, 1420545160852721145)
+	model.Property("OGTarget", 8, 10, 2421139491555296901)
+	model.Property("CastWorth", 8, 11, 2789155543995105183)
+	model.Property("CookingTime", 8, 12, 877831036725625269)
+	model.Property("SHA", 8, 13, 7141949538274579281)
+	model.EntityLastPropertyId(13, 7141949538274579281)
+	model.Relation(1, 2174002646940923357, MashStepBinding.Id, MashStepBinding.Uid)
+	model.Relation(2, 6350792499836498576, UsedResourceBinding.Id, UsedResourceBinding.Uid)
+	model.Relation(3, 3088913508689463833, UsedResourceBinding.Id, UsedResourceBinding.Uid)
+	model.Relation(4, 2025680423898785750, UsedResourceBinding.Id, UsedResourceBinding.Uid)
 }
 
 // GetId is called by ObjectBox during Put operations to check for existing ID on an object
@@ -570,6 +918,22 @@ func (recipe_EntityInfo) SetId(object interface{}, id uint64) error {
 
 // PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
 func (recipe_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
+	if err := BoxForRecipe(ob).RelationReplace(Recipe_.MashSteps, id, object, object.(*Recipe).MashSteps); err != nil {
+		return err
+	}
+
+	if err := BoxForRecipe(ob).RelationReplace(Recipe_.Malts, id, object, object.(*Recipe).Malts); err != nil {
+		return err
+	}
+
+	if err := BoxForRecipe(ob).RelationReplace(Recipe_.Hops, id, object, object.(*Recipe).Hops); err != nil {
+		return err
+	}
+
+	if err := BoxForRecipe(ob).RelationReplace(Recipe_.Yeasts, id, object, object.(*Recipe).Yeasts); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -577,21 +941,27 @@ func (recipe_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{},
 func (recipe_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
 	obj := object.(*Recipe)
 	var offsetName = fbutils.CreateStringOffset(fbb, obj.Name)
-	var offsetDescription = fbutils.CreateStringOffset(fbb, obj.Description)
-	var offsetHopSugg = fbutils.CreateStringVectorOffset(fbb, obj.HopSugg)
-	var offsetDryHop = fbutils.CreateStringVectorOffset(fbb, obj.DryHop)
+	var offsetBasicInfo = fbutils.CreateStringOffset(fbb, obj.BasicInfo)
+	var offsetHopInfo = fbutils.CreateStringOffset(fbb, obj.HopInfo)
+	var offsetMaltInfo = fbutils.CreateStringOffset(fbb, obj.MaltInfo)
+	var offsetMashInfo = fbutils.CreateStringOffset(fbb, obj.MashInfo)
+	var offsetFermentationInfo = fbutils.CreateStringOffset(fbb, obj.FermentationInfo)
 
 	// build the FlatBuffers object
-	fbb.StartObject(9)
+	fbb.StartObject(13)
 	fbutils.SetUint64Slot(fbb, 0, id)
 	fbutils.SetUOffsetTSlot(fbb, 1, offsetName)
-	fbutils.SetUOffsetTSlot(fbb, 2, offsetDescription)
-	fbutils.SetFloat64Slot(fbb, 3, obj.IsoAlpha)
-	fbutils.SetUOffsetTSlot(fbb, 4, offsetHopSugg)
-	fbutils.SetUOffsetTSlot(fbb, 5, offsetDryHop)
-	fbutils.SetFloat64Slot(fbb, 6, obj.SHA)
-	fbutils.SetFloat64Slot(fbb, 7, obj.AlcTarget)
-	fbutils.SetFloat64Slot(fbb, 8, obj.OGTarget)
+	fbutils.SetUOffsetTSlot(fbb, 2, offsetBasicInfo)
+	fbutils.SetUOffsetTSlot(fbb, 3, offsetHopInfo)
+	fbutils.SetUOffsetTSlot(fbb, 4, offsetMaltInfo)
+	fbutils.SetUOffsetTSlot(fbb, 5, offsetMashInfo)
+	fbutils.SetUOffsetTSlot(fbb, 6, offsetFermentationInfo)
+	fbutils.SetFloat64Slot(fbb, 7, obj.IBU)
+	fbutils.SetFloat64Slot(fbb, 8, obj.EBC)
+	fbutils.SetFloat64Slot(fbb, 9, obj.OGTarget)
+	fbutils.SetFloat64Slot(fbb, 10, obj.CastWorth)
+	fbutils.SetFloat64Slot(fbb, 11, obj.CookingTime)
+	fbutils.SetFloat64Slot(fbb, 12, obj.SHA)
 	return nil
 }
 
@@ -608,16 +978,60 @@ func (recipe_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{
 
 	var propId = table.GetUint64Slot(4, 0)
 
+	var relMashSteps []*MashStep
+	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.MashSteps, propId); err != nil {
+		return nil, err
+	} else if rSlice, err := BoxForMashStep(ob).GetManyExisting(rIds...); err != nil {
+		return nil, err
+	} else {
+		relMashSteps = rSlice
+	}
+
+	var relMalts []*UsedResource
+	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Malts, propId); err != nil {
+		return nil, err
+	} else if rSlice, err := BoxForUsedResource(ob).GetManyExisting(rIds...); err != nil {
+		return nil, err
+	} else {
+		relMalts = rSlice
+	}
+
+	var relHops []*UsedResource
+	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Hops, propId); err != nil {
+		return nil, err
+	} else if rSlice, err := BoxForUsedResource(ob).GetManyExisting(rIds...); err != nil {
+		return nil, err
+	} else {
+		relHops = rSlice
+	}
+
+	var relYeasts []*UsedResource
+	if rIds, err := BoxForRecipe(ob).RelationIds(Recipe_.Yeasts, propId); err != nil {
+		return nil, err
+	} else if rSlice, err := BoxForUsedResource(ob).GetManyExisting(rIds...); err != nil {
+		return nil, err
+	} else {
+		relYeasts = rSlice
+	}
+
 	return &Recipe{
-		Id:          propId,
-		Name:        fbutils.GetStringSlot(table, 6),
-		Description: fbutils.GetStringSlot(table, 8),
-		IsoAlpha:    fbutils.GetFloat64Slot(table, 10),
-		HopSugg:     fbutils.GetStringVectorSlot(table, 12),
-		DryHop:      fbutils.GetStringVectorSlot(table, 14),
-		SHA:         fbutils.GetFloat64Slot(table, 16),
-		AlcTarget:   fbutils.GetFloat64Slot(table, 18),
-		OGTarget:    fbutils.GetFloat64Slot(table, 20),
+		Id:               propId,
+		Name:             fbutils.GetStringSlot(table, 6),
+		BasicInfo:        fbutils.GetStringSlot(table, 8),
+		HopInfo:          fbutils.GetStringSlot(table, 10),
+		MaltInfo:         fbutils.GetStringSlot(table, 12),
+		MashInfo:         fbutils.GetStringSlot(table, 14),
+		FermentationInfo: fbutils.GetStringSlot(table, 16),
+		IBU:              fbutils.GetFloat64Slot(table, 18),
+		EBC:              fbutils.GetFloat64Slot(table, 20),
+		OGTarget:         fbutils.GetFloat64Slot(table, 22),
+		CastWorth:        fbutils.GetFloat64Slot(table, 24),
+		MashSteps:        relMashSteps,
+		CookingTime:      fbutils.GetFloat64Slot(table, 26),
+		SHA:              fbutils.GetFloat64Slot(table, 28),
+		Malts:            relMalts,
+		Hops:             relHops,
+		Yeasts:           relYeasts,
 	}, nil
 }
 
@@ -642,7 +1056,7 @@ type RecipeBox struct {
 // BoxForRecipe opens a box of Recipe objects
 func BoxForRecipe(ob *objectbox.ObjectBox) *RecipeBox {
 	return &RecipeBox{
-		Box: ob.InternalBox(2),
+		Box: ob.InternalBox(3),
 	}
 }
 
@@ -794,9 +1208,9 @@ type RecipeAsyncBox struct {
 // The returned struct must be freed explicitly using the Close() method.
 // It's usually preferable to use RecipeBox::Async() which takes care of resource management and doesn't require closing.
 func AsyncBoxForRecipe(ob *objectbox.ObjectBox, timeoutMs uint64) *RecipeAsyncBox {
-	var async, err = objectbox.NewAsyncBox(ob, 2, timeoutMs)
+	var async, err = objectbox.NewAsyncBox(ob, 3, timeoutMs)
 	if err != nil {
-		panic("Could not create async box for entity ID 2: %s" + err.Error())
+		panic("Could not create async box for entity ID 3: %s" + err.Error())
 	}
 	return &RecipeAsyncBox{AsyncBox: async}
 }
@@ -852,6 +1266,439 @@ func (query *RecipeQuery) Offset(offset uint64) *RecipeQuery {
 
 // Limit sets the number of elements to process by the query
 func (query *RecipeQuery) Limit(limit uint64) *RecipeQuery {
+	query.Query.Limit(limit)
+	return query
+}
+
+type usedResource_EntityInfo struct {
+	objectbox.Entity
+	Uid uint64
+}
+
+var UsedResourceBinding = usedResource_EntityInfo{
+	Entity: objectbox.Entity{
+		Id: 4,
+	},
+	Uid: 4113036754004893734,
+}
+
+// UsedResource_ contains type-based Property helpers to facilitate some common operations such as Queries.
+var UsedResource_ = struct {
+	Id               *objectbox.PropertyUint64
+	Resource_Id      *objectbox.PropertyUint64
+	Resource_Type    *objectbox.PropertyString
+	Resource_Name    *objectbox.PropertyString
+	Resource_Amount  *objectbox.PropertyFloat64
+	Resource_EBC     *objectbox.PropertyFloat64
+	Resource_MinTemp *objectbox.PropertyFloat64
+	Resource_MaxTemp *objectbox.PropertyFloat64
+	Resource_OberG   *objectbox.PropertyBool
+	Resource_ISO     *objectbox.PropertyFloat64
+	Proportion       *objectbox.PropertyFloat64
+	CookingTime      *objectbox.PropertyFloat64
+}{
+	Id: &objectbox.PropertyUint64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     1,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_Id: &objectbox.PropertyUint64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     2,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_Type: &objectbox.PropertyString{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     3,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_Name: &objectbox.PropertyString{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     4,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_Amount: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     5,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_EBC: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     6,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_MinTemp: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     7,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_MaxTemp: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     8,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_OberG: &objectbox.PropertyBool{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     9,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Resource_ISO: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     10,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	Proportion: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     11,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+	CookingTime: &objectbox.PropertyFloat64{
+		BaseProperty: &objectbox.BaseProperty{
+			Id:     12,
+			Entity: &UsedResourceBinding.Entity,
+		},
+	},
+}
+
+// GeneratorVersion is called by ObjectBox to verify the compatibility of the generator used to generate this code
+func (usedResource_EntityInfo) GeneratorVersion() int {
+	return 6
+}
+
+// AddToModel is called by ObjectBox during model build
+func (usedResource_EntityInfo) AddToModel(model *objectbox.Model) {
+	model.Entity("UsedResource", 4, 4113036754004893734)
+	model.Property("Id", 6, 1, 3342411139635204863)
+	model.PropertyFlags(1)
+	model.Property("Resource_Id", 6, 2, 3155528741343918689)
+	model.PropertyFlags(8192)
+	model.Property("Resource_Type", 9, 3, 5647934572438404057)
+	model.Property("Resource_Name", 9, 4, 8843297389473921677)
+	model.Property("Resource_Amount", 8, 5, 670565678543680332)
+	model.Property("Resource_EBC", 8, 6, 3920209305081745432)
+	model.Property("Resource_MinTemp", 8, 7, 1884467110517314430)
+	model.Property("Resource_MaxTemp", 8, 8, 768653620133561309)
+	model.Property("Resource_OberG", 1, 9, 424983438172330825)
+	model.Property("Resource_ISO", 8, 10, 3877004156578141881)
+	model.Property("Proportion", 8, 11, 7934962629087522446)
+	model.Property("CookingTime", 8, 12, 5867091734343600976)
+	model.EntityLastPropertyId(12, 5867091734343600976)
+}
+
+// GetId is called by ObjectBox during Put operations to check for existing ID on an object
+func (usedResource_EntityInfo) GetId(object interface{}) (uint64, error) {
+	return object.(*UsedResource).Id, nil
+}
+
+// SetId is called by ObjectBox during Put to update an ID on an object that has just been inserted
+func (usedResource_EntityInfo) SetId(object interface{}, id uint64) error {
+	object.(*UsedResource).Id = id
+	return nil
+}
+
+// PutRelated is called by ObjectBox to put related entities before the object itself is flattened and put
+func (usedResource_EntityInfo) PutRelated(ob *objectbox.ObjectBox, object interface{}, id uint64) error {
+	return nil
+}
+
+// Flatten is called by ObjectBox to transform an object to a FlatBuffer
+func (usedResource_EntityInfo) Flatten(object interface{}, fbb *flatbuffers.Builder, id uint64) error {
+	obj := object.(*UsedResource)
+	var offsetResource_Type = fbutils.CreateStringOffset(fbb, obj.Resource.Type)
+	var offsetResource_Name = fbutils.CreateStringOffset(fbb, obj.Resource.Name)
+
+	// build the FlatBuffers object
+	fbb.StartObject(12)
+	fbutils.SetUint64Slot(fbb, 0, id)
+	if obj.Resource != nil {
+		fbutils.SetUint64Slot(fbb, 1, obj.Resource.Id)
+		fbutils.SetUOffsetTSlot(fbb, 2, offsetResource_Type)
+		fbutils.SetUOffsetTSlot(fbb, 3, offsetResource_Name)
+		fbutils.SetFloat64Slot(fbb, 4, obj.Resource.Amount)
+		fbutils.SetFloat64Slot(fbb, 5, obj.Resource.EBC)
+		fbutils.SetFloat64Slot(fbb, 6, obj.Resource.MinTemp)
+		fbutils.SetFloat64Slot(fbb, 7, obj.Resource.MaxTemp)
+		fbutils.SetBoolSlot(fbb, 8, obj.Resource.OberG)
+		fbutils.SetFloat64Slot(fbb, 9, obj.Resource.ISO)
+	}
+	fbutils.SetFloat64Slot(fbb, 10, obj.Proportion)
+	fbutils.SetFloat64Slot(fbb, 11, obj.CookingTime)
+	return nil
+}
+
+// Load is called by ObjectBox to load an object from a FlatBuffer
+func (usedResource_EntityInfo) Load(ob *objectbox.ObjectBox, bytes []byte) (interface{}, error) {
+	if len(bytes) == 0 { // sanity check, should "never" happen
+		return nil, errors.New("can't deserialize an object of type 'UsedResource' - no data received")
+	}
+
+	var table = &flatbuffers.Table{
+		Bytes: bytes,
+		Pos:   flatbuffers.GetUOffsetT(bytes),
+	}
+
+	var propId = table.GetUint64Slot(4, 0)
+
+	return &UsedResource{
+		Id: propId,
+		Resource: &Resource{
+			Id:      fbutils.GetUint64Slot(table, 6),
+			Type:    fbutils.GetStringSlot(table, 8),
+			Name:    fbutils.GetStringSlot(table, 10),
+			Amount:  fbutils.GetFloat64Slot(table, 12),
+			EBC:     fbutils.GetFloat64Slot(table, 14),
+			MinTemp: fbutils.GetFloat64Slot(table, 16),
+			MaxTemp: fbutils.GetFloat64Slot(table, 18),
+			OberG:   fbutils.GetBoolSlot(table, 20),
+			ISO:     fbutils.GetFloat64Slot(table, 22),
+		},
+		Proportion:  fbutils.GetFloat64Slot(table, 24),
+		CookingTime: fbutils.GetFloat64Slot(table, 26),
+	}, nil
+}
+
+// MakeSlice is called by ObjectBox to construct a new slice to hold the read objects
+func (usedResource_EntityInfo) MakeSlice(capacity int) interface{} {
+	return make([]*UsedResource, 0, capacity)
+}
+
+// AppendToSlice is called by ObjectBox to fill the slice of the read objects
+func (usedResource_EntityInfo) AppendToSlice(slice interface{}, object interface{}) interface{} {
+	if object == nil {
+		return append(slice.([]*UsedResource), nil)
+	}
+	return append(slice.([]*UsedResource), object.(*UsedResource))
+}
+
+// Box provides CRUD access to UsedResource objects
+type UsedResourceBox struct {
+	*objectbox.Box
+}
+
+// BoxForUsedResource opens a box of UsedResource objects
+func BoxForUsedResource(ob *objectbox.ObjectBox) *UsedResourceBox {
+	return &UsedResourceBox{
+		Box: ob.InternalBox(4),
+	}
+}
+
+// Put synchronously inserts/updates a single object.
+// In case the Id is not specified, it would be assigned automatically (auto-increment).
+// When inserting, the UsedResource.Id property on the passed object will be assigned the new ID as well.
+func (box *UsedResourceBox) Put(object *UsedResource) (uint64, error) {
+	return box.Box.Put(object)
+}
+
+// Insert synchronously inserts a single object. As opposed to Put, Insert will fail if given an ID that already exists.
+// In case the Id is not specified, it would be assigned automatically (auto-increment).
+// When inserting, the UsedResource.Id property on the passed object will be assigned the new ID as well.
+func (box *UsedResourceBox) Insert(object *UsedResource) (uint64, error) {
+	return box.Box.Insert(object)
+}
+
+// Update synchronously updates a single object.
+// As opposed to Put, Update will fail if an object with the same ID is not found in the database.
+func (box *UsedResourceBox) Update(object *UsedResource) error {
+	return box.Box.Update(object)
+}
+
+// PutAsync asynchronously inserts/updates a single object.
+// Deprecated: use box.Async().Put() instead
+func (box *UsedResourceBox) PutAsync(object *UsedResource) (uint64, error) {
+	return box.Box.PutAsync(object)
+}
+
+// PutMany inserts multiple objects in single transaction.
+// In case Ids are not set on the objects, they would be assigned automatically (auto-increment).
+//
+// Returns: IDs of the put objects (in the same order).
+// When inserting, the UsedResource.Id property on the objects in the slice will be assigned the new IDs as well.
+//
+// Note: In case an error occurs during the transaction, some of the objects may already have the UsedResource.Id assigned
+// even though the transaction has been rolled back and the objects are not stored under those IDs.
+//
+// Note: The slice may be empty or even nil; in both cases, an empty IDs slice and no error is returned.
+func (box *UsedResourceBox) PutMany(objects []*UsedResource) ([]uint64, error) {
+	return box.Box.PutMany(objects)
+}
+
+// Get reads a single object.
+//
+// Returns nil (and no error) in case the object with the given ID doesn't exist.
+func (box *UsedResourceBox) Get(id uint64) (*UsedResource, error) {
+	object, err := box.Box.Get(id)
+	if err != nil {
+		return nil, err
+	} else if object == nil {
+		return nil, nil
+	}
+	return object.(*UsedResource), nil
+}
+
+// GetMany reads multiple objects at once.
+// If any of the objects doesn't exist, its position in the return slice is nil
+func (box *UsedResourceBox) GetMany(ids ...uint64) ([]*UsedResource, error) {
+	objects, err := box.Box.GetMany(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*UsedResource), nil
+}
+
+// GetManyExisting reads multiple objects at once, skipping those that do not exist.
+func (box *UsedResourceBox) GetManyExisting(ids ...uint64) ([]*UsedResource, error) {
+	objects, err := box.Box.GetManyExisting(ids...)
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*UsedResource), nil
+}
+
+// GetAll reads all stored objects
+func (box *UsedResourceBox) GetAll() ([]*UsedResource, error) {
+	objects, err := box.Box.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*UsedResource), nil
+}
+
+// Remove deletes a single object
+func (box *UsedResourceBox) Remove(object *UsedResource) error {
+	return box.Box.Remove(object)
+}
+
+// RemoveMany deletes multiple objects at once.
+// Returns the number of deleted object or error on failure.
+// Note that this method will not fail if an object is not found (e.g. already removed).
+// In case you need to strictly check whether all of the objects exist before removing them,
+// you can execute multiple box.Contains() and box.Remove() inside a single write transaction.
+func (box *UsedResourceBox) RemoveMany(objects ...*UsedResource) (uint64, error) {
+	var ids = make([]uint64, len(objects))
+	for k, object := range objects {
+		ids[k] = object.Id
+	}
+	return box.Box.RemoveIds(ids...)
+}
+
+// Creates a query with the given conditions. Use the fields of the UsedResource_ struct to create conditions.
+// Keep the *UsedResourceQuery if you intend to execute the query multiple times.
+// Note: this function panics if you try to create illegal queries; e.g. use properties of an alien type.
+// This is typically a programming error. Use QueryOrError instead if you want the explicit error check.
+func (box *UsedResourceBox) Query(conditions ...objectbox.Condition) *UsedResourceQuery {
+	return &UsedResourceQuery{
+		box.Box.Query(conditions...),
+	}
+}
+
+// Creates a query with the given conditions. Use the fields of the UsedResource_ struct to create conditions.
+// Keep the *UsedResourceQuery if you intend to execute the query multiple times.
+func (box *UsedResourceBox) QueryOrError(conditions ...objectbox.Condition) (*UsedResourceQuery, error) {
+	if query, err := box.Box.QueryOrError(conditions...); err != nil {
+		return nil, err
+	} else {
+		return &UsedResourceQuery{query}, nil
+	}
+}
+
+// Async provides access to the default Async Box for asynchronous operations. See UsedResourceAsyncBox for more information.
+func (box *UsedResourceBox) Async() *UsedResourceAsyncBox {
+	return &UsedResourceAsyncBox{AsyncBox: box.Box.Async()}
+}
+
+// UsedResourceAsyncBox provides asynchronous operations on UsedResource objects.
+//
+// Asynchronous operations are executed on a separate internal thread for better performance.
+//
+// There are two main use cases:
+//
+// 1) "execute & forget:" you gain faster put/remove operations as you don't have to wait for the transaction to finish.
+//
+// 2) Many small transactions: if your write load is typically a lot of individual puts that happen in parallel,
+// this will merge small transactions into bigger ones. This results in a significant gain in overall throughput.
+//
+// In situations with (extremely) high async load, an async method may be throttled (~1ms) or delayed up to 1 second.
+// In the unlikely event that the object could still not be enqueued (full queue), an error will be returned.
+//
+// Note that async methods do not give you hard durability guarantees like the synchronous Box provides.
+// There is a small time window in which the data may not have been committed durably yet.
+type UsedResourceAsyncBox struct {
+	*objectbox.AsyncBox
+}
+
+// AsyncBoxForUsedResource creates a new async box with the given operation timeout in case an async queue is full.
+// The returned struct must be freed explicitly using the Close() method.
+// It's usually preferable to use UsedResourceBox::Async() which takes care of resource management and doesn't require closing.
+func AsyncBoxForUsedResource(ob *objectbox.ObjectBox, timeoutMs uint64) *UsedResourceAsyncBox {
+	var async, err = objectbox.NewAsyncBox(ob, 4, timeoutMs)
+	if err != nil {
+		panic("Could not create async box for entity ID 4: %s" + err.Error())
+	}
+	return &UsedResourceAsyncBox{AsyncBox: async}
+}
+
+// Put inserts/updates a single object asynchronously.
+// When inserting a new object, the Id property on the passed object will be assigned the new ID the entity would hold
+// if the insert is ultimately successful. The newly assigned ID may not become valid if the insert fails.
+func (asyncBox *UsedResourceAsyncBox) Put(object *UsedResource) (uint64, error) {
+	return asyncBox.AsyncBox.Put(object)
+}
+
+// Insert a single object asynchronously.
+// The Id property on the passed object will be assigned the new ID the entity would hold if the insert is ultimately
+// successful. The newly assigned ID may not become valid if the insert fails.
+// Fails silently if an object with the same ID already exists (this error is not returned).
+func (asyncBox *UsedResourceAsyncBox) Insert(object *UsedResource) (id uint64, err error) {
+	return asyncBox.AsyncBox.Insert(object)
+}
+
+// Update a single object asynchronously.
+// The object must already exists or the update fails silently (without an error returned).
+func (asyncBox *UsedResourceAsyncBox) Update(object *UsedResource) error {
+	return asyncBox.AsyncBox.Update(object)
+}
+
+// Remove deletes a single object asynchronously.
+func (asyncBox *UsedResourceAsyncBox) Remove(object *UsedResource) error {
+	return asyncBox.AsyncBox.Remove(object)
+}
+
+// Query provides a way to search stored objects
+//
+// For example, you can find all UsedResource which Id is either 42 or 47:
+// 		box.Query(UsedResource_.Id.In(42, 47)).Find()
+type UsedResourceQuery struct {
+	*objectbox.Query
+}
+
+// Find returns all objects matching the query
+func (query *UsedResourceQuery) Find() ([]*UsedResource, error) {
+	objects, err := query.Query.Find()
+	if err != nil {
+		return nil, err
+	}
+	return objects.([]*UsedResource), nil
+}
+
+// Offset defines the index of the first object to process (how many objects to skip)
+func (query *UsedResourceQuery) Offset(offset uint64) *UsedResourceQuery {
+	query.Query.Offset(offset)
+	return query
+}
+
+// Limit sets the number of elements to process by the query
+func (query *UsedResourceQuery) Limit(limit uint64) *UsedResourceQuery {
 	query.Query.Limit(limit)
 	return query
 }

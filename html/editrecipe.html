@@ -78,7 +78,7 @@
                 border: 2px solid bisque;
                 margin-left: 0;
                 }
-            
+
             textarea{
                 width: 100%;
                 height: 100%;
@@ -148,7 +148,7 @@
                 padding-top: 10px;
                 padding-bottom: 10px;
                 border: none;
-                gap: 10px; 
+                gap: 10px;
             }
             .grist .gristentry {
                 display: grid;
@@ -184,7 +184,7 @@
                 padding-top: 10px;
                 padding-bottom: 10px;
                 border: none;
-                gap: 10px; 
+                gap: 10px;
             }
             .grist .list-title,
             .grist .addgrid {
@@ -209,7 +209,7 @@
             }
             .list-title p {
                 position: relative;
-            } 
+            }
             .remove button {
                 margin: 0px;
                 padding: 12px 12px;
@@ -221,7 +221,7 @@
                     position: relative;
 
                 }
-            
+
             .remove,
             .add{
                 width: 44px;
@@ -250,17 +250,16 @@
             }
 
 
-            
+
             .content{
-                width: 80%;
                 padding-left: 30px;
                 padding-top: 30px;
                 margin-left: 200px;
                 display: grid;
-                grid-template-columns: 1.5fr 2fr;
-                grid-auto-columns: minmax(min-content, auto);
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+                grid-auto-columns: minmax(300px, auto) minmax(300px, auto);
                 grid-auto-rows: minmax(min-content, auto);
-                grid-template-areas: 
+                grid-template-areas:
                     "a b"
                     "c d"
                     "e f"
@@ -268,7 +267,6 @@
                 gap: 15px;
                 justify-items: stretch;
                 align-items: stretch;
-
             }
             .sidenav {
             height: 62%;
@@ -282,6 +280,7 @@
             padding-top: 20px;
             box-shadow: 5px 7px bisque;
             border-radius: 3px;
+            padding-bottom: 20px;
             }
             /* Firefox */
             input[type=number] {
@@ -307,8 +306,8 @@
                 .sidenav {padding-top: 15px;}
                 .sidenav a {font-size: 18px;}
             }
-      
-            
+
+
             .toast {
                 display: grid;
                 text-align: center;
@@ -328,7 +327,8 @@
         <h1>Brewess</h1>
         <a href="http://localhost:8080/home/">Home</a>
         <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
-        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/edit-recipe/">Edit Recipe</a>
+        <a href="http://localhost:8080/new-resource/">Create Resource</a>
         <a href="http://localhost:8080/search-resource/">Search Resource</a>
       </div>
     <div class="content">
@@ -346,7 +346,7 @@
             rows="1"
             cols="30"></input>
             </div>
-            
+
             <div class="field">
             <p>Target Cast Wort (hot) in liter</p>
             <input
@@ -563,7 +563,7 @@
             </div>
         </div>
         <div class=""></div>
-    </div> 
+    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
@@ -584,8 +584,8 @@
             fieldWrapper.append(removeButton);
             $("#mashing div:last").before(fieldWrapper);
         });
-    }); 
-        
+    });
+
 
         $("body").keyup( function () {
             var sumEBC = 0;
@@ -614,12 +614,12 @@
             var maltselector = "<select class=\"maltselector\" name=\"selMalt";
             var maltoptions = "";
             $.getJSON("/get-json/", {ajax_post_data: "malt"}, function (data) {
-                var malts = data;                
+                var malts = data;
             // Iterate over object and add options to select
                 $.each(malts, function(index, object){
                     maltoptions += '<option value=' + object.EBC + '>' + object.Name + '</option>';
                 });
-            });   
+            });
             $("#addmalt").click(function() {
     		var lastField = $("#grist div:last").prev();
             var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
@@ -645,7 +645,7 @@
 
             var hopoptions = "";
             $.getJSON("/get-json/", {ajax_post_data: "hop"}, function (data) {
-                var hops = data;                
+                var hops = data;
             // Iterate over object and add options to select
                 $.each(hops, function(index, object){
                     hopoptions += '<option value=' + object.ISO + '>' + object.Name + '</option>';
@@ -676,7 +676,7 @@
         $(document).ready(function(){
             var yeastselector = $("<select/>");
             $.getJSON("/get-json/", {ajax_post_data: "yeast"}, function (data) {
-                var yeasts = data;                
+                var yeasts = data;
             // Iterate over object and add options to select
                 $.each(yeasts, function(index, object){
                     var option = $('<option/>');
@@ -763,10 +763,12 @@
             });
 
             $("#IBU").val(Math.round(sumIBU));
-        });  
+        });
 
         $(document).on('click', '.remove', function(){
             $(this).parent().fadeOut(100);
         });
+
+
     </script>
 </body>
