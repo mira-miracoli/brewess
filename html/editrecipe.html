@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Brewess</title>
         <style>
             *{
@@ -25,6 +25,8 @@
                 justify-content: left;
                 font-size: xx-large;
                 margin-bottom: 0px;
+                padding-left: 20px;
+                margin-top: 0px;
             }
             h3 {
                 margin-top: 0px;
@@ -33,23 +35,23 @@
                 padding-left: 20px;
                 padding-bottom: 15px;
             }
-            .basicinfo{
-                position: relative;
-                display: grid;
-                padding-left: 20px;
-                padding-right: 10px;
-                padding-bottom: 20px;
+            .column{
+                padding: 20px;
+                flex: 0 0 49%;
+            }
+            @media screen and (max-width: 1300px) {
+            .content {
+                flex-direction: column;
+            }
+            }
+            .basicinfo {
                 background-color: seashell;
                 box-shadow: 5px 7px bisque;
             }
             .basicinfo .fieldwrapper{
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                grid-auto-columns: minmax(min-content, auto);
-                grid-auto-rows: minmax(min-content, auto);
                 gap: 10px;
-                justify-items: stretch;
-                align-items: stretch;
             }
             .field {
                 position: relative;
@@ -94,21 +96,6 @@
                 height: 100%;
             }
             /* Fix width in left column and move fermentation to right side*/
-            .fermentation,
-            .hopping,
-            .grist,
-            .mashing {
-                position: relative;
-                display: grid;
-                grid-template-rows: auto minmax(0, 1fr);
-                padding-top: 26px;
-                padding-left: 15px;
-                padding-right: 10px;
-                padding-bottom: 20px;
-                background-color: seashell;
-                box-shadow: 5px 7px bisque;
-                opacity: 0.9;
-            }
             .hopping {
                 background-color: limegreen;
                 border: 1px solid limegreen;
@@ -123,7 +110,6 @@
                 background-color: peachpuff;
                 border: 1px solid peachpuff;
                 box-shadow: 5px 7px peru;
-                grid-area: "f";
             }
             .grist {
                 background-color: palegoldenrod;
@@ -141,43 +127,7 @@
                 padding-bottom: 10px;
                 border: 0;
             }
-            .mashing .mashingentry {
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
-                position: relative;
-                padding-top: 10px;
-                padding-bottom: 10px;
-                border: none;
-                gap: 10px;
-            }
-            .grist .gristentry {
-                display: grid;
-                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
-                position: relative;
-                padding-top: 10px;
-                padding-bottom: 10px;
-                border: none;
-                gap: 10px;
-            }
-            .hopping .hoppingentry {
-                display: grid;
-                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
-                position: relative;
-                padding-top: 10px;
-                padding-bottom: 10px;
-                border: none;
-                gap: 10px;
-            }
-            .fermentation .fermentationentry {
-                display: grid;
-                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
-                position: relative;
-                padding-top: 10px;
-                padding-bottom: 10px;
-                border: none;
-                gap: 10px;
-            }
-            .addgrid {
+            .mashing .list-title, .mashing .mashingentry {
                 display: grid;
                 grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
                 position: relative;
@@ -187,44 +137,52 @@
                 gap: 10px;
             }
             .grist .list-title,
-            .grist .addgrid {
+            .grist .addgrid, .grist .gristentry {
+                display: grid;
                 grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
             }
             .hopping .addgrid,
-            .hopping .list-title {
+            .hopping .list-title, .hopping .hoppingentry {
+                display: grid;
                 grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .addgrid {
+                display: grid;
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
             }
             .fermentation .list-title,
-            .fermentation .addgrid {
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
-            }
-            .list-title {
+            .fermentation .addgrid, .fermentation .fermentationentry  {
+                position: relative;
                 display: grid;
-                grid-template-columns: 1fr 1fr 0.5fr;
-                position: relative;
-                border: none;
-                gap:10px;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.7fr);
                 padding-top: 10px;
-                padding-bottom: 0px;
-            }
-            .list-title p {
-                position: relative;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
             }
             .remove button {
-                margin: 0px;
                 padding: 12px 12px;
                 font-size: 16px;
                 cursor: pointer;
 
             }
-            .mashing input {
-                    position: relative;
-
-                }
 
             .remove,
             .add{
-                width: 44px;
                 justify-self: right;
                 border-radius: 2px;
                 color: black; /* White text */
@@ -235,7 +193,6 @@
             .add{
                 background-color: seashell; /* Blue background */
                 border: 2px solid seashell; /* Remove borders */
-                margin: 0px;
             }
             .add:hover {
                 background-color: cornsilk;
@@ -243,7 +200,6 @@
             .remove{
                 background-color: lightcoral;
                 border: 2px solid lightcoral;
-                margin: 0px;
             }
             .remove:hover{
                 background-color: indianred;
@@ -252,25 +208,15 @@
 
 
             .content{
-                padding-left: 30px;
-                padding-top: 30px;
                 margin-left: 200px;
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-                grid-auto-columns: minmax(300px, auto) minmax(300px, auto);
-                grid-auto-rows: minmax(min-content, auto);
-                grid-template-areas:
-                    "a b"
-                    "c d"
-                    "e f"
-                    "g h";
+                padding: 30px;
+                display: flex;
+                flex-wrap: wrap;
                 gap: 15px;
-                justify-items: stretch;
-                align-items: stretch;
             }
             .sidenav {
-            height: 62%;
-            width: 200px;
+            height: 500px;
+            width: 210px;
             position: fixed;
             z-index: 1;
             top: 0;
@@ -299,6 +245,37 @@
             display: block;
             }
 
+            .nav-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                color: black;
+                padding: 33px 10px 10px 33px;
+                font-size: 16px;
+                border-radius: 3px;
+            }
+            .nav-buttons button {
+                flex: 100%;
+                display: grid;
+                grid-template-columns: auto auto;
+            }
+            .nav-buttons #save:hover {
+                background-color: seagreen;
+                color: #fff;
+            }
+
+            .nav-buttons #delete:hover{
+                background-color: indianred;
+                color: #fff;
+            }
+            .nav-buttons #brew:hover{
+                background-color: #e89323;
+                color: #fff;
+            }
+            .sidenav i{
+                margin-left: 10px;
+                justify-items: right;
+            }
             .sidenav a:hover {
             color: sandybrown;
             }
@@ -330,9 +307,14 @@
         <a href="http://localhost:8080/edit-recipe/">Edit Recipe</a>
         <a href="http://localhost:8080/new-resource/">Create Resource</a>
         <a href="http://localhost:8080/search-resource/">Search Resource</a>
+        <div class="nav-buttons">
+            <button id="save" class="add" type="button">Save Recipe<i class="fa fa-floppy-o"></i></button>
+            <button id="brew" class="add" type="button">Brew Recipe<i class="fa fa-beer"></i></button>
+            <button id="delete" class="add" type="button">Delete Recipe<i class="fa fa-trash-o"></i></button>
+        </div>
       </div>
     <div class="content">
-        <div class="basicinfo">
+        <div class="basicinfo column">
             <h2>Recipe</h2>
             <h3>Basic Info</h3>
             <div class="fieldwrapper">
@@ -416,7 +398,7 @@
             cols="40"></textarea>
             </div>
         </div>
-        <div class="grist">
+        <div class="grist column">
             <h3>Malt</h3>
             <div class="fieldwrapper">
                 <fieldset id="grist">
@@ -450,7 +432,7 @@
             cols="40"></textarea>
             </div>
         </div>
-        <div class="mashing">
+        <div class="mashing column">
             <h3>Mashing and Boiling</h3>
             <div class="fieldwrapper">
                 <fieldset id="mashing">
@@ -485,7 +467,7 @@
             cols="40"></textarea>
             </div>
         </div>
-        <div class="hopping">
+        <div class="hopping column">
              <h3>Hopping</h3>
             <div class="fieldwrapper">
                 <fieldset id="hopping">
@@ -521,10 +503,7 @@
             cols="40"></textarea>
             </div>
         </div>
-        <div class="buttons">
-
-        </div>
-        <div class="fermentation">
+        <div class="fermentation column">
             <h3>Fermentation</h3>
             <div class="fieldwrapper">
                 <fieldset id="fermentation">
@@ -562,7 +541,6 @@
             cols="40"></textarea>
             </div>
         </div>
-        <div class=""></div>
     </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
