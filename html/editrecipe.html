@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Brewess</title>
         <style>
             *{
@@ -215,7 +214,7 @@
                 gap: 15px;
             }
             .sidenav {
-            height: 500px;
+            height: 470px;
             width: 210px;
             position: fixed;
             z-index: 1;
@@ -300,17 +299,17 @@
         </style>
     </head>
 <body>
+    <form id="recipe" class="recipe" action="" method="POST">
     <div class="sidenav">
         <h1>Brewess</h1>
         <a href="http://localhost:8080/home/">Home</a>
         <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
-        <a href="http://localhost:8080/edit-recipe/">Edit Recipe</a>
         <a href="http://localhost:8080/new-resource/">Create Resource</a>
         <a href="http://localhost:8080/search-resource/">Search Resource</a>
         <div class="nav-buttons">
-            <button id="save" class="add" type="button">Save Recipe<i class="fa fa-floppy-o"></i></button>
-            <button id="brew" class="add" type="button">Brew Recipe<i class="fa fa-beer"></i></button>
-            <button id="delete" class="add" type="button">Delete Recipe<i class="fa fa-trash-o"></i></button>
+            <button id="save" class="add" type="submit" value="save" formaction="/save-recipe/">Save Recipe<i class="fa fa-floppy-o"></i></button>
+            <button id="brew" class="add" type="button" value="brew" formaction="/brew-recipe/">Brew Recipe<i class="fa fa-beer"></i></button>
+            <button id="delete" class="add" type="button" value="delete" formaction="/delete-recipe/" onclick="return confirm('Are you sure?')">Delete Recipe<i class="fa fa-trash-o"></i></button>
         </div>
       </div>
     <div class="content">
@@ -360,7 +359,7 @@
             name="IBU"
             id="IBU"
             step="1"
-            min="1"
+            min="0"
             title="Enter a valid IBU value"
             rows="1"
             cols="3"></input></div>
@@ -388,9 +387,9 @@
             cols="3"></input></div>
         </div>
         <div class="field">
-            <p><b></b>Description</b></p>
+            <p><b>Description</b></p>
             <textarea
-            type="text"
+            form="recipe"
             name="destext"
             id="destext"
             title="Enter a decription for your recipe"
@@ -542,7 +541,7 @@
             </div>
         </div>
     </div>
-
+    </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script>
@@ -551,7 +550,7 @@
         $(document).ready(function(){
             $("#addtemp").click(function() {
     		var lastField = $("#mashing div:last").prev();
-            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var intId = ((lastField && lastField.length && lastField.data("idx") + 1) || 1);
             var fieldWrapper = $("<div class=\"mashingentry\" id=\"field" + intId + "\"/>");
             fieldWrapper.data("idx", intId);
             var fmashtemp = $("<input type=\"number\" name=\"mashtemp"  + intId + "\" min=\"0\" max=\"100\" step=\"0.1\" value=\"\" required />");
@@ -561,8 +560,8 @@
             fieldWrapper.append(fmashtime);
             fieldWrapper.append(removeButton);
             $("#mashing div:last").before(fieldWrapper);
+            });
         });
-    });
 
 
         $("body").keyup( function () {
@@ -747,6 +746,60 @@
             $(this).parent().fadeOut(100);
         });
 
+        $(document).ready(function(){
+            $("#recipe").submit(function(e) {
 
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+
+                var form = $(this);
+                var pathname = window.location.pathname;
+                var url = pathname + form.attr('action');
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        var btntext_onchange = "";
+                        var btntext = "";
+                        var btn = "";
+                        switch (url) {
+                            case "/save-resource/":
+                                btntext= "Save";
+                                btntext_onchange = "Saved!"
+                                btn = "#save";
+                                break;
+                            case "/brew-resource/":
+                                btntext= "Brew";
+                                btntext_onchange = "Brewed!"
+                                btn = "#brew";
+                                break;
+                            case "/deleted-resource/":
+                                btntext= "Delte";
+                                btntext_onchange = "Deleted!"
+                                btn = "#delete";
+                                break;
+                            default:
+                                break;
+                        }
+                        $(btn).fadeOut(100);
+                        $(btn).fadeIn(100);
+                        $(btn).text(btntext_onchange);
+                        $(btn).fadeOut(1000);
+                        $(btn).fadeIn(100);
+                        $(btn).text(btntext);
+                    },
+                    error: function (data) {
+                    console.log('An error occurred.');
+                    console.log(data);
+                    },
+                    });
+
+
+                });
+        })
     </script>
 </body>
+</html>
