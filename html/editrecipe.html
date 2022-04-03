@@ -299,7 +299,7 @@
         </style>
     </head>
 <body>
-    <form id="recipe" class="recipe" action="" method="POST">
+    <form id="recipe" class="form" action="/save-recipe/" method="POST">
     <div class="sidenav">
         <h1>Brewess</h1>
         <a href="http://localhost:8080/home/">Home</a>
@@ -308,8 +308,8 @@
         <a href="http://localhost:8080/search-resource/">Search Resource</a>
         <div class="nav-buttons">
             <button id="save" class="add" type="submit" value="save" formaction="/save-recipe/">Save Recipe<i class="fa fa-floppy-o"></i></button>
-            <button id="brew" class="add" type="button" value="brew" formaction="/brew-recipe/">Brew Recipe<i class="fa fa-beer"></i></button>
-            <button id="delete" class="add" type="button" value="delete" formaction="/delete-recipe/" onclick="return confirm('Are you sure?')">Delete Recipe<i class="fa fa-trash-o"></i></button>
+            <button id="brew" class="add" type="submit" value="brew" formaction="/brew-recipe/">Brew Recipe<i class="fa fa-beer"></i></button>
+            <button id="delete" class="add" type="submit" value="delete" formaction="/delete-recipe/" form="recipe" onclick="return confirm('Are you sure?')">Delete Recipe<i class="fa fa-trash-o"></i></button>
         </div>
       </div>
     <div class="content">
@@ -424,8 +424,8 @@
             <textarea
             class="description-text"
             type="text"
-            name="mashing-notes"
-            id="mashing-notes"
+            name="grist-notes"
+            id="grist-notes"
             title="Enter a decription for your recipe"
             rows="3"
             cols="40"></textarea>
@@ -495,8 +495,8 @@
             <textarea
             class="description-text"
             type="text"
-            name="hop-notes"
-            id="hop-notes"
+            name="hopping-notes"
+            id="hopping-notes"
             title="Enter a decription for your recipe"
             rows="3"
             cols="40"></textarea>
@@ -544,7 +544,7 @@
     </form>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-    <script>
+    <script type="text/javascript">
 
 
         $(document).ready(function(){
@@ -577,7 +577,7 @@
                 var total = (plato * (1+ (plato / (258.6 - ( (plato / 258.2) *227.1) ) )) * 0.96 * hotwort / sha);
                 var thismass = total * 1000 * thisprop;
                 $(this).children('input[name=\"maltamount' + intid + '\"]').val(Math.round(thismass));
-                var ebc = $(this).children('select[name=\"selMalt' + intid + '\"]').val();
+                var ebc = JSON.parse($(this).children('select[name=\"selMalt' + intid + '\"]').val()).EBC;
                 $(this).children('input[name=\"maltEBC' + intid + '\"]').val(ebc);
                 sumEBC += ebc * thisprop;
             });
@@ -594,7 +594,7 @@
                 var malts = data;
             // Iterate over object and add options to select
                 $.each(malts, function(index, object){
-                    maltoptions += '<option value=' + object.EBC + '>' + object.Name + '</option>';
+                    maltoptions += '<option value=\'{\"Id\":' + object.Id + ', \"EBC\":' + object.EBC + '}\'>' + object.Name + '</option>';
                 });
             });
             $("#addmalt").click(function() {
@@ -625,7 +625,7 @@
                 var hops = data;
             // Iterate over object and add options to select
                 $.each(hops, function(index, object){
-                    hopoptions += '<option value=' + object.ISO + '>' + object.Name + '</option>';
+                    hopoptions +='<option value=\'{\"Id\":' + object.Id + ', \"ISO\":' + object.ISO + '}\'>' + object.Name + '</option>';
                 });
             });
             $("#addhop").click(function() {
@@ -661,6 +661,7 @@
                     option.attr('data-MinTemp', object.MinTemp);
                     option.attr('data-OberG', object.OberG);
                     option.text(object.Name)
+                    option.val(object.Id)
                     yeastselector.append(option);
                 });
             });
@@ -707,7 +708,7 @@
                 $("#castwort").keyup(function () {
                    amount.val( $(this).val() * hopperl.val());
                 });
-                var ISO = $(this).children('select[name=\"selHop' + intid + '\"]').find(":selected").val();
+                var ISO = JSON.parse($(this).children('select[name=\"selHop' + intid + '\"]').find(":selected").val()).ISO;
                 var hoptime = $(this).children('input[name="hoptime' + intid + '\"]').val();
                 $(this).children("input[name='hopISO" + intid + "\']").val(ISO);
                 var thisIBU = ((relhop * ISO * 10) * (1.65 * (0.000125 ** (0.004 * plato))) * ((1- Math.exp(-0.04 * hoptime)) / 4.15));
@@ -745,7 +746,15 @@
         $(document).on('click', '.remove', function(){
             $(this).parent().fadeOut(100);
         });
-
+        $("#delete").click(function(){
+            $("#recipe").attr('action', "/delete-recipe/");
+        });
+        $("#save").click(function(){
+            $("#recipe").attr('action', "/save-recipe/");
+        });
+        $("#brew").click(function(){
+            $("#recipe").attr('action', "/brew-recipe/");
+        });
         $(document).ready(function(){
             $("#recipe").submit(function(e) {
 
@@ -754,8 +763,7 @@
 
                 var form = $(this);
                 var pathname = window.location.pathname;
-                var url = pathname + form.attr('action');
-
+                var url = form.attr('action');
                 $.ajax({
                     type: "POST",
                     url: url,
@@ -765,7 +773,7 @@
                         var btntext_onchange = "";
                         var btntext = "";
                         var btn = "";
-                        switch (url) {
+                        switch (form.attr('action')) {
                             case "/save-resource/":
                                 btntext= "Save";
                                 btntext_onchange = "Saved!"
@@ -785,7 +793,7 @@
                                 break;
                         }
                         $(btn).fadeOut(100);
-                        $(btn).fadeIn(100);
+                        $(btn).fadeIn(1000);
                         $(btn).text(btntext_onchange);
                         $(btn).fadeOut(1000);
                         $(btn).fadeIn(100);

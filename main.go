@@ -138,6 +138,23 @@ func main() {
 		fmt.Fprint(w, string(res_json))
 	}
 
+	saveRecipeHandler := func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Please use the resource creation form", http.StatusBadRequest)
+			return
+		}
+		res, err := formToRecipe(r, &ob)
+		//to do
+		if err != nil {
+			http.Redirect(w, r, "/new-resource/", http.StatusInternalServerError)
+			return
+		}
+		_, err = box.Put(res)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	}
+
 	if terr != nil {
 		fmt.Print(terr.Error())
 	}
@@ -145,6 +162,7 @@ func main() {
 	http.HandleFunc("/search-results/", resultsResHandler)
 	http.HandleFunc("/save-resource/", saveResHandler)
 	http.HandleFunc("/delete-resource/", deleteResHandler)
+	http.HandleFunc("/save-recipe/", saveRecipeHandler)
 	sem <- 1
 	go http.HandleFunc("/get-json/", resourceMarshal)
 	<-sem
