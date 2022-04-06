@@ -143,13 +143,17 @@ func main() {
 			http.Error(w, "Please use the resource creation form", http.StatusBadRequest)
 			return
 		}
-		res, err := formToRecipe(r, &ob)
+		resbox := BoxForResource(ob)
+		uresbox := BoxForUsedResource(ob)
+		recipebox := BoxForRecipe(ob)
+		mashbox := BoxForMashStep(ob)
+		recipe, err := formToRecipe(r, resbox, uresbox, mashbox)
 		//to do
 		if err != nil {
 			http.Redirect(w, r, "/new-resource/", http.StatusInternalServerError)
 			return
 		}
-		_, err = box.Put(res)
+		_, err = recipebox.Put(recipe)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}

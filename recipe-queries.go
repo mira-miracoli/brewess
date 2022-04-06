@@ -1,14 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
 )
-func mashSteps(r *http.Request, ob *ObjectBox) ([]*MashStep, error){
+
+func mashSteps(r *http.Request, mashbox *MashStepBox) ([]*MashStep, error) {
 	var mashSteps []*MashStep
-	mashBox := BoxForMashStep(ob)
 	count := 1
 	for {
 		mashTemp := r.FormValue("mashtemp" + strconv.Itoa(count))
@@ -28,7 +29,7 @@ func mashSteps(r *http.Request, ob *ObjectBox) ([]*MashStep, error){
 		if err != nil {
 			return mashSteps, err
 		}
-		_, err := mashBox.Put(mashStep)
+		_, err = mashbox.Put(mashStep)
 		if err != nil {
 			return mashSteps, err
 		}
@@ -38,36 +39,134 @@ func mashSteps(r *http.Request, ob *ObjectBox) ([]*MashStep, error){
 	return mashSteps, nil
 }
 
-func UsedMalt(r *http.Request, ob *ObjectBox) (*UsedResource, err){
-	var usedMalts []*UsedResource
-	resBox := BoxForResource(ob)
-	count := 1
-	type maltVal struct{
-		Id uint64
+func formToUsedMalts(r *http.Request, resbox *ResourceBox, uresbox *UsedResourceBox) ([]*UsedResource, error) {
+	var usedResources []*UsedResource
+	type resourceVal struct {
+		Id  uint64
 		EBC float64
+		ISO float64
 	}
-	var maltVal maltVal
-	for {
-		var usedMalt UsedResource
+	var unmarshalVal resourceVal
+	for count := 0; count < 100; count++ {
 		//get the id of used Mals and try to get corresponding Resources from ObjectBox
 		data := r.FormValue("selMalt" + strconv.Itoa(count))
-		json.Unmarshal([]byte(data), &maltVal)
-		id := MustUInt(func() (uint64, error) {
-			return strconv.ParseUint(maltVal.Id, 64)
-		})
-		malt, err := resBox.Get(id)
+		if data == "" {
+			continue
+		}
+		json.Unmarshal([]byte(data), &unmarshalVal)
+		resource, err := resbox.Get(unmarshalVal.Id)
 		if err != nil {
-			return usedMalt, err
+			return usedResources, err
 		}
-		//fill ther usedMalt with Form and malt from query
-
+		usedResource := &UsedResource{
+			Resource: resource,
+			Proportion: Mustfloat(func() (float64, error) {
+				return strconv.ParseFloat(r.FormValue("maltprop"+strconv.Itoa(count)), 64)
+			}),
+			CookingTime: 0,
 		}
+		err = validate.Struct(usedResource)
+		if err != nil {
+			return usedResources, err
+		}
+		_, err = uresbox.Put(usedResource)
+		if err != nil {
+			return usedResources, err
+		}
+		usedResources = append(usedResources, usedResource)
 	}
+	return usedResources, nil
+}
+func formToUsedHops(r *http.Request, resbox *ResourceBox, uresbox *UsedResourceBox) ([]*UsedResource, error) {
+	var usedResources []*UsedResource
+	type resourceVal struct {
+		Id  uint64
+		EBC float64
+		ISO float64
+	}
+	var unmarshalVal resourceVal
+	for count := 1; count < 100; count++ {
+		//get the id of used Mals and try to get corresponding Resources from ObjectBox
+		data := r.FormValue("selHop" + strconv.Itoa(count))
+		if data == "" {
+			continue
+		}
+		json.Unmarshal([]byte(data), &unmarshalVal)
+		resource, err := resbox.Get(unmarshalVal.Id)
+		if err != nil {
+			return usedResources, err
+		}
+		usedResource := &UsedResource{
+			Resource: resource,
+			Proportion: Mustfloat(func() (float64, error) {
+				return strconv.ParseFloat(r.FormValue("hopperl"+strconv.Itoa(count)), 64)
+			}),
+			CookingTime: Mustfloat(func() (float64, error) {
+				return strconv.ParseFloat(r.FormValue("hoptime"+strconv.Itoa(count)), 64)
+			}),
+		}
+		err = validate.Struct(usedResource)
+		if err != nil {
+			return usedResources, err
+		}
+		_, err = uresbox.Put(usedResource)
+		if err != nil {
+			return usedResources, err
+		}
+		usedResources = append(usedResources, usedResource)
+	}
+	return usedResources, nil
+}
+func formToUsedYeasts(r *http.Request, resbox *ResourceBox, uresbox *UsedResourceBox) ([]*UsedResource, error) {
+	var usedResources []*UsedResource
+	for count := 1; count < 100; count++ {
+		data := r.FormValue("selYeast" + strconv.Itoa(count))
+		if data == "" {
+			continue
+		}
+		Id := MustUInt(func() (uint64, error) {
+			return strconv.ParseUint(data, 10, 64)
+		})
+
+		resource, err := resbox.Get(Id)
+		if err != nil {
+			return usedResources, err
+		}
+		usedResource := &UsedResource{
+			Resource: resource,
+			Proportion: Mustfloat(func() (float64, error) {
+				return strconv.ParseFloat(r.FormValue("yestprop"+strconv.Itoa(count)), 64)
+			}),
+			CookingTime: 0,
+		}
+		err = validate.Struct(usedResource)
+		if err != nil {
+			return usedResources, err
+		}
+		_, err = uresbox.Put(usedResource)
+		if err != nil {
+			return usedResources, err
+		}
+		usedResources = append(usedResources, usedResource)
+	}
+	return usedResources, nil
 }
 
-func formToRecipe(r *http.Request, ob *ObjectBox) (*Resource, error) {
+func formToRecipe(r *http.Request, resbox *ResourceBox, uresbox *UsedResourceBox, mashbox *MashStepBox) (*Recipe, error) {
 	validate = validator.New()
-	mashSteps, err := mashSteps(r)
+	mashSteps, err := mashSteps(r, mashbox)
+	if err != nil {
+		return nil, err
+	}
+	usedMalts, err := formToUsedMalts(r, resbox, uresbox)
+	if err != nil {
+		return nil, err
+	}
+	usedHops, err := formToUsedHops(r, resbox, uresbox)
+	if err != nil {
+		return nil, err
+	}
+	usedYeasts, err := formToUsedYeasts(r, resbox, uresbox)
 	if err != nil {
 		return nil, err
 	}
@@ -97,11 +196,14 @@ func formToRecipe(r *http.Request, ob *ObjectBox) (*Resource, error) {
 			return strconv.ParseFloat(r.FormValue("CookingTime"), 64)
 		}),
 		MashSteps: mashSteps,
-		Malts:
-		Hops:
-		Yeasts:
+		Malts:     usedMalts,
+		Hops:      usedHops,
+		Yeasts:    usedYeasts,
 	}
-	err := validate.Struct(res)
-	return res, err
+	err = validate.Struct(recipe)
+	if err != nil {
+		return recipe, err
+	}
+	return recipe, err
 
 }
