@@ -11,6 +11,11 @@ import (
 	"github.com/objectbox/objectbox-go/objectbox"
 )
 
+type TempRange struct {
+	Min float64
+	Max float64
+}
+
 func Mustfloat(fn func() (float64, error)) float64 {
 	v, err := fn()
 	if !errors.Is(err, strconv.ErrSyntax) && (err != nil) {
@@ -51,98 +56,69 @@ func initObjectBox() *objectbox.ObjectBox {
 	return objectBox
 }
 
-func resourceQuery(qres *Resource, box *ResourceBox) ([]*Resource, error) {
+func resourceQuery(queryResource *Resource, box *ResourceBox) ([]*Resource, error) {
 
 	var query = box.Query()
-	switch qres.Type {
+	switch queryResource.Type {
 	case "malt":
-		query = maltQuery(box, qres)
+		query = maltQuery(box, queryResource)
 	case "hop":
-		query = hopQuery(box, qres)
+		query = hopQuery(box, queryResource)
 	case "yeast":
-		query = yeastQuery(box, qres)
+		query = yeastQuery(box, queryResource)
 	default:
-		log.Panic("Help the Resource has no type!")
+		log.Panic("Help, the Resource has no type!")
 	}
 	ls, err := query.Find()
 	return ls, err
 
 }
 
-func formToResource(r *http.Request) (*Resource, error) {
-	validate = validator.New()
-	res := &Resource{
-		Type: r.FormValue("type"),
-		Name: r.FormValue("name"),
-		Amount: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("amount"), 64)
-		}),
-		EBC: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("ebc"), 64)
-		}),
-		ISO: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("iso"), 64)
-		}),
-		MinTemp: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("minTemp"), 64)
-		}),
-		MaxTemp: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("maxTemp"), 64)
-		}),
-		OberG: Mustbool(func() (bool, error) {
-			return strconv.ParseBool(r.FormValue("og"))
-		}),
-	}
-	err := validate.Struct(res)
+func formToResource(request *http.Request) (*Resource, error) {
+	res := new(Resource)
+	res.SetType(request)
+	res.SetName(request)
+	res.SetAmount(request)
+	res.SetMinTemp(request)
+	res.SetMaxTemp(request)
+	res.SetOberG(request)
+	res.SetISO(request)
+	res.SetEBC(request)
+	err := validator.New().Struct(res)
 	return res, err
-
 }
 
-func maltQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
-	query := rob.Query(Resource_.Type.Equals("malt", true), Resource_.Name.Contains(qres.Name, false),
-		Resource_.Amount.GreaterOrEqual(qres.Amount))
-	if qres.EBC != 0 {
-		query = rob.Query(Resource_.Name.Contains(qres.Name, false),
-			Resource_.Amount.GreaterOrEqual(qres.Amount),
-			Resource_.EBC.Between(qres.EBC-1, qres.EBC+1))
+func maltQuery(rBox *ResourceBox, queryResource *Resource) *ResourceQuery {
+	query := rBox.Query(Resource_.Type.Equals("malt", true), Resource_.Name.Contains(queryResource.Name, false),
+		Resource_.Amount.GreaterOrEqual(queryResource.Amount))
+	if queryResource.EBC != 0 {
+		query = rBox.Query(Resource_.Name.Contains(queryResource.Name, false),
+			Resource_.Amount.GreaterOrEqual(queryResource.Amount),
+			Resource_.EBC.Between(queryResource.EBC-1, queryResource.EBC+1))
 	}
 	return query
 }
 
-func hopQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
-	query := rob.Query(Resource_.Type.Equals("hop", true), Resource_.Name.Contains(qres.Name, false),
-		Resource_.Amount.GreaterOrEqual(qres.Amount))
-	if qres.ISO != 0 {
-		query = rob.Query(Resource_.Name.Contains(qres.Name, false),
-			Resource_.Amount.GreaterOrEqual(qres.Amount),
-			Resource_.ISO.Between(qres.ISO-0.1, qres.ISO+0.1))
+func hopQuery(rBox *ResourceBox, queryResource *Resource) *ResourceQuery {
+	query := rBox.Query(Resource_.Type.Equals("hop", true), Resource_.Name.Contains(queryResource.Name, false),
+		Resource_.Amount.GreaterOrEqual(queryResource.Amount))
+	if queryResource.ISO != 0 {
+		query = rBox.Query(Resource_.Name.Contains(queryResource.Name, false),
+			Resource_.Amount.GreaterOrEqual(queryResource.Amount),
+			Resource_.ISO.Between(queryResource.ISO-0.1, queryResource.ISO+0.1))
 	}
 	return query
 }
 
-func yeastQuery(rob *ResourceBox, qres *Resource) *ResourceQuery {
-	query := rob.Query(Resource_.Type.Equals("yeast", true), Resource_.Name.Contains(qres.Name, false),
-		Resource_.Amount.GreaterOrEqual(qres.Amount))
-	if qres.MinTemp != 0 && qres.MaxTemp != 0 {
-		query = rob.Query(Resource_.Name.Contains(qres.Name, false),
-			Resource_.Amount.GreaterOrEqual(qres.Amount),
-			Resource_.OberG.Equals(qres.OberG),
-			Resource_.MinTemp.Between(qres.MinTemp-1, qres.MinTemp+1),
-			Resource_.MaxTemp.Between(qres.MaxTemp-1, qres.MaxTemp+1))
-		return query
-	} else if qres.MinTemp != 0 {
-		query = rob.Query(Resource_.Name.Contains(qres.Name, false),
-			Resource_.OberG.Equals(qres.OberG),
-			Resource_.Amount.GreaterOrEqual(qres.Amount),
-			Resource_.MinTemp.Between(qres.MinTemp-1, qres.MinTemp+1))
-		return query
-	} else if qres.MaxTemp != 0 {
-		query = rob.Query(Resource_.Name.Contains(qres.Name, false),
-			Resource_.OberG.Equals(qres.OberG),
-			Resource_.Amount.GreaterOrEqual(qres.Amount),
-			Resource_.MaxTemp.Between(qres.MaxTemp-1, qres.MaxTemp+1))
-		return query
-	} else {
-		return query
-	}
+//Please split into smaller functions!
+func yeastQuery(rBox *ResourceBox, queryResource *Resource) *ResourceQuery {
+	minTemp := queryResource.SetQueryMinTemp()
+	maxTemp := queryResource.SetQueryMaxTemp()
+	query := rBox.Query(Resource_.Type.Equals("yeast", true),
+		Resource_.Name.Contains(queryResource.Name, false),
+		Resource_.Amount.GreaterOrEqual(queryResource.Amount),
+		Resource_.OberG.Equals(queryResource.OberG),
+		Resource_.MinTemp.Between(minTemp.Min, minTemp.Max),
+		Resource_.MinTemp.Between(maxTemp.Min, maxTemp.Max))
+	return query
 }
