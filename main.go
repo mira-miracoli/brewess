@@ -9,6 +9,7 @@ import (
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/objectbox/objectbox-go/objectbox"
 )
 
 var sem = make(chan int, 1)
@@ -19,9 +20,26 @@ type Resources struct {
 	Resources []*Resource
 }
 
+type BoxFor struct {
+	Hop          *HopBox
+	Malt         *MaltBox
+	Yeast        *YeastBox
+	Recipe       *RecipeBox
+	UsedResource *UsedResourceBox
+	MashStep     *MashStepBox
+}
+
 var templates, templateError = template.ParseFiles("./html/newres.html",
 	"./html/searchres.html",
 	"./html/badsearch.html", "./html/resultsres.html", "./html/editrecipe.html")
+
+func initObjectBox() *objectbox.ObjectBox {
+	objectBox, err := objectbox.NewBuilder().Model(ObjectBoxModel()).Build()
+	if err != nil {
+		panic(err)
+	}
+	return objectBox
+}
 
 func main() {
 	objectBox := initObjectBox()

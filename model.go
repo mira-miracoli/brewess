@@ -3,16 +3,25 @@ package main
 //go:generate go run github.com/objectbox/objectbox-go/cmd/objectbox-gogen
 
 // recipe model
-type Resource struct {
+
+type Hop struct {
+	AbstractResource
+	Id  uint64
+	ISO float64 `validate: "numeric, lte=100"`
+}
+
+type Malt struct {
+	AbstractResource
+	Id  uint64
+	EBC float64 `validate: "numeric, gte=0"`
+}
+
+type Yeast struct {
+	AbstractResource
 	Id      uint64
-	Type    string  `validate: "required, oneof= 'malt' 'hop' 'yeast'"`
-	Name    string  `validate: "alphanum"`
-	Amount  float64 `validate: "numeric"`
-	EBC     float64 `validate: "numeric, gte=0"`
 	MinTemp float64 `validate: "numeric, gte=0"`
 	MaxTemp float64 `validate: "numeric, lte=40"`
 	OberG   bool    `validate: "boolean"`
-	ISO     float64 `validate: "numeric, lte=100"`
 }
 
 type MashStep struct {
@@ -23,7 +32,7 @@ type MashStep struct {
 
 type UsedResource struct {
 	Id          uint64
-	Resource    *Resource
+	ResourceID  uint64
 	Proportion  float64 `validate: "numeric, gte=0, lte=100"`
 	CookingTime float64 `validate: "numeric, gte=0"`
 }
