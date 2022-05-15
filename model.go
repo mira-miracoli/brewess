@@ -21,7 +21,7 @@ type Yeast struct {
 	Id      uint64
 	MinTemp float64 `validate: "numeric, gte=0"`
 	MaxTemp float64 `validate: "numeric, lte=40"`
-	OberG   bool    `validate: "boolean"`
+	OberG   string  `validate:"oneof='top' 'bottom' 'other' ''"`
 }
 
 type MashStep struct {

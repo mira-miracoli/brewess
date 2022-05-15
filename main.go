@@ -16,10 +16,6 @@ var sem = make(chan int, 1)
 
 var validate *validator.Validate
 
-type Resources struct {
-	Resources []*Resource
-}
-
 type BoxFor struct {
 	Hop          *HopBox
 	Malt         *MaltBox
@@ -44,15 +40,23 @@ func initObjectBox() *objectbox.ObjectBox {
 func main() {
 	objectBox := initObjectBox()
 	defer objectBox.Close()
+	uniBox := &BoxFor{
+		Hop:          BoxForHop(objectBox),
+		Malt:         BoxForMalt(objectBox),
+		Yeast:        BoxForYeast(objectBox),
+		Recipe:       BoxForRecipe(objectBox),
+		UsedResource: BoxForUsedResource(objectBox),
+		MashStep:     BoxForMashStep(objectBox),
+	}
 
-	renderSingle := func(w http.ResponseWriter, templateName string, resources *Resource) {
-		err := templates.ExecuteTemplate(w, templateName+".html", resources)
+	renderSingle := func(w http.ResponseWriter, templateName string) {
+		err := templates.ExecuteTemplate(w, templateName+".html", nil)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 	}
 
-	renderList := func(responseWriter http.ResponseWriter, tmpl string, resources *Resources) {
+	renderList := func(responseWriter http.ResponseWriter, tmpl string, resources *ResourceLists) {
 		err := templates.ExecuteTemplate(responseWriter, tmpl+".html", resources)
 		if err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
@@ -61,14 +65,13 @@ func main() {
 
 	staticHandler := func(w http.ResponseWriter, request *http.Request) {
 		fmt.Println(request.URL.Path)
-		res := &Resource{}
 		switch request.URL.Path {
 		case "/search-resource/":
-			renderSingle(w, "searchres", res)
+			renderSingle(w, "searchres")
 		case "/new-resource/":
-			renderSingle(w, "newres", res)
+			renderSingle(w, "newres")
 		case "/edit-recipe/":
-			renderSingle(w, "editrecipe", res)
+			renderSingle(w, "editrecipe")
 		case "/home/":
 			http.ServeFile(w, request, "./html/home.html")
 		default:
@@ -79,42 +82,38 @@ func main() {
 	}
 
 	searchResultsResourceHandler := func(responseWriter http.ResponseWriter, request *http.Request) {
-		resBox := BoxForResource(objectBox)
-
 		if request.Method != http.MethodPost {
 			http.Error(responseWriter, "Please use the search form", http.StatusBadRequest)
 			return
 		}
-		searchResource, err := formToResource(request)
+		searchResource, err := FormToResource(request)
 		if err != nil {
 			http.ServeFile(responseWriter, request, "./html/badsearch.html")
 			return
 		}
 		// call OB qery function
-		foundResources, queryError := resourceQuery(searchResource, resBox)
-		if queryError != nil {
+		foundResources, queryErr := searchResource.Query(uniBox)
+		if queryErr != nil {
 			http.ServeFile(responseWriter, request, "./html/badsearch.html")
 			return
 		} else {
-			renderList(responseWriter, "resultsres", &Resources{Resources: foundResources})
+			renderList(responseWriter, "resultsres", foundResources)
 		}
 
 		// render Template with Result List if List is empty return search failed page
 	}
 
 	saveResourceHandler := func(responseWriter http.ResponseWriter, request *http.Request) {
-		resBox := BoxForResource(objectBox)
 		if request.Method != http.MethodPost {
 			http.Error(responseWriter, "Please use the resource creation form", http.StatusBadRequest)
 			return
 		}
-		res, err := formToResource(request)
+		res, err := FormToResource(request)
 		if err != nil {
 			http.Redirect(responseWriter, request, "/new-resource/", http.StatusInternalServerError)
 			return
 		}
-		_, err = resBox.Put(res)
-		if err != nil {
+		if _, err := res.PutInBox(uniBox); err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
 	}
@@ -124,27 +123,24 @@ func main() {
 			http.Error(responseWriter, "No valid delete request", http.StatusBadRequest)
 			return
 		}
+		resource, _ := FormToResource(request)
 		resourceID, err := strconv.ParseUint(request.FormValue("ajax_post_data"), 10, 64)
 		if err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
-		resBox := BoxForResource(objectBox)
-		err = resBox.RemoveId(resourceID)
-		if err != nil {
-			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
-		}
+		resource.RemoveByID(resourceID, uniBox)
 	}
-	resourceMarshal := func(responseWriter http.ResponseWriter, request *http.Request) {
-		box := BoxForResource(objectBox)
+	ResourceMarshal := func(responseWriter http.ResponseWriter, request *http.Request) {
 
 		if request.Method != http.MethodGet {
 			http.Error(responseWriter, "Invalid AJAX request", http.StatusBadRequest)
 			return
 		}
-		requestedType := request.FormValue("ajax_post_data")
-		searchResource := new(Resource)
-		searchResource.Type = requestedType
-		foundResources, err := resourceQuery(searchResource, box)
+		resource, err := FormToResource(request)
+		if err != nil {
+			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		}
+		foundResources, err := resource.Query(uniBox)
 		if err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
@@ -160,18 +156,7 @@ func main() {
 			http.Error(responseWriter, "Please use the resource creation form", http.StatusBadRequest)
 			return
 		}
-		resBox := BoxForResource(objectBox)
-		usedResBox := BoxForUsedResource(objectBox)
-		recipeBox := BoxForRecipe(objectBox)
-		mashBox := BoxForMashStep(objectBox)
-		recipe, err := formToRecipe(request, resBox, usedResBox, mashBox)
-		//to do
-		if err != nil {
-			http.Redirect(responseWriter, request, "/new-resource/", http.StatusInternalServerError)
-			return
-		}
-		_, err = recipeBox.Put(recipe)
-		if err != nil {
+		if err := formToRecipe(request, uniBox); err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
 	}
@@ -180,12 +165,13 @@ func main() {
 		fmt.Print(templateError.Error())
 	}
 	http.HandleFunc("/", staticHandler)
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/search-results/", searchResultsResourceHandler)
 	http.HandleFunc("/save-resource/", saveResourceHandler)
 	http.HandleFunc("/delete-resource/", deleteResourceHandler)
 	http.HandleFunc("/save-recipe/", saveRecipeHandler)
 	sem <- 1
-	go http.HandleFunc("/get-json/", resourceMarshal)
+	go http.HandleFunc("/get-json/", ResourceMarshal)
 	<-sem
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
