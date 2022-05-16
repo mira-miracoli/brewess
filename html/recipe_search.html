@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head> <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Brewess</title>
+    <link rel="stylesheet" href="/static/css/resource_search.css">
+    </head>
+<body>
+<div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/home/">Home</a>
+        <a href="http://localhost:8080/search-resource/">Search Resource</a>
+        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/new-resource/">Create Resource</a>
+</div>
+<div class="main">
+<form action="/recipe-search-results/" method="POST">
+
+<div class="wrapper">
+    <div class="menu">
+
+    <h2>Search Recipe</h2>
+    <p><b>Name</b></p>
+    <input
+        name="name"
+        type="text"
+        rows="1" cols="20"
+        placeholder="Awesome Recipe"></input><br>
+    
+    </div>
+    <div class="content">
+    </div>
+</div>
+<div class="submit">
+    <button>Submit</button>
+</div>
+</form>
+</div>
+</body>

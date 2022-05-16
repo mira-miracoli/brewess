@@ -3,141 +3,7 @@
     <head> <meta charset="UTF-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Brewess</title>
-        <style>
-            *{
-                box-sizing: border-box;
-                outline: none;
-            }
-            body{
-                font-family: 'Poppins', sans-serif;
-            }
-            .main {
-                margin-left: 200px;
-                padding-top: 30px;
-            }
-                h1 {
-                justify-content: left;
-                padding-top: 70px;
-                padding-left: 0px;
-                padding-right: auto;
-                padding-bottom: 50px;
-            }
-            h2 {
-                justify-content: left;
-                padding-top: 0;
-            }
-            .wrapper{
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                padding-top: 70px 0;
-                padding-bottom: 0px 0;
-                max-width: 400px;
-                margin: 0 auto;
-            }
-            .menu,
-            .content{
-                width: 100%;
-                }
-            .sidenav {
-            height: 62%;
-            width: 200px;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            background-color: seashell;
-            overflow-x: hidden;
-            padding-top: 20px;
-            box-shadow: 5px 7px bisque;
-            border-radius: 3px;
-            }
-
-            .sidenav a {
-            padding: 6px 6px 6px 33px;
-            text-decoration: none;
-            font-size: 14px;
-            color: black;
-            display: block;
-            }
-            .sidenav h1 {
-            padding: 6px 6px 6px 33px;
-            text-decoration: none;
-            display: block;
-            }
-
-            .sidenav a:hover {
-            color: sandybrown;
-            }
-            @media screen and (max-height: 450px) {
-                .sidenav {padding-top: 15px;}
-                .sidenav a {font-size: 18px;}
-            }
-            select#type{
-                width: 100%;
-                padding: 15px;
-                font-size: 16px;
-                font-weight: 700;
-                font-family: 'Poppins', sans-serif;
-                text-align-last:center;
-                border-radius: 3px;
-                border: 3px solid #edbe21;
-                
-            }
-            select#og{
-                width: 50%;
-                padding: 15px;
-                font-size: 16px;
-                font-family: 'Poppins', sans-serif;
-                border-radius: 3px;
-                border: 3px solid #edbe21;
-                
-            }
-            
-            .content .data {
-                padding-left: 15px 0;
-                margin: 0 auto;
-                max-width: 400px;
-                justify-content: center;
-
-                
-            }
-            .submit{
-                display: flex;
-                justify-content: center;
-                padding-top: 0px;
-                padding-bottom: 70px;
-            }
-            button{
-                display: grid;
-                width: 50%;
-                margin: 10px;
-                resize: none;
-                padding: 10px;
-                font-family: 'Poppins', sans-serif;
-                font-size: 14px;
-                display: block;
-                border: none;
-                border-radius: 3px;
-                border: 3px solid #edbe21;
-    margin-left: 0;
-            }
-            input {
-                display: grid;
-                width: 50%;
-                margin: 10px;
-                resize: none;
-                padding: 10px;
-                font-family: 'Poppins', sans-serif;
-                font-size: 14px;
-
-                border: none;
-                border-radius: 3px;
-                border: 3px solid #edbe21;
-                margin-left: 0;
-            
-            }
-        </style>
+    <link rel="stylesheet" href="/static/css/resource_search.css">
     </head>
 <body>
 <div class="sidenav">
@@ -148,7 +14,7 @@
         <a href="http://localhost:8080/new-resource/">Create Resource</a>
       </div>
 <div class="main">
-<form action="/search-results/" method="POST">
+<form action="/resource-search-results/" method="POST">
 
 <div class="wrapper">
     <div class="menu">
@@ -221,8 +87,10 @@
         <p><b>Yeast Breakage Behavior</b></p>
         <div id="ogbox"></div>
         <select name="og" id="og">
-            <option value="true" >top-fermenting</option>
-            <option value="false">bottom-fermenting</option>
+            <option value="top" >top-fermenting</option>
+            <option value="bottom">bottom-fermenting</option>
+            <option value="other">other</option>
+            <option value="">not specified</option>
         </select>
             
     </div>
@@ -232,6 +100,7 @@
 <div class="submit">
     <button>Submit</button>
 </div>
+</form>
 </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>

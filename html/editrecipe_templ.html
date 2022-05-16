@@ -34,7 +34,8 @@
             id="name"
             title="Enter a name for your recipe"
             rows="1"
-            cols="30"></input>
+            cols="30"
+            value="{{.Name}}"></input>
             </div>
 
             <div class="field">
@@ -59,7 +60,8 @@
             min="1"
             title="Enter a valid OG value in %"
             rows="1"
-            cols="3"></input>
+            cols="3"
+            value="{{.OGTarget}}"></input>
             </div>
             <div class="field">
                 <p>IBU</p>
@@ -71,7 +73,8 @@
             min="0"
             class="immutable"
             rows="1"
-            cols="3"></input></div>
+            cols="3"
+            value="{{.IBU}}"></input></div>
             <div class="field">
                 <p>EBC</p>
             <input
@@ -82,7 +85,8 @@
             min="1"
             class="immutable"
             rows="1"
-            cols="3"></input></div>
+            cols="3"
+            value="{{.EBC}}"></input></div>
             <div class="field">
                 <p>Brewhouse Yield in %</p>
             <input
@@ -93,7 +97,8 @@
             min="1"
             title="Enter the brewhouse yield"
             rows="1"
-            cols="3"></input></div>
+            cols="3"
+            value="{{.SHA}}"></input></div>
         </div>
         <div class="field">
             <p><b>Description</b></p>
@@ -103,7 +108,7 @@
             id="destext"
             title="Enter a decription for your recipe"
             rows="3"
-            cols="40"></textarea>
+            cols="40">{{.BasicInfo}}</textarea>
             </div>
         </div>
         <div class="grist column">

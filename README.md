@@ -10,6 +10,7 @@ TODO:
 - [ ] adding "Brew it" button that substracts the needed amounts from resource entries in database
 - [ ] fix the spaghetti-code
 - [ ] fix CSS and nav-bar
+- [X] fix top/bottom query bug
 
 ## Installation
 * Tested on GNU/Linux only

@@ -1,0 +1,293 @@
+            *{
+                box-sizing: border-box;
+                outline: none;
+            }
+            body{
+                font-family: 'Poppins', sans-serif;
+            }
+           h1 {
+                justify-content: left;
+                padding-top: 70px;
+                padding-left: 70px;
+                padding-right: auto;
+                padding-bottom: 50px;
+            }
+            h2 {
+                justify-content: left;
+                font-size: xx-large;
+                margin-bottom: 0px;
+                padding-left: 20px;
+                margin-top: 0px;
+            }
+            h3 {
+                margin-top: 0px;
+                margin-bottom: 0px;
+                font-size: 30px;
+                padding-left: 20px;
+                padding-bottom: 15px;
+            }
+            .column{
+                padding: 20px;
+                flex: 0 0 49%;
+            }
+            @media screen and (max-width: 1300px) {
+            .content {
+                flex-direction: column;
+            }
+            }
+            .basicinfo {
+                background-color: seashell;
+                box-shadow: 5px 7px bisque;
+            }
+            .basicinfo .fieldwrapper{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .field {
+                position: relative;
+                padding: 10px;
+                padding-bottom: 0px;
+                border: none;
+                display: grid;
+            }
+            p{
+                margin: 0px;
+                padding-left: 5px;
+                font-size: small;
+            }
+            legend {
+                font-size: small;
+                padding-left: 5px;
+            }
+            select {
+
+                border: 3px solid #edbe21;
+            }
+            input, select {
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 2px;
+                border: 2px solid bisque;
+                margin-left: 0;
+                }
+            input.immutable {
+                background-color: whitesmoke;
+                pointer-events: none;
+            }
+            textarea{
+                width: 100%;
+                height: 100%;
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 2px;
+                border: 2px solid bisque;
+                margin-left: 0;
+                resize: none;
+            }
+            .basicinfo .fieldwrapper input{
+                width: 100%;
+                height: 100%;
+            }
+            /* Fix width in left column and move fermentation to right side*/
+            .hopping {
+                background-color: limegreen;
+                border: 1px solid limegreen;
+                box-shadow: 5px 7px forestgreen;
+            }
+            .mashing{
+                background-color: navajowhite;
+                border: 1px solid navajowhite;
+                box-shadow: 5px 7px #e89323;
+            }
+            .fermentation {
+                background-color: peachpuff;
+                border: 1px solid peachpuff;
+                box-shadow: 5px 7px peru;
+            }
+            .grist {
+                background-color: palegoldenrod;
+                border: 1px solid palegoldenrod;
+                box-shadow: 5px 7px burlywood;
+            }
+            .grist .fieldwrapper,
+            .mashing .fieldwrapper{
+                display: grid;
+                grid-template-columns: 1fr;
+                border: none;
+
+            }
+            fieldset {
+                padding-bottom: 10px;
+                border: 0;
+            }
+            .mashing .list-title, .mashing .mashingentry {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .grist .list-title,
+            .grist .addgrid, .grist .gristentry {
+                display: grid;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .hopping .addgrid,
+            .hopping .list-title, .hopping .hoppingentry {
+                display: grid;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.5fr);
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .addgrid {
+                display: grid;
+                position: relative;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .fermentation .list-title,
+            .fermentation .addgrid, .fermentation .fermentationentry  {
+                position: relative;
+                display: grid;
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 0.7fr);
+                padding-top: 10px;
+                padding-bottom: 10px;
+                border: none;
+                gap: 10px;
+            }
+            .remove button {
+                padding: 12px 12px;
+                font-size: 16px;
+                cursor: pointer;
+
+            }
+
+            .remove,
+            .add{
+                justify-self: right;
+                border-radius: 2px;
+                color: black; /* White text */
+                padding: 10px 14px; /* Some padding */
+                font-size: 16px; /* Set a font size */
+                cursor: pointer; /* Mouse pointer on hover */
+            }
+            .add{
+                background-color: seashell; /* Blue background */
+                border: 2px solid seashell; /* Remove borders */
+            }
+            .add:hover {
+                background-color: cornsilk;
+            }
+            .remove{
+                background-color: lightcoral;
+                border: 2px solid lightcoral;
+            }
+            .remove:hover{
+                background-color: indianred;
+            }
+
+
+
+            .content{
+                margin-left: 200px;
+                padding: 30px;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            .sidenav {
+            height: 470px;
+            width: 210px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: seashell;
+            overflow-x: hidden;
+            padding-top: 20px;
+            box-shadow: 5px 7px bisque;
+            border-radius: 3px;
+            padding-bottom: 20px;
+            }
+            /* Firefox */
+            input[type=number] {
+            -moz-appearance: textfield;
+            }
+            .sidenav a {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            font-size: 14px;
+            color: black;
+            display: block;
+            }
+            .sidenav h1 {
+            padding: 6px 6px 6px 33px;
+            text-decoration: none;
+            display: block;
+            }
+
+            .nav-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                color: black;
+                padding: 33px 10px 10px 33px;
+                font-size: 16px;
+                border-radius: 3px;
+            }
+            .nav-buttons button {
+                flex: 100%;
+                display: grid;
+                grid-template-columns: auto auto;
+            }
+            .nav-buttons #save:hover {
+                background-color: seagreen;
+                color: #fff;
+            }
+
+            .nav-buttons #delete:hover{
+                background-color: indianred;
+                color: #fff;
+            }
+            .nav-buttons #brew:hover{
+                background-color: #e89323;
+                color: #fff;
+            }
+            .sidenav i{
+                margin-left: 10px;
+                justify-items: right;
+            }
+            .sidenav a:hover {
+            color: sandybrown;
+            }
+            @media screen and (max-height: 450px) {
+                .sidenav {padding-top: 15px;}
+                .sidenav a {font-size: 18px;}
+            }
+
+
+            .toast {
+                display: grid;
+                text-align: center;
+                width: 50%;
+                margin-right: 10px;
+                padding: 10px;
+                font-size: 14px;
+                border-radius: 3px;
+                border: 2px solid seagreen;
+                background-color: seagreen;
+                color: white;
+            }
