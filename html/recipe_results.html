@@ -17,10 +17,12 @@
       </div>
     <div class="content">
     
-    <h2>Resource Search Results</h2>
+    <h2>Recipe Search Results</h2>
     <div class="wrapper">
         {{range .}}
-            <div class="resbox recipe" id="{{.Id}}">
+            <div class="resbox recipebox" style="background-color: seashell;
+                color: #222;
+                box-shadow: 5px 7px bisque;" id="{{.Id}}">
                 <p class="boxtitle"><b>{{.Name}}</b></p>
                 <p class="delete">
                 <input class="delete" name="delete" type="hidden" value="{{.Id}}">
@@ -38,7 +40,14 @@
     </div> </div>
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
+        
         $(document).ready(function(){
+          $(".resbox").css(
+                "background-color: palegoldenrod",
+                "color: #222",
+                "border: 1px solid palegoldenrod",
+                "box-shadow: 5px 7px burlywood"
+            );
             $(".delete").click(function (event) {
                             var parent = $(this).closest('.resbox')
                             var id = $(this).find(".delete").val();

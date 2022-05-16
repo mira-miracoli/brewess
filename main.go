@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"regexp"
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
@@ -25,9 +26,11 @@ type BoxFor struct {
 	MashStep     *MashStepBox
 }
 
-var templates, templateError = template.ParseFiles("./html/newres.html",
+var templates, templateError = template.ParseFiles("./html/newres.html", "./html/editrecipe_templ.html",
 	"./html/searchres.html", "./html/recipe_search.html", "./html/recipe_results.html",
 	"./html/badsearch.html", "./html/resultsres.html", "./html/editrecipe.html")
+
+var validPath = regexp.MustCompile("^/(edit-recipe)/([0-9]+)$")
 
 func initObjectBox() *objectbox.ObjectBox {
 	objectBox, err := objectbox.NewBuilder().Model(ObjectBoxModel()).Build()
@@ -37,6 +40,16 @@ func initObjectBox() *objectbox.ObjectBox {
 	return objectBox
 }
 
+func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		m := validPath.FindStringSubmatch(r.URL.Path)
+		if m == nil {
+			http.NotFound(w, r)
+			return
+		}
+		fn(w, r, m[2])
+	}
+}
 func main() {
 	objectBox := initObjectBox()
 	defer objectBox.Close()
@@ -68,6 +81,12 @@ func main() {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
 	}
+	renderRecipeSingle := func(responseWriter http.ResponseWriter, tmpl string, recipe *Recipe) {
+		err := templates.ExecuteTemplate(responseWriter, tmpl+".html", recipe)
+		if err != nil {
+			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		}
+	}
 	staticHandler := func(w http.ResponseWriter, request *http.Request) {
 		fmt.Println(request.URL.Path)
 		switch request.URL.Path {
@@ -75,8 +94,6 @@ func main() {
 			renderSingle(w, "searchres")
 		case "/new-resource/":
 			renderSingle(w, "newres")
-		case "/edit-recipe/":
-			renderSingle(w, "editrecipe")
 		case "/search-recipe/":
 			renderSingle(w, "recipe_search")
 		case "/home/":
@@ -205,6 +222,21 @@ func main() {
 		if err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
+
+	}
+	editRecipeHandler := func(responseWriter http.ResponseWriter, request *http.Request, path string) {
+		if request.Method != http.MethodGet {
+			http.Error(responseWriter, "Not a GET Request", http.StatusBadRequest)
+		}
+		recipe, err := uniBox.Recipe.Get(MustUInt(func() (uint64, error) {
+			return strconv.ParseUint(path, 10, 64)
+		}))
+		if err != nil || recipe == nil {
+			renderSingle(responseWriter, "editrecipe")
+			http.Redirect(responseWriter, request, "/edit-recipe/", http.StatusFound)
+		} else {
+			renderRecipeSingle(responseWriter, "editrecipe_templ", recipe)
+		}
 	}
 
 	if templateError != nil {
@@ -218,6 +250,7 @@ func main() {
 	http.HandleFunc("/delete-resource/", deleteResourceHandler)
 	http.HandleFunc("/save-recipe/", saveRecipeHandler)
 	http.HandleFunc("/delete-recipe/", deleteRecipeHandler)
+	http.HandleFunc("/edit-recipe/", makeHandler(editRecipeHandler))
 	sem <- 1
 	go http.HandleFunc("/get-json/", ResourceMarshal)
 	<-sem
