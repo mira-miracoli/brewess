@@ -14,9 +14,9 @@ type unmarshalResource struct {
 	ISO float64
 }
 
-func (res *unmarshalResource) JSONToId(data string) (uint64, error) {
-	err := json.Unmarshal([]byte(data), res)
-	return res.Id, err
+func (res *unmarshalResource) JSONToId(data string) uint64 {
+	json.Unmarshal([]byte(data), res)
+	return res.Id
 }
 func mashSteps(r *http.Request, uniBox *BoxFor) ([]*MashStep, error) {
 	var mashSteps []*MashStep
@@ -115,60 +115,61 @@ func formToUsedYeasts(r *http.Request, uniBox *BoxFor) ([]*UsedResource, error) 
 	return usedResources, nil
 }
 
-func formToRecipe(r *http.Request, uniBox *BoxFor) error {
+func (recipe *Recipe) FormToRecipe(r *http.Request, uniBox *BoxFor) (*Recipe, error) {
 	validate = validator.New()
 	mashSteps, err := mashSteps(r, uniBox)
 	if err != nil {
-		return err
+		return new(Recipe), err
 	}
 	usedMalts, err := formToUsedMalts(r, uniBox)
 	if err != nil {
-		return err
+		return new(Recipe), err
 	}
 	usedHops, err := formToUsedHops(r, uniBox)
 	if err != nil {
-		return err
+		return new(Recipe), err
 	}
 	usedYeasts, err := formToUsedYeasts(r, uniBox)
 	if err != nil {
-		return err
+		return new(Recipe), err
 	}
-	recipe := &Recipe{
-		Name:             r.FormValue("name"),
-		BasicInfo:        r.FormValue("destext"),
-		HopInfo:          r.FormValue("hopping-notes"),
-		MaltInfo:         r.FormValue("grist-notes"),
-		MashInfo:         r.FormValue("mashing-notes"),
-		FermentationInfo: r.FormValue("fermentation-notes"),
-		CastWorth: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("castwort"), 64)
-		}),
-		EBC: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("EBC"), 64)
-		}),
-		IBU: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("IBU"), 64)
-		}),
-		OGTarget: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("OG"), 64)
-		}),
-		SHA: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("SHA"), 64)
-		}),
-		CookingTime: Mustfloat(func() (float64, error) {
-			return strconv.ParseFloat(r.FormValue("CookingTime"), 64)
-		}),
-		MashSteps: mashSteps,
-		Malts:     usedMalts,
-		Hops:      usedHops,
-		Yeasts:    usedYeasts,
-	}
+	recipe.Name = r.FormValue("name")
+	recipe.BasicInfo = r.FormValue("destext")
+	recipe.HopInfo = r.FormValue("hopping-notes")
+	recipe.MaltInfo = r.FormValue("grist-notes")
+	recipe.MashInfo = r.FormValue("mashing-notes")
+	recipe.FermentationInfo = r.FormValue("fermentation-notes")
+	recipe.CastWorth = Mustfloat(func() (float64, error) {
+		return strconv.ParseFloat(r.FormValue("castwort"), 64)
+	})
+	recipe.EBC = Mustfloat(func() (float64, error) {
+		return strconv.ParseFloat(r.FormValue("EBC"), 64)
+	})
+	recipe.IBU = Mustfloat(func() (float64, error) {
+		return strconv.ParseFloat(r.FormValue("IBU"), 64)
+	})
+	recipe.OGTarget = Mustfloat(func() (float64, error) {
+		return strconv.ParseFloat(r.FormValue("OG"), 64)
+	})
+	recipe.SHA = Mustfloat(func() (float64, error) {
+		return strconv.ParseFloat(r.FormValue("SHA"), 64)
+	})
+	recipe.CookingTime = Mustfloat(func() (float64, error) {
+		return strconv.ParseFloat(r.FormValue("CookingTime"), 64)
+	})
+	recipe.MashSteps = mashSteps
+	recipe.Malts = usedMalts
+	recipe.Hops = usedHops
+	recipe.Yeasts = usedYeasts
+
 	err = validate.Struct(recipe)
 	if err != nil {
-		return err
+		return recipe, err
 	}
-	if _, err = uniBox.Recipe.Put(recipe); err != nil {
-		return err
-	}
-	return nil
+	return recipe, nil
+}
+
+func (recipe *Recipe) Query(r *http.Request, uniBox *BoxFor) ([]*Recipe, error) {
+	query := uniBox.Recipe.Query(Recipe_.Name.Contains(recipe.Name, false))
+	return query.Find()
 }

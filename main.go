@@ -26,7 +26,7 @@ type BoxFor struct {
 }
 
 var templates, templateError = template.ParseFiles("./html/newres.html",
-	"./html/searchres.html",
+	"./html/searchres.html", "./html/recipe_search.html", "./html/recipe_results.html",
 	"./html/badsearch.html", "./html/resultsres.html", "./html/editrecipe.html")
 
 func initObjectBox() *objectbox.ObjectBox {
@@ -56,13 +56,18 @@ func main() {
 		}
 	}
 
-	renderList := func(responseWriter http.ResponseWriter, tmpl string, resources *ResourceLists) {
+	renderResourceList := func(responseWriter http.ResponseWriter, tmpl string, resources *ResourceLists) {
 		err := templates.ExecuteTemplate(responseWriter, tmpl+".html", resources)
 		if err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
 	}
-
+	renderRecipeList := func(responseWriter http.ResponseWriter, tmpl string, recipes []*Recipe) {
+		err := templates.ExecuteTemplate(responseWriter, tmpl+".html", recipes)
+		if err != nil {
+			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		}
+	}
 	staticHandler := func(w http.ResponseWriter, request *http.Request) {
 		fmt.Println(request.URL.Path)
 		switch request.URL.Path {
@@ -72,6 +77,8 @@ func main() {
 			renderSingle(w, "newres")
 		case "/edit-recipe/":
 			renderSingle(w, "editrecipe")
+		case "/search-recipe/":
+			renderSingle(w, "recipe_search")
 		case "/home/":
 			http.ServeFile(w, request, "./html/home.html")
 		default:
@@ -97,12 +104,32 @@ func main() {
 			http.ServeFile(responseWriter, request, "./html/badsearch.html")
 			return
 		} else {
-			renderList(responseWriter, "resultsres", foundResources)
+			renderResourceList(responseWriter, "resultsres", foundResources)
 		}
 
 		// render Template with Result List if List is empty return search failed page
 	}
+	searchResultsRecipeHandler := func(responseWriter http.ResponseWriter, request *http.Request) {
+		if request.Method != http.MethodPost {
+			http.Error(responseWriter, "Please use the search form", http.StatusBadRequest)
+			return
+		}
+		searchRecipe, err := new(Recipe).FormToRecipe(request, uniBox)
+		if err != nil {
+			http.ServeFile(responseWriter, request, "./html/badsearch.html")
+			return
+		}
+		// call OB qery function
+		foundRecipes, queryErr := searchRecipe.Query(request, uniBox)
+		if queryErr != nil {
+			http.ServeFile(responseWriter, request, "./html/badsearch.html")
+			return
+		} else {
+			renderRecipeList(responseWriter, "recipe_results", foundRecipes)
+		}
 
+		// render Template with Result List if List is empty return search failed page
+	}
 	saveResourceHandler := func(responseWriter http.ResponseWriter, request *http.Request) {
 		if request.Method != http.MethodPost {
 			http.Error(responseWriter, "Please use the resource creation form", http.StatusBadRequest)
@@ -130,6 +157,20 @@ func main() {
 		}
 		resource.RemoveByID(resourceID, uniBox)
 	}
+	deleteRecipeHandler := func(responseWriter http.ResponseWriter, request *http.Request) {
+		if request.Method != http.MethodPost {
+			http.Error(responseWriter, "No valid delete request", http.StatusBadRequest)
+			return
+		}
+		recipeID, err := strconv.ParseUint(request.FormValue("ajax_post_data"), 10, 64)
+		if err != nil {
+			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		}
+		err = uniBox.Recipe.RemoveId(recipeID)
+		if err != nil {
+			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		}
+	}
 	ResourceMarshal := func(responseWriter http.ResponseWriter, request *http.Request) {
 
 		if request.Method != http.MethodGet {
@@ -156,7 +197,12 @@ func main() {
 			http.Error(responseWriter, "Please use the resource creation form", http.StatusBadRequest)
 			return
 		}
-		if err := formToRecipe(request, uniBox); err != nil {
+		recipe, err := new(Recipe).FormToRecipe(request, uniBox)
+		if err != nil {
+			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+		}
+		_, err = uniBox.Recipe.Put(recipe)
+		if err != nil {
 			http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
 		}
 	}
@@ -166,10 +212,12 @@ func main() {
 	}
 	http.HandleFunc("/", staticHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
-	http.HandleFunc("/search-results/", searchResultsResourceHandler)
+	http.HandleFunc("/resource-search-results/", searchResultsResourceHandler)
+	http.HandleFunc("/recipe-search-results/", searchResultsRecipeHandler)
 	http.HandleFunc("/save-resource/", saveResourceHandler)
 	http.HandleFunc("/delete-resource/", deleteResourceHandler)
 	http.HandleFunc("/save-recipe/", saveRecipeHandler)
+	http.HandleFunc("/delete-recipe/", deleteRecipeHandler)
 	sem <- 1
 	go http.HandleFunc("/get-json/", ResourceMarshal)
 	<-sem
