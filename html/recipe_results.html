@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>Brewess</title>
+    <link rel="stylesheet" href="/static/css/resource_results.css">
+</head>
+<body>
+    <div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/home/">Home</a>
+        <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
+        <a href="http://localhost:8080/edit-recipe/">Create Recipe</a>
+        <a href="http://localhost:8080/search-resource/">Search Resource</a>
+        <a href="http://localhost:8080/new-resource/">Create Resource</a>
+      </div>
+    <div class="content">
+    
+    <h2>Resource Search Results</h2>
+    <div class="wrapper">
+        {{range .}}
+            <div class="resbox recipe" id="{{.Id}}">
+                <p class="boxtitle"><b>{{.Name}}</b></p>
+                <p class="delete">
+                <input class="delete" name="delete" type="hidden" value="{{.Id}}">
+                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                </input>
+                </p>
+                <p class="EBC">EBC</p>
+                <p class="value EBC">{{.EBC}}</p>
+                <p class="IBU">IBU</p>
+                <p class="value IBU">{{.IBU}}</p>
+                <p class="description">Description</p>
+                <p class="description">{{.BasicInfo}}</p>
+            </div>
+            {{end}}
+    </div> </div>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".delete").click(function (event) {
+                            var parent = $(this).closest('.resbox')
+                            var id = $(this).find(".delete").val();
+                            var mytype = parent.attr('class').split(' ')[1]
+                             $.ajax({
+                               url: '/delete-recipe/',
+                               type: 'post',
+                               dataType: 'html',
+                               data : { type: mytype, ajax_post_data: id},
+                               success : function(data) {
+                                 // alert('ajax data posted');
+                                 $('#result').html(data);
+                               },
+                             });
+                             $(parent).fadeOut(200);
+                          });
+                    
+        });
+                             
+    </script>
+</body>
+</html>
+

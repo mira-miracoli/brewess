@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+    <title>Brewess</title>
+    <link rel="stylesheet" href="/static/css/editrecipe.css">
+    </head>
+<body>
+    <form id="recipe" class="form" action="/save-recipe/" method="POST">
+    <div class="sidenav">
+        <h1>Brewess</h1>
+        <a href="http://localhost:8080/home/">Home</a>
+        <a href="http://localhost:8080/search-recipe/">Search Recipe</a>
+        <a href="http://localhost:8080/new-resource/">Create Resource</a>
+        <a href="http://localhost:8080/search-resource/">Search Resource</a>
+        <div class="nav-buttons">
+            <button id="save" class="add" type="submit" value="save" formaction="/save-recipe/">Save Recipe<i class="fa fa-floppy-o"></i></button>
+            <button id="brew" class="add" type="submit" value="brew" formaction="/brew-recipe/">Brew Recipe<i class="fa fa-beer"></i></button>
+            <button id="delete" class="add" type="submit" value="delete" formaction="/delete-recipe/" form="recipe" onclick="confirm('Are you sure?')">Delete Recipe<i class="fa fa-trash-o"></i></button>
+        </div>
+      </div>
+    <div class="content">
+        <div class="basicinfo column">
+            <h2>Recipe</h2>
+            <h3>Basic Info</h3>
+            <div class="fieldwrapper">
+            <div class="field">
+            <p>Name</p>
+            <input
+            type="text"
+            name="name"
+            id="name"
+            title="Enter a name for your recipe"
+            rows="1"
+            cols="30"></input>
+            </div>
+
+            <div class="field">
+            <p>Target Cast Wort (hot) in liter</p>
+            <input
+            type="number"
+            name="castwort"
+            id="castwort"
+            step="1"
+            min="1"
+            title="Enter a volume in liter"
+            rows="1"
+            cols="3"></input>
+            </div>
+            <div class="field">
+            <p>OG in %</p>
+            <input
+            type="number"
+            name="OG"
+            id="OG"
+            step="0.01"
+            min="1"
+            title="Enter a valid OG value in %"
+            rows="1"
+            cols="3"></input>
+            </div>
+            <div class="field">
+                <p>IBU</p>
+            <input
+            type="number"
+            name="IBU"
+            id="IBU"
+            step="1"
+            min="0"
+            class="immutable"
+            rows="1"
+            cols="3"></input></div>
+            <div class="field">
+                <p>EBC</p>
+            <input
+            type="number"
+            name="EBC"
+            id="EBC"
+            step="1"
+            min="1"
+            class="immutable"
+            rows="1"
+            cols="3"></input></div>
+            <div class="field">
+                <p>Brewhouse Yield in %</p>
+            <input
+            type="number"
+            name="SHA"
+            id="SHA"
+            step="1"
+            min="1"
+            title="Enter the brewhouse yield"
+            rows="1"
+            cols="3"></input></div>
+        </div>
+        <div class="field">
+            <p><b>Description</b></p>
+            <textarea
+            form="recipe"
+            name="destext"
+            id="destext"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="grist column">
+            <h3>Malt</h3>
+            <div class="fieldwrapper">
+                <fieldset id="grist">
+                    <legend>Add the malts you want to use and their proportion.
+                    </legend>
+                    <div class="list-title">
+                    <p id="malt-type">Malt Type</p>
+                    <p id="malt-EBC">EBC (auto)</p>
+                    <p id="malt-proportion">Proportion in %</p>
+                    <p id="malt-abmount">Amount in g</p>
+                    <p></p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <button id="addmalt" class="add" type="button"><i class="fa fa-plus"></i></button>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="grist-notes"
+            id="grist-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="mashing column">
+            <h3>Mashing and Boiling</h3>
+            <div class="fieldwrapper">
+                <fieldset id="mashing">
+                    <legend>Add mash temperature steps and duration and also the cooking
+                        time (100 °C).
+                    </legend>
+                    <div class="list-title">
+                    <p id="mash-temperature">Temperature in °C</p>
+                    <p id="mash-duration">Duration in min</p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <button id="addtemp" class="add" type="button"><i class="fa fa-plus"></i></button>
+                        <p></p>
+                        <p id="cook-time">Cooking Time in min</p>
+                        <p></p>
+                        <p></p>
+                        <input type="number" id="CookingTime" step="1" min="0"></input>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="mashing-notes"
+            id="mashing-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="hopping column">
+             <h3>Hopping</h3>
+            <div class="fieldwrapper">
+                <fieldset id="hopping">
+                    <legend>Add the hops you want to use and their proportion.
+                    </legend>
+                    <div class="list-title">
+                    <p id="hop-type">Hop Type</p>
+                    <p id="hop-ISO">Alpha-Acid (auto)</p>
+                    <p id="hop-time">Cooking Time in min</p>
+                    <p id="hop-proportion">Amount in g per l</p>
+                    <p id="hop-amount">Amount in g</p>
+                    <p></p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <button id="addhop" class="add" type="button"><i class="fa fa-plus"></i></button>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="hopping-notes"
+            id="hopping-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+        <div class="fermentation column">
+            <h3>Fermentation</h3>
+            <div class="fieldwrapper">
+                <fieldset id="fermentation">
+                    <legend>Add the yeasts you want to use and their proportion.
+                    </legend>
+                    <div class="list-title">
+                    <p id="yeast-type">Yeast Type</p>
+                    <p id="yeast-og">Breakage Behaviour</p>
+                    <p id="yeast-min">min Temp</p>
+                    <p id="yeast-max">max Temp</p>
+                    <p id="yeast-proportion">Proportion in g per l</p>
+                    <p id="yeast-abmount">Amount in g</p>
+                    <p></p>
+                    </div>
+                    <div class="addgrid">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <button id="addyeast" class="add" type="button"><i class="fa fa-plus"></i></button>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="field">
+            <p>Additional Notes</p>
+            <textarea
+            class="description-text"
+            type="text"
+            name="fermentation-notes"
+            id="fermentation-notes"
+            title="Enter a decription for your recipe"
+            rows="3"
+            cols="40"></textarea>
+            </div>
+        </div>
+    </div>
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+    <script type="text/javascript">
+
+
+        $(document).ready(function(){
+            $("#addtemp").click(function() {
+    		var lastField = $("#mashing div:last").prev();
+            var intId = ((lastField && lastField.length && lastField.data("idx") + 1) || 1);
+            var fieldWrapper = $("<div class=\"mashingentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fmashtemp = $("<input type=\"number\" name=\"mashtemp"  + intId + "\" min=\"0\" max=\"100\" step=\"0.1\" value=\"\" required />");
+            var fmashtime = $("<input type=\"number\" name=\"mashtime"  + intId + "\" min=\"0\" step=\"1\" value=\"\" required />");
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fmashtemp);
+            fieldWrapper.append(fmashtime);
+            fieldWrapper.append(removeButton);
+            $("#mashing div:last").before(fieldWrapper);
+            });
+        });
+
+
+        $("body").keyup( function () {
+            var sumEBC = 0;
+            var cookTime = $("#CookingTime").val();
+            var plato = $("#OG").val();
+
+            $(".gristentry").each(function(i){
+                var intid = $(this).data("idx");
+                var thisprop = $(this).children('input[name=\"maltprop' + intid + '\"]').val() * 0.01;
+                var sha = $("#SHA").val();
+                var hotwort = $('#castwort').val();
+                var total = (plato * (1+ (plato / (258.6 - ( (plato / 258.2) *227.1) ) )) * 0.96 * hotwort / sha);
+                var thismass = total * 1000 * thisprop;
+                $(this).children('input[name=\"maltamount' + intid + '\"]').val(Math.round(thismass));
+                var ebc = JSON.parse($(this).children('select[name=\"selMalt' + intid + '\"]').val()).EBC;
+                $(this).children('input[name=\"maltEBC' + intid + '\"]').val(ebc);
+                sumEBC += ebc * thisprop;
+            });
+            var totalEBC = (sumEBC * plato / 10 + 1.5 * cookTime / 60);
+            $("#EBC").val(Math.round(totalEBC));
+        });
+
+
+
+        $(document).ready(function(){
+            var maltselector = "<select class=\"maltselector\" name=\"selMalt";
+            var maltoptions = "";
+            $.getJSON("/get-json/", {type: "malt"}, function (data) {
+                var malts = data.Malt;
+            // Iterate over object and add options to select
+                $.each(malts, function(index, object){
+                    maltoptions += '<option value=\'{\"Id\":' + object.Id + ', \"EBC\":' + object.EBC + '}\'>' + object.Name + '</option>';
+                });
+            });
+            $("#addmalt").click(function() {
+    		var lastField = $("#grist div:last").prev();
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"gristentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fmaltdd = $(maltselector  + intId + "\" >" + maltoptions);
+            var fEBC = $("<input type=\"number\" name=\"maltEBC" + intId + "\" class=\"immutable\" readonly />")
+            var fmaltprop = $("<input type=\"number\" name=\"maltprop"  + intId + "\" min=\"0\" max=\"100\" step=\"1\" required />");
+            var fmaltamount = $("<input type=\"number\" name=\"maltamount"  + intId + "\" min=\"0\" step=\"1\" />")
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fmaltdd);
+            fieldWrapper.append(fEBC);
+            fieldWrapper.append(fmaltprop);
+            fieldWrapper.append(fmaltamount);
+            fieldWrapper.append(removeButton);
+            $("#grist div:last").before(fieldWrapper);
+        });
+    });
+
+
+        $(document).ready(function(){
+            var hopselector = "<select class=\"hopselector\" name=\"selHop";
+
+            var hopoptions = "";
+            $.getJSON("/get-json/", {type: "hop"}, function (data) {
+                var hops = data.Hop;
+            // Iterate over object and add options to select
+                $.each(hops, function(index, object){
+                    hopoptions +='<option value=\'{\"Id\":' + object.Id + ', \"ISO\":' + object.ISO + '}\'>' + object.Name + '</option>';
+                });
+            });
+            $("#addhop").click(function() {
+    		var lastField = $("#hopping div:last").prev();
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"hoppingentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fhopdd = $(hopselector  + intId + "\" >" + hopoptions);
+            var fISO = $("<input type=\"number\" name=\"hopISO" + intId + "\" class=\"immutable\" readonly />")
+            var fhoptime = $("<input type=\"number\" name=\"hoptime"  + intId + "\" min=\"0\" step=\"1\" required />");
+            var fhopperl = $("<input type=\"number\" name=\"hopperl"  + intId + "\" min=\"0\" max=\"\" step=\"0.001\" required />");
+            var fhopamount = $("<input type=\"number\" name=\"hopamount"  + intId + "\" min=\"0\" step=\"1\" />")
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fhopdd);
+            fieldWrapper.append(fISO);
+            fieldWrapper.append(fhoptime);
+            fieldWrapper.append(fhopperl);
+            fieldWrapper.append(fhopamount);
+            fieldWrapper.append(removeButton);
+            $("#hopping div:last").before(fieldWrapper);
+        });
+        });
+
+
+        $(document).ready(function(){
+            var yeastselector = $("<select/>");
+            $.getJSON("/get-json/", {type: "yeast"}, function (data) {
+                var yeasts = data.Yeast;
+            // Iterate over object and add options to select
+                $.each(yeasts, function(index, object){
+                    var option = $('<option/>');
+                    option.attr('data-MaxTemp', object.MaxTemp);
+                    option.attr('data-MinTemp', object.MinTemp);
+                    option.attr('data-OberG', object.OberG);
+                    option.text(object.Name)
+                    option.val(object.Id)
+                    yeastselector.append(option);
+                });
+            });
+            $("#addyeast").click(function() {
+            console.log("Button works");
+    		var lastField = $("#fermentation div:last").prev();
+            var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
+            var fieldWrapper = $("<div class=\"fermentationentry\" id=\"field" + intId + "\"/>");
+            fieldWrapper.data("idx", intId);
+            var fyeastdd =yeastselector.attr('name', 'selYeast' + intId);
+            var fOG = $("<input type=\"text\" name=\"yeastOG" + intId + "\" value=\"\" class=\"immutable\" readonly />");
+            var fyeastmin = $("<input type=\"number\" name=\"yeastmin"  + intId + "\" min=\"0\" step=\"0.1\" class=\"immutable\" readonly />");
+            var fyeastmax = $("<input type=\"number\" name=\"yeastmax"  + intId + "\" min=\"0\" step=\"0.1\" class=\"immutable\" readonly />");
+            var fyeastprop = $("<input type=\"number\" name=\"yeastprop"  + intId + "\" min=\"0\" max=\"\" step=\"0.01\" required />");
+            var fyeastamount = $("<input type=\"number\" name=\"yeastamount"  + intId + "\" min=\"0\" step=\"0.1\" required />")
+            var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
+            fieldWrapper.append(fyeastdd);
+            fieldWrapper.append(fOG);
+            fieldWrapper.append(fyeastmin);
+            fieldWrapper.append(fyeastmax);
+            fieldWrapper.append(fyeastprop);
+            fieldWrapper.append(fyeastamount);
+            fieldWrapper.append(removeButton);
+            $("#fermentation div:last").before(fieldWrapper);
+        });
+        });
+
+        $("body").on('change mouseup keyup', function () {
+            var sumIBU = 0;
+            var plato = $("#OG").val();
+            var volume = $("#castwort").val();
+
+            $(".hoppingentry").each(function(i){
+                var intid = $(this).data("idx");
+                var hopperl = $(this).children("input[name='hopperl" + intid + "\']");
+                var amount = $(this).children("input[name='hopamount" + intid + "\']");
+                amount.keyup(function () {
+                    hopperl.val($(this).val() / volume);
+                });
+                hopperl.keyup(function (){
+                    amount.val($(this).val() * volume);
+                });
+                relhop = hopperl.val();
+                $("#castwort").keyup(function () {
+                   amount.val( $(this).val() * hopperl.val());
+                });
+                var ISO = JSON.parse($(this).children('select[name=\"selHop' + intid + '\"]').find(":selected").val()).ISO;
+                var hoptime = $(this).children('input[name="hoptime' + intid + '\"]').val();
+                $(this).children("input[name='hopISO" + intid + "\']").val(ISO);
+                var thisIBU = ((relhop * ISO * 10) * (1.65 * (0.000125 ** (0.004 * plato))) * ((1- Math.exp(-0.04 * hoptime)) / 4.15));
+                sumIBU += thisIBU;
+            });
+
+            $(".fermentationentry").each(function(i){
+                var intid = $(this).data("idx");
+                var yeastperl = $(this).children("input[name='yeastprop" + intid + "\']");
+                var amount = $(this).children("input[name='yeastamount" + intid + "\']");
+                var option = $(this).children("select[name='selYeast" + intid + "\']").find(":selected");
+                amount.keyup(function () {
+                    yeastperl.val($(this).val() / volume);
+                });
+                yeastperl.keyup(function (){
+                    amount.val($(this).val() * volume);
+                });
+                $("#castwort").keyup(function () {
+                   amount.val( $(this).val() * yeastperl.val());
+                });
+                $(this).children("input[name='yeastOG" + intid + "\']").val(option.data("oberg"));
+                $(this).children("input[name='yeastmin" + intid + "\']").val(option.data('mintemp'));
+                $(this).children("input[name='yeastmax" + intid + "\']").val(option.data("maxtemp"));
+            });
+
+            $("#IBU").val(Math.round(sumIBU));
+        });
+
+        $(document).on('click', '.remove', function(){
+            $(this).parent().fadeOut(100);
+        });
+        $("#delete").click(function(){
+            $("#recipe").attr('action', "/delete-recipe/");
+        });
+        $("#save").click(function(){
+            $("#recipe").attr('action', "/save-recipe/");
+        });
+        $("#brew").click(function(){
+            $("#recipe").attr('action', "/brew-recipe/");
+        });
+        $(document).ready(function(){
+            $("#recipe").submit(function(e) {
+
+                e.preventDefault(); // avoid to execute the actual submit of the form.
+
+
+                var form = $(this);
+                var pathname = window.location.pathname;
+                var url = form.attr('action');
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: form.serialize(), // serializes the form's elements.
+                    success: function(data)
+                    {
+                        var btntext_onchange = "";
+                        var btntext = "";
+                        var btn = "";
+                        switch (form.attr('action')) {
+                            case "/save-resource/":
+                                btntext= "Save";
+                                btntext_onchange = "Saved!"
+                                btn = "#save";
+                                break;
+                            case "/brew-resource/":
+                                btntext= "Brew";
+                                btntext_onchange = "Brewed!"
+                                btn = "#brew";
+                                break;
+                            case "/deleted-resource/":
+                                btntext= "Delte";
+                                btntext_onchange = "Deleted!"
+                                btn = "#delete";
+                                break;
+                            default:
+                                break;
+                        }
+                        $(btn).fadeOut(100);
+                        $(btn).fadeIn(1000);
+                        $(btn).text(btntext_onchange);
+                        $(btn).fadeOut(1000);
+                        $(btn).fadeIn(100);
+                        $(btn).text(btntext);
+                    },
+                    error: function (data) {
+                    console.log('An error occurred.');
+                    console.log(data);
+                    },
+                    });
+
+
+                });
+        })
+    </script>
+</body>
+</html>
