@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -44,24 +45,26 @@ func formToUsedMalts(r *http.Request, uniBox *BoxFor) ([]*UsedResource, error) {
 	for count := 0; count < 100; count++ {
 		//get the id of used Mals and try to get corresponding Resources from ObjectBox
 		data := r.FormValue("selMalt" + strconv.Itoa(count))
-		if data == "" {
-			continue
+		if data != "" {
+			id := MustUInt(func() (uint64, error) {
+				return strconv.ParseUint(data, 10, 64)
+			})
+			resource, err := uniBox.Malt.Get(id)
+			if err != nil {
+				return usedResources, err
+			}
+			usedResource := &UsedResource{
+				ResourceID: resource.GetID(),
+				Proportion: Mustfloat(func() (float64, error) {
+					return strconv.ParseFloat(r.FormValue("maltprop"+strconv.Itoa(count)), 64)
+				}),
+				CookingTime: 0,
+			}
+			if err := usedResource.ValidateAndPut(uniBox); err != nil {
+				return usedResources, err
+			}
+			usedResources = append(usedResources, usedResource)
 		}
-		resource, err := uniBox.Malt.Get(new(unmarshalResource).JSONToId(data))
-		if err != nil {
-			return usedResources, err
-		}
-		usedResource := &UsedResource{
-			ResourceID: resource.GetID(),
-			Proportion: Mustfloat(func() (float64, error) {
-				return strconv.ParseFloat(r.FormValue("maltprop"+strconv.Itoa(count)), 64)
-			}),
-			CookingTime: 0,
-		}
-		if err := usedResource.ValidateAndPut(uniBox); err != nil {
-			return usedResources, err
-		}
-		usedResources = append(usedResources, usedResource)
 	}
 	return usedResources, nil
 }
@@ -73,15 +76,19 @@ func formToUsedHops(r *http.Request, uniBox *BoxFor) ([]*UsedResource, error) {
 		if data == "" {
 			continue
 		}
-		resource, err := uniBox.Malt.Get(new(unmarshalResource).JSONToId(data))
+		id := MustUInt(func() (uint64, error) {
+			return strconv.ParseUint(data, 10, 64)
+		})
+		resource, err := uniBox.Malt.Get(id)
 		if err != nil {
 			return usedResources, err
 		}
 		usedResource := &UsedResource{
 			ResourceID: resource.GetID(),
 		}
-		usedResource.SetProportion("Hopperl" + strconv.Itoa(count))
-		usedResource.SetCookingTime("Hoptime" + strconv.Itoa(count))
+		usedResource.SetProportion(r.FormValue("hopperl" + strconv.Itoa(count)))
+		usedResource.SetCookingTime(r.FormValue("hoptime" + strconv.Itoa(count)))
+		fmt.Println(usedResource.Proportion)
 		if err := usedResource.ValidateAndPut(uniBox); err != nil {
 			return usedResources, err
 		}
@@ -104,9 +111,12 @@ func formToUsedYeasts(r *http.Request, uniBox *BoxFor) ([]*UsedResource, error) 
 			return usedResources, err
 		}
 		usedResource := &UsedResource{
-			ResourceID: resource.GetID(),
+			ResourceID:  resource.GetID(),
+			CookingTime: 0,
 		}
-		usedResource.SetProportion("yestprop" + strconv.Itoa(count))
+		fmt.Println(r.FormValue("yestprop" + strconv.Itoa(count)))
+		usedResource.SetProportion(r.FormValue(("yestprop" + strconv.Itoa(count))))
+		fmt.Println(usedResource.Proportion)
 		if err := usedResource.ValidateAndPut(uniBox); err != nil {
 			return usedResources, err
 		}

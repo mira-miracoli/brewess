@@ -177,14 +177,14 @@ func (usedResource *UsedResource) ValidateAndPut(uniBox *BoxFor) error {
 	}
 	return nil
 }
-func (usedResource *UsedResource) SetProportion(formName string) {
+func (usedResource *UsedResource) SetProportion(formValue string) {
 	usedResource.Proportion = Mustfloat(func() (float64, error) {
-		return strconv.ParseFloat(formName, 64)
+		return strconv.ParseFloat(formValue, 64)
 	})
 }
-func (usedResource *UsedResource) SetCookingTime(formName string) {
+func (usedResource *UsedResource) SetCookingTime(formValue string) {
 	usedResource.CookingTime = Mustfloat(func() (float64, error) {
-		return strconv.ParseFloat(formName, 64)
+		return strconv.ParseFloat(formValue, 64)
 	})
 }
 

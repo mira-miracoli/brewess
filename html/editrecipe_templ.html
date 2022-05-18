@@ -48,7 +48,8 @@
             min="1"
             title="Enter a volume in liter"
             rows="1"
-            cols="3"></input>
+            cols="3"
+            value="{{.CastWorth}}"></input>
             </div>
             <div class="field">
             <p>OG in %</p>
@@ -124,11 +125,22 @@
                     <p id="malt-abmount">Amount in g</p>
                     <p></p>
                     </div>
+                    {{range .Malts}}
+                    <div class="gristentry" id="field{{.Id}}" data-idx="{{.Id}}">
+                        <select class="maltselector" name="selMalt{{.Id}}" data-id="{{.ResourceID}}">
+                        </select>
+                        <input type="number" name="maltEBC{{.Id}}" class="immutable maltEBC" readonly="">
+                        <input type="number" name="maltprop{{.Id}}" min="0" max="100" step="1" class="maltprop" value="{{.Proportion}}">
+                        <input type="number" name="maltamount{{.Id}}" min="0" step="1" class="maltamount">
+                        <button type="button" class="remove" value="-"><i class="fa fa-trash"></i></button>
+                    </div>
+                    {{end}}
                     <div class="addgrid">
                         <p></p>
                         <p></p>
                         <p></p>
                         <p></p>
+
                         <button id="addmalt" class="add" type="button"><i class="fa fa-plus"></i></button>
                     </div>
                 </fieldset>
@@ -142,7 +154,7 @@
             id="grist-notes"
             title="Enter a decription for your recipe"
             rows="3"
-            cols="40"></textarea>
+            cols="40">{{.MashInfo}}</textarea>
             </div>
         </div>
         <div class="mashing column">
@@ -156,6 +168,13 @@
                     <p id="mash-temperature">Temperature in °C</p>
                     <p id="mash-duration">Duration in min</p>
                     </div>
+                    {{range .MashSteps}}
+                    <div class="mashingentry" id="field{{.Id}}" data-idx="{{.Id}}">
+                        <input type="number" name="mashtemp{{.Id}}" min="0" max="100" step="0.1" value="{{.Temp}}" required="">
+                        <input type="number" name="mashtime{{.Id}}" min="0" step="1" value="{{.Time}}" required="">
+                        <button type="button" class="remove" value="-"><i class="fa fa-trash"></i></button>
+                    </div>
+                    {{end}}
                     <div class="addgrid">
                         <p></p>
                         <p></p>
@@ -164,7 +183,7 @@
                         <p id="cook-time">Cooking Time in min</p>
                         <p></p>
                         <p></p>
-                        <input type="number" id="CookingTime" step="1" min="0"></input>
+                        <input type="number" id="CookingTime" name="CookingTime" step="1" min="0" value="{{.CookingTime}}"></input>
                     </div>
                 </fieldset>
             </div>
@@ -177,7 +196,7 @@
             id="mashing-notes"
             title="Enter a decription for your recipe"
             rows="3"
-            cols="40"></textarea>
+            cols="40">{{.MashInfo}}</textarea>
             </div>
         </div>
         <div class="hopping column">
@@ -194,6 +213,17 @@
                     <p id="hop-amount">Amount in g</p>
                     <p></p>
                     </div>
+                    {{range .Hops}}
+                    <div class="hoppingentry" id="field{{.Id}}" data-idx="{{.Id}}">
+                        <select class="hopselector" name="selHop{{.Id}}" data-id="{{.ResourceID}}">
+                        </select>
+                        <input type="number" name="hopISO{{.Id}}" class="immutable hopISO" readonly="true">
+                        <input type="number" name="hoptime{{.Id}}" min="0" step="1" class="hoptime" value="{{.CookingTime}}" required="true">
+                        <input type="number" name="hopperl{{.Id}}" min="0" max="" step="0.001" class="hopperl" value="{{.Proportion}}" required="true">
+                        <input type="number" name="hopamount{{.Id}}" min="0" step="1" class="hopamount">
+                        <button type="button" class="remove" value="-"><i class="fa fa-trash"></i></button>
+                    </div>
+                    {{end}}
                     <div class="addgrid">
                         <p></p>
                         <p></p>
@@ -213,7 +243,7 @@
             id="hopping-notes"
             title="Enter a decription for your recipe"
             rows="3"
-            cols="40"></textarea>
+            cols="40">{{.HopInfo}}</textarea>
             </div>
         </div>
         <div class="fermentation column">
@@ -231,6 +261,18 @@
                     <p id="yeast-abmount">Amount in g</p>
                     <p></p>
                     </div>
+                    {{range .Yeasts}}
+                    <div class="fermentationentry" id="field{{.Id}}" data-idx="{{.Id}}">
+                        <select name="selYeast{{.Id}}" data-id="{{.ResourceID}}">
+                        </select>
+                        <input type="text" name="yeastOG{{.Id}}" value="" class="immutable yeastOG" readonly="true">
+                        <input type="number" name="yeastmin{{.Id}}" min="0" step="0.1" class="immutable yeastmin" readonly="true">
+                        <input type="number" name="yeastmax{{.Id}}" min="0" step="0.1" class="immutable yeastmax" readonly="true">
+                        <input type="number" name="yeastprop{{.Id}}" min="0" max="" step="0.01" class="yeastprop" value="{{.Proportion}}" required="true">
+                        <input type="number" name="yeastamount{{.Id}}" min="0" step="0.1" class="yeastamount" required="true">
+                        <button type="button" class="remove" value="-"><i class="fa fa-trash"></i></button>
+                    </div>
+                    {{end}}
                     <div class="addgrid">
                         <p></p>
                         <p></p>
@@ -251,7 +293,7 @@
             id="fermentation-notes"
             title="Enter a decription for your recipe"
             rows="3"
-            cols="40"></textarea>
+            cols="40">{{.FermentationInfo}}</textarea>
             </div>
         </div>
     </div>
@@ -278,21 +320,22 @@
         });
 
 
-        $("body").keyup( function () {
+        $("body").on('change mouseup keyup', function () {
             var sumEBC = 0;
             var cookTime = $("#CookingTime").val();
             var plato = $("#OG").val();
 
             $(".gristentry").each(function(i){
                 var intid = $(this).data("idx");
-                var thisprop = $(this).children('input[name=\"maltprop' + intid + '\"]').val() * 0.01;
+                var thisprop = $(this).children('input.maltprop').val() * 0.01;
                 var sha = $("#SHA").val();
                 var hotwort = $('#castwort').val();
                 var total = (plato * (1+ (plato / (258.6 - ( (plato / 258.2) *227.1) ) )) * 0.96 * hotwort / sha);
                 var thismass = total * 1000 * thisprop;
-                $(this).children('input[name=\"maltamount' + intid + '\"]').val(Math.round(thismass));
-                var ebc = JSON.parse($(this).children('select[name=\"selMalt' + intid + '\"]').val()).EBC;
-                $(this).children('input[name=\"maltEBC' + intid + '\"]').val(ebc);
+                $(this).children('input.maltamount').val(Math.round(thismass));
+                var sel = $(this).children('select');
+                var ebc = sel.find(':selected').attr("data-ebc");
+                $(this).children('input.maltEBC').val(ebc);
                 sumEBC += ebc * thisprop;
             });
             var totalEBC = (sumEBC * plato / 10 + 1.5 * cookTime / 60);
@@ -308,7 +351,15 @@
                 var malts = data.Malt;
             // Iterate over object and add options to select
                 $.each(malts, function(index, object){
-                    maltoptions += '<option value=\'{\"Id\":' + object.Id + ', \"EBC\":' + object.EBC + '}\'>' + object.Name + '</option>';
+                    maltoptions += "<option value=" + object.Id + " data-ebc=\"" + object.EBC + "\">" + object.Name + '</option>';
+                });
+                $(".gristentry").each(function(i){
+                    var sel = $(this).children('select');
+                    let find = "value=" + sel.attr('data-id');
+                    let maltoption = maltoptions;
+                    let index = maltoption.indexOf(find);
+                    maltoption = maltoption.substr(0, index+find.length) + " selected=\"true\"" + maltoption.substr(index+find.length);
+                    sel.append(maltoption);
                 });
             });
             $("#addmalt").click(function() {
@@ -317,9 +368,9 @@
             var fieldWrapper = $("<div class=\"gristentry\" id=\"field" + intId + "\"/>");
             fieldWrapper.data("idx", intId);
             var fmaltdd = $(maltselector  + intId + "\" >" + maltoptions);
-            var fEBC = $("<input type=\"number\" name=\"maltEBC" + intId + "\" class=\"immutable\" readonly />")
-            var fmaltprop = $("<input type=\"number\" name=\"maltprop"  + intId + "\" min=\"0\" max=\"100\" step=\"1\" required />");
-            var fmaltamount = $("<input type=\"number\" name=\"maltamount"  + intId + "\" min=\"0\" step=\"1\" />")
+            var fEBC = $("<input type=\"number\" name=\"maltEBC" + intId + "\" class=\"immutable maltEBC\" readonly />")
+            var fmaltprop = $("<input type=\"number\" name=\"maltprop"  + intId + "\" min=\"0\" max=\"100\" step=\"1\" class=\"maltprop\" required />");
+            var fmaltamount = $("<input type=\"number\" name=\"maltamount"  + intId + "\" min=\"0\" step=\"1\" class=\"maltamount\" />")
             var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
             fieldWrapper.append(fmaltdd);
             fieldWrapper.append(fEBC);
@@ -339,7 +390,15 @@
                 var hops = data.Hop;
             // Iterate over object and add options to select
                 $.each(hops, function(index, object){
-                    hopoptions +='<option value=\'{\"Id\":' + object.Id + ', \"ISO\":' + object.ISO + '}\'>' + object.Name + '</option>';
+                    hopoptions += "<option value=" + object.Id + " data-iso=\"" + object.ISO + "\">" + object.Name + '</option>';
+                });
+                $(".hoppingentry").each(function(i){
+                    var sel = $(this).children('select');
+                    let find = "value=" + sel.attr('data-id');
+                    let hopoption = hopoptions;
+                    let index = hopoption.indexOf(find);
+                    hopoption = hopoption.substr(0, index+find.length) + " selected=\"true\"" + hopoption.substr(index+find.length);
+                    sel.append(hopoption);
                 });
             });
             $("#addhop").click(function() {
@@ -348,10 +407,10 @@
             var fieldWrapper = $("<div class=\"hoppingentry\" id=\"field" + intId + "\"/>");
             fieldWrapper.data("idx", intId);
             var fhopdd = $(hopselector  + intId + "\" >" + hopoptions);
-            var fISO = $("<input type=\"number\" name=\"hopISO" + intId + "\" class=\"immutable\" readonly />")
-            var fhoptime = $("<input type=\"number\" name=\"hoptime"  + intId + "\" min=\"0\" step=\"1\" required />");
-            var fhopperl = $("<input type=\"number\" name=\"hopperl"  + intId + "\" min=\"0\" max=\"\" step=\"0.001\" required />");
-            var fhopamount = $("<input type=\"number\" name=\"hopamount"  + intId + "\" min=\"0\" step=\"1\" />")
+            var fISO = $("<input type=\"number\" name=\"hopISO" + intId + "\" class=\"immutable hopISO\" readonly=\"true\" />")
+            var fhoptime = $("<input type=\"number\" name=\"hoptime"  + intId + "\" min=\"0\" step=\"1\" class=\"hoptime\" required=\"true\" />");
+            var fhopperl = $("<input type=\"number\" name=\"hopperl"  + intId + "\" min=\"0\" max=\"\" step=\"0.001\" class=\"hopperl\" required=\"true\" />");
+            var fhopamount = $("<input type=\"number\" name=\"hopamount"  + intId + "\" min=\"0\" step=\"1\" class=\"hopamount\" />")
             var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
             fieldWrapper.append(fhopdd);
             fieldWrapper.append(fISO);
@@ -378,19 +437,27 @@
                     option.val(object.Id)
                     yeastselector.append(option);
                 });
+                $(".fermentationentry").each(function(i){
+                    var sel = $(this).children('select');
+                    let newselector = yeastselector;
+                    newselector.attr('data-id', sel.attr('data-id'));
+                    newselector.attr('name', sel.attr("name"));
+                    let id = sel.attr('data-id');
+                    newselector.children('option[value=\"' + id + '\"]').attr("selected", "selected=true");
+                    sel.replaceWith(newselector);
+                });
             });
             $("#addyeast").click(function() {
-            console.log("Button works");
     		var lastField = $("#fermentation div:last").prev();
             var intId = (lastField && lastField.length && lastField.data("idx") + 1) || 1;
             var fieldWrapper = $("<div class=\"fermentationentry\" id=\"field" + intId + "\"/>");
             fieldWrapper.data("idx", intId);
             var fyeastdd =yeastselector.attr('name', 'selYeast' + intId);
-            var fOG = $("<input type=\"text\" name=\"yeastOG" + intId + "\" value=\"\" class=\"immutable\" readonly />");
-            var fyeastmin = $("<input type=\"number\" name=\"yeastmin"  + intId + "\" min=\"0\" step=\"0.1\" class=\"immutable\" readonly />");
-            var fyeastmax = $("<input type=\"number\" name=\"yeastmax"  + intId + "\" min=\"0\" step=\"0.1\" class=\"immutable\" readonly />");
-            var fyeastprop = $("<input type=\"number\" name=\"yeastprop"  + intId + "\" min=\"0\" max=\"\" step=\"0.01\" required />");
-            var fyeastamount = $("<input type=\"number\" name=\"yeastamount"  + intId + "\" min=\"0\" step=\"0.1\" required />")
+            var fOG = $("<input type=\"text\" name=\"yeastOG" + intId + "\" value=\"\" class=\"immutable yeastOG\" readonly=\"true\" />");
+            var fyeastmin = $("<input type=\"number\" name=\"yeastmin"  + intId + "\" min=\"0\" step=\"0.1\" class=\"immutable yeastmin\" readonly=\"true\" />");
+            var fyeastmax = $("<input type=\"number\" name=\"yeastmax"  + intId + "\" min=\"0\" step=\"0.1\" class=\"immutable yeastmax\" readonly=\"true\" />");
+            var fyeastprop = $("<input type=\"number\" name=\"yeastprop"  + intId + "\" min=\"0\" max=\"\" step=\"0.01\" class=\"yeastprop\" required=\"true\" />");
+            var fyeastamount = $("<input type=\"number\" name=\"yeastamount"  + intId + "\" min=\"0\" step=\"0.1\" class=\"yeastamount\" required=\"true\" />")
             var removeButton = $("<button type=\"button\" class=\"remove\" value=\"-\"><i class=\"fa fa-trash\"></i></button>");
             fieldWrapper.append(fyeastdd);
             fieldWrapper.append(fOG);
@@ -410,8 +477,8 @@
 
             $(".hoppingentry").each(function(i){
                 var intid = $(this).data("idx");
-                var hopperl = $(this).children("input[name='hopperl" + intid + "\']");
-                var amount = $(this).children("input[name='hopamount" + intid + "\']");
+                var hopperl = $(this).children("input.hopperl");
+                var amount = $(this).children("input.hopamount");
                 amount.keyup(function () {
                     hopperl.val($(this).val() / volume);
                 });
@@ -422,9 +489,9 @@
                 $("#castwort").keyup(function () {
                    amount.val( $(this).val() * hopperl.val());
                 });
-                var ISO = JSON.parse($(this).children('select[name=\"selHop' + intid + '\"]').find(":selected").val()).ISO;
-                var hoptime = $(this).children('input[name="hoptime' + intid + '\"]').val();
-                $(this).children("input[name='hopISO" + intid + "\']").val(ISO);
+                var ISO = $(this).children('select[name=\"selHop' + intid + '\"]').find(":selected").attr('data-iso');
+                var hoptime = $(this).children('input.hoptime').val();
+                $(this).children("input.hopISO").val(ISO);
                 var thisIBU = ((relhop * ISO * 10) * (1.65 * (0.000125 ** (0.004 * plato))) * ((1- Math.exp(-0.04 * hoptime)) / 4.15));
                 sumIBU += thisIBU;
             });

@@ -117,19 +117,28 @@
                 border: 1px solid sandybrown;
                 box-shadow: 5px 7px peru;
             }
-            .delete {
+            .buttons {
                 justify-self: end;
                 text-align: end;
             }
             .btn {
-                background-color: indianred; /* Blue background */
-                border: 1px indianred; /* Remove borders */
                 border-radius: 2px;
                 color: white; /* White text */
                 padding: 12px 16px; /* Some padding */
                 font-size: 16px; /* Set a font size */
                 cursor: pointer; /* Mouse pointer on hover */
             }
-            .btn:hover {
+            .btn.delete {
+                background-color: indianred; /* Blue background */
+                border: 1px indianred; /* Remove borders */
+            }
+            .btn.edit {
+                background-color: seagreen; /* Blue background */
+                border: 1px seagreen; /* Remove borders */
+            }
+            .btn.delete:hover {
                 background-color: lightcoral;
+            }
+            .btn.edit:hover {
+                background-color: limegreen;
             }

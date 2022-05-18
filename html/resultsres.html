@@ -24,7 +24,7 @@
                 <p class="boxtitle"><b>Malt</b></p>
                 <p class="delete">
                 <input class="delete" name="delete" type="hidden" value="{{.Id}}">
-                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                <button id="btn" class="btn delete" type="button"><i class="fa fa-trash"></i></button>
                 </input>
                 </p>
                 <p class="name">Name</p>
@@ -40,7 +40,7 @@
                 <p class="boxtitle"><b>Hop</b></p>
                 <p class="delete">
                 <input class="delete" name="delete" type="hidden" value="{{.Id}}">
-                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                <button id="btn" class="btn delete" type="button"><i class="fa fa-trash"></i></button>
                 </input>
                 </p>
                 <p class="name">Name</p>
@@ -56,7 +56,7 @@
                 <p class="boxtitle"><b>Yeast</b></p>
                 <p class="delete">
                 <input class="delete" name="delete" type="hidden" value="{{.Id}}">
-                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                <button id="btn" class="btn delete" type="button"><i class="fa fa-trash"></i></button>
                 </input>
                 </p>
                 <p class="name">Name</p>
@@ -104,12 +104,11 @@
             $(".delete").click(function (event) {
                             var parent = $(this).closest('.resbox')
                             var id = $(this).find(".delete").val();
-                            var mytype = parent.attr('class').split(' ')[1]
                              $.ajax({
                                url: '/delete-resource/',
                                type: 'post',
                                dataType: 'html',
-                               data : { type: mytype, ajax_post_data: id},
+                               data : {ajax_post_data: id},
                                success : function(data) {
                                  // alert('ajax data posted');
                                  $('#result').html(data);

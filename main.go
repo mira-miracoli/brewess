@@ -30,7 +30,7 @@ var templates, templateError = template.ParseFiles("./html/newres.html", "./html
 	"./html/searchres.html", "./html/recipe_search.html", "./html/recipe_results.html",
 	"./html/badsearch.html", "./html/resultsres.html", "./html/editrecipe.html")
 
-var validPath = regexp.MustCompile("^/(edit-recipe)/([0-9]+)$")
+var validPath = regexp.MustCompile("^/(edit-recipe)/([0-9]+)?$")
 
 func initObjectBox() *objectbox.ObjectBox {
 	objectBox, err := objectbox.NewBuilder().Model(ObjectBoxModel()).Build()
@@ -225,15 +225,12 @@ func main() {
 
 	}
 	editRecipeHandler := func(responseWriter http.ResponseWriter, request *http.Request, path string) {
-		if request.Method != http.MethodGet {
-			http.Error(responseWriter, "Not a GET Request", http.StatusBadRequest)
-		}
 		recipe, err := uniBox.Recipe.Get(MustUInt(func() (uint64, error) {
 			return strconv.ParseUint(path, 10, 64)
 		}))
 		if err != nil || recipe == nil {
 			renderSingle(responseWriter, "editrecipe")
-			http.Redirect(responseWriter, request, "/edit-recipe/", http.StatusFound)
+			//http.Redirect(responseWriter, request, "/edit-recipe/", http.StatusFound)
 		} else {
 			renderRecipeSingle(responseWriter, "editrecipe_templ", recipe)
 		}

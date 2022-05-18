@@ -24,10 +24,14 @@
                 color: #222;
                 box-shadow: 5px 7px bisque;" id="{{.Id}}">
                 <p class="boxtitle"><b>{{.Name}}</b></p>
-                <p class="delete">
-                <input class="delete" name="delete" type="hidden" value="{{.Id}}">
-                <button id="btn" class="btn" type="button"><i class="fa fa-trash"></i></button>
+                <p class="buttons">
+                <input class="edit" name="edit" type="hidden" value="{{.Id}}">
+                <button id="btn" class="btn edit" type="button"><i class="fa fa-pencil-square-o"></i></button>
                 </input>
+                <input class="delete" name="delete" type="hidden" value="{{.Id}}">
+                <button id="btn" class="btn delete" type="button"><i class="fa fa-trash"></i></button>
+                </input>
+                </p>
                 </p>
                 <p class="EBC">EBC</p>
                 <p class="value EBC">{{.EBC}}</p>
@@ -49,24 +53,30 @@
                 "box-shadow: 5px 7px burlywood"
             );
             $(".delete").click(function (event) {
-                            var parent = $(this).closest('.resbox')
-                            var id = $(this).find(".delete").val();
-                            var mytype = parent.attr('class').split(' ')[1]
+                  var result = confirm("Do you want to delete this Recipe?");
+                  if (result){
+                            var parent = $(this).closest("div");
+                            var id = parent.attr('id');
                              $.ajax({
                                url: '/delete-recipe/',
                                type: 'post',
                                dataType: 'html',
-                               data : { type: mytype, ajax_post_data: id},
+                               data : {ajax_post_data: id},
                                success : function(data) {
                                  // alert('ajax data posted');
                                  $('#result').html(data);
                                },
                              });
                              $(parent).fadeOut(200);
+                            }
                           });
-                    
+                        
         });
-                             
+          $(".edit").click(function (event) {
+            var id = $(this).closest("div").attr('id');
+            location.replace(window.location.href.replace("/recipe-search-results/","/edit-recipe/" + id));
+                        
+        });                
     </script>
 </body>
 </html>
